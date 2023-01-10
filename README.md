@@ -9,4 +9,11 @@
 </a>
 </p>
 
+FeRoom is a SPA MFE framework based on ES Modules. Powered by [moostjs](https://github.com/moostjs/moost).
 
+
+## Install
+
+`npm install feroom`
+
+## To be Documented...
