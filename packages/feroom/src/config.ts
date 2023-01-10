@@ -35,4 +35,8 @@ export class FeRoomConfig {
         return this.options.head || ''
     }
 
+    get importMap() {
+        return this.options.importMap || {}
+    }
+
 }

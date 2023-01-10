@@ -11,15 +11,21 @@ export class FeRoomIndex {
     constructor(protected _registry: FeRegistry, protected config: FeRoomConfig) {}
 
     getGlobals() {
-        return Object.keys(this.config.globals).map(key => `\twindow[${ JSON.stringify(key) }] = ${JSON.stringify(this.config.globals[key as keyof typeof this.config.globals])};\n`).join('')
+        return Object.keys(this.config.globals).map(key => `window[${ JSON.stringify(key) }] = ${JSON.stringify(this.config.globals[key as keyof typeof this.config.globals])};\n`).join('')
     }
 
     getImportmap() {
         const list = this._registry.getModulesList()
-        return list
+
+        const map: Record<string, string> = {}
+        list
             .map(id => this._registry.readModule(id))
-            .map((m: TModuleData) => `"${m.id}": "./${ join(this.config.modulesPrefixPath, m.id, m.rootFile) }"`)
-            .join(',\n\t\t')
+            .forEach((m: TModuleData) => map[m.id] = `./${ join(this.config.modulesPrefixPath, m.id, m.rootFile) }`)
+
+        return JSON.stringify({
+            ...map,
+            ...this.config.importMap,
+        })
     }
 
     getModulePath(id: string, path?: string) {
@@ -28,7 +34,15 @@ export class FeRoomIndex {
     }
 
     getCss() {
-        return this.config.preloadCss.map(path => {
+        const items = [ ...this.config.preloadCss ]
+        const modules = this._registry.getAllModules()
+        for (const { id, preloadCss } of modules) {
+            if (preloadCss) {
+                const mItems = Array.isArray(preloadCss) ? preloadCss : [ preloadCss ]
+                mItems.forEach(path => items.push([id, path]))
+            }
+        }
+        return items.map(path => {
             let target = path
             if (Array.isArray(path)) {
                 target = this.getModulePath(path[0], path[1])
@@ -38,7 +52,15 @@ export class FeRoomIndex {
     }
 
     getScripts() {
-        return this.config.preloadScript.map(path => {
+        const items = [ ...this.config.preloadScript ]
+        const modules = this._registry.getAllModules()
+        for (const { id, preloadScripts } of modules) {
+            if (preloadScripts) {
+                const mItems = Array.isArray(preloadScripts) ? preloadScripts : [ preloadScripts ]
+                mItems.forEach(path => items.push([id, path]))
+            }
+        }
+        return items.map(path => {
             let target = path
             if (Array.isArray(path)) {
                 target = this.getModulePath(path[0], path[1])
@@ -48,7 +70,14 @@ export class FeRoomIndex {
     }
 
     getPreloadModule() {
-        return this.config.preloadModule
+        const items = [ ...this.config.preloadModule ]
+        const modules = this._registry.getAllModules()
+        for (const { id, preloadRoot } of modules) {
+            if (preloadRoot) {
+                items.push(id)
+            }
+        }
+        return items
             .map(id => this.getModulePath(id))
             .map(path => `<script type="module" src="${ path }"></script>`)
             .join('\n')
@@ -81,9 +110,7 @@ window.__loadCss = function (path) {
 
 <script type="importmap">
 {
-    "imports": {
-        ${ this.getImportmap() }
-    }
+    "imports": ${ this.getImportmap() }
 }
 </script>
 

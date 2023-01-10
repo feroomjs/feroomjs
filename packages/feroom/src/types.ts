@@ -5,6 +5,9 @@ export interface TModuleData {
     version: string
     files: Record<string, string>
     rootFile: string
+    preloadRoot?: boolean
+    preloadScripts?: string | string[]
+    preloadCss?: string | string[]
 }
 
 export type TNpmModuleData = {
@@ -30,4 +33,5 @@ export interface TFeRoomOptions {
     preloadModule?: string[]
     body?: string
     head?: string
+    importMap?: { [name: string]: string }
 }

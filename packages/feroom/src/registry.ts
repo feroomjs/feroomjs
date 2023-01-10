@@ -46,7 +46,12 @@ export class FeRegistry extends EventEmitter {
         return registry[id][ver] as TModuleData
     }
 
-    getModulesList() {
+    getModulesList(): string[] {
         return Object.keys(registry)
+    }
+
+    getAllModules(): TModuleData[] {
+        const list = this.getModulesList()
+        return list.map(id => this.readModule(id))
     }
 }
