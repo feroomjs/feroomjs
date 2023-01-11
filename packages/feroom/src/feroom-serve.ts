@@ -67,7 +67,13 @@ export class FeRoomServe {
         }
         const ext = (path.split('.').pop() || '') as keyof typeof extensions
         contentType.value = extensions[ext] || 'text/plain'
-        return typeof module.files[path] === 'string' ? module.files[path] : new HttpError(404)
+        const data = module.files[path]
+        if (typeof data === 'string') {
+            return data
+        } else if (typeof data === 'object' && data.type === 'Buffer') {
+            return Buffer.from(data.data)
+        }
+        return new HttpError(404)
     }
 
     updateModulePaths() {

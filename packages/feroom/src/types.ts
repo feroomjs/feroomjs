@@ -3,7 +3,7 @@ export interface TModuleData {
     description?: string
     id: string
     version: string
-    files: Record<string, string>
+    files: Record<string, string | {type: 'Buffer', data: number[]}>
     rootFile: string
     preloadRoot?: boolean
     preloadScripts?: string | string[]
