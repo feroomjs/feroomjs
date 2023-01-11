@@ -1,3 +1,12 @@
+## [0.0.1-alpha.3](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.2...v0.0.1-alpha.3) (2023-01-11)
+
+
+### Features
+
+* support buffer data ([3e8a172](https://github.com/feroomjs/feroomjs/commit/3e8a172e04e5d3523a413bb6218f823fa055b6bf))
+
+
+
 ## [0.0.1-alpha.2](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.1...v0.0.1-alpha.2) (2023-01-11)
 
 
