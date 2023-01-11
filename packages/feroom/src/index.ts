@@ -1,3 +1,6 @@
 export * from './registry'
 export * from './feroom'
 export * from './types'
+export * from './feroom-serve'
+export * from './config'
+export * from './index-html'
