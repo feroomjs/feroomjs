@@ -2,6 +2,7 @@ import { FeRegistry, TModuleData } from 'feroom'
 import { Get } from '@moostjs/event-http'
 import { useSetHeader } from '@wooksjs/event-http'
 import { Controller } from 'moost'
+import { logError } from 'common/log'
 
 export interface TVueRoute {
     path: string
@@ -26,6 +27,10 @@ export class VueRoutesController {
     }
 
     renderFunc(name: string, value: string, indent: string = '') {
+        if (typeof value !== 'string') {
+            logError(`Prop "${ name }" has unsupported type "${ typeof value }"`)
+            return `${ indent }  ${ JSON.stringify(name) }: null`
+        }
         if (value.startsWith('(') || value.startsWith('async ') || value.startsWith('function')) {
             return `${ indent }  ${ JSON.stringify(name) }: ${ value }`
         }
