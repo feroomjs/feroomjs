@@ -1,5 +1,6 @@
 import minimist from 'minimist'
 import fs from 'node:fs/promises'
+import { existsSync } from 'fs'
 import path from 'path'
 import execa from 'execa'
 
@@ -86,6 +87,18 @@ async function build(target) {
             })
 
             if (extractorResult.succeeded) {
+                const typesDir = path.resolve(pkgDir, 'types')
+                if (existsSync(typesDir)) {
+                  const dtsPath = path.resolve(pkgDir, pkg.types)
+                  const existing = await fs.readFile(dtsPath, 'utf-8')
+                  const typeFiles = await fs.readdir(typesDir)
+                  const toAdd = await Promise.all(
+                    typeFiles.map(file => {
+                      return fs.readFile(path.resolve(typesDir, file), 'utf-8')
+                    })
+                  )
+                  await fs.writeFile(dtsPath, existing + '\n' + toAdd.join('\n'))
+                }                
                 out.success(`✅ API Extractor completed successfully.`)
             } else {
                 out.error(

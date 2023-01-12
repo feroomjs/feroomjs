@@ -1,0 +1,35 @@
+{
+  "name": "@feroomjs/vue-routes",
+  "version": "0.0.1-alpha.3",
+  "description": "@feroomjs/vue-routes",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/feroomjs/feroomjs.git",
+    "directory": "packages/vue-routes"
+  },
+  "keywords": [
+    "feroom",
+    "feroomjs",
+    "SPA",
+    "MFE"
+  ],
+  "author": "Artem Maltsev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/feroomjs/feroomjs/issues"
+  },
+  "homepage": "https://github.com/feroomjs/feroomjs/tree/main/packages/vue-routes#readme",
+  "peerDependencies": {
+    "@feroomjs/feroom": "",
+    "@moostjs/event-http": "",
+    "@wooksjs/event-http": "",
+    "moost": "",
+    "vue-router": ""
+  }
+}

@@ -26,24 +26,30 @@ reg.registerModule({
     id: 'module',
     version: '1',
     files: {},
-    rootFile: 'index.js',
-    preloadScripts: 'm1.js',
-    preloadCss: ['m1-1.css', 'm1-2.css'],
+    config: {
+        entry: 'index.js',
+        preloadScripts: 'm1.js',
+        preloadCss: ['m1-1.css', 'm1-2.css'],
+    }
 })
 reg.registerModule({
     id: 'module2',
     version: '1',
     files: {},
-    rootFile: 'index2.js',
-    preloadScripts: ['m2-1.js', 'm2-2.js'],
-    preloadCss: 'm2.css',
+    config: {
+        entry: 'index2.js',
+        preloadScripts: ['m2-1.js', 'm2-2.js'],
+        preloadCss: 'm2.css',
+    }
 })
 reg.registerModule({
     id: 'module-root',
     version: '1',
     files: {},
-    rootFile: 'root-app.js',
-    preloadRoot: true,
+    config: {
+        entry: 'root-app.js',
+        preloadRoot: true,
+    }
 })
 
 const index = new FeRoomIndex(reg, config)

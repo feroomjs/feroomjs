@@ -1,9 +1,8 @@
-import { Body, Post } from '@moostjs/event-http'
 import { HttpError, useSetHeader, useStatus, WooksHttp } from '@wooksjs/event-http'
 import { Controller } from 'moost'
 import { useRouteParams } from 'wooks'
 import { FeRegistry } from './registry'
-import { TModuleData, TNpmModuleData } from './types'
+import { TModuleData } from './types'
 import { join } from 'path'
 import { log } from 'common/log'
 import { FeRoomConfig } from './config'
@@ -16,16 +15,6 @@ export class FeRoomServe {
     }
 
     protected registered: Record<string, boolean> = {}
-    
-    @Post('feroom-module/register')
-    registerModule(@Body() module: TModuleData) {
-        return this._registry.registerModule(module)
-    }
-
-    @Post('feroom-module/register/npm')
-    async registerFromNpm(@Body() npmData: TNpmModuleData) {
-        return await this._registry.registerFromNpm(npmData)
-    }
 
     registerHttpModulePath(data: TModuleData) {
         const fullId = data.id + '@' + data.version
@@ -62,7 +51,7 @@ export class FeRoomServe {
         })
         if (!path) {
             status.value = 307
-            location.value = join('/', this.config.modulesPrefixPath, module.id, module.rootFile)
+            location.value = join('/', this.config.modulesPrefixPath, module.id, module.config.entry)
             return ''
         }
         const ext = (path.split('.').pop() || '') as keyof typeof extensions

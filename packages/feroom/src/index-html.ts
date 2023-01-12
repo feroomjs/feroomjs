@@ -20,7 +20,7 @@ export class FeRoomIndex {
         const map: Record<string, string> = {}
         list
             .map(id => this._registry.readModule(id))
-            .forEach((m: TModuleData) => map[m.id] = `./${ join(this.config.modulesPrefixPath, m.id, m.rootFile) }`)
+            .forEach((m: TModuleData) => map[m.id] = `./${ join(this.config.modulesPrefixPath, m.id, m.config.entry) }`)
 
         return JSON.stringify({
             ...map,
@@ -30,13 +30,13 @@ export class FeRoomIndex {
 
     getModulePath(id: string, path?: string) {
         const m = this._registry.readModule(id)
-        return join(this.config.modulesPrefixPath, m.id, path || m.rootFile)
+        return join(this.config.modulesPrefixPath, m.id, path || m.config.entry)
     }
 
     getCss() {
         const items = [ ...this.config.preloadCss ]
         const modules = this._registry.getAllModules()
-        for (const { id, preloadCss } of modules) {
+        for (const { id, config: { preloadCss } } of modules) {
             if (preloadCss) {
                 const mItems = Array.isArray(preloadCss) ? preloadCss : [ preloadCss ]
                 mItems.forEach(path => items.push([id, path]))
@@ -54,7 +54,7 @@ export class FeRoomIndex {
     getScripts() {
         const items = [ ...this.config.preloadScript ]
         const modules = this._registry.getAllModules()
-        for (const { id, preloadScripts } of modules) {
+        for (const { id, config: { preloadScripts } } of modules) {
             if (preloadScripts) {
                 const mItems = Array.isArray(preloadScripts) ? preloadScripts : [ preloadScripts ]
                 mItems.forEach(path => items.push([id, path]))
@@ -72,7 +72,7 @@ export class FeRoomIndex {
     getPreloadModule() {
         const items = [ ...this.config.preloadModule ]
         const modules = this._registry.getAllModules()
-        for (const { id, preloadRoot } of modules) {
+        for (const { id, config: { preloadRoot } } of modules) {
             if (preloadRoot) {
                 items.push(id)
             }

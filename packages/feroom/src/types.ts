@@ -1,20 +1,24 @@
-export interface TModuleData {
-    label?: string
-    description?: string
+export interface TModuleData<CFG extends object = object> {
     id: string
     version: string
     files: Record<string, string | {type: 'Buffer', data: number[]}>
-    rootFile: string
-    preloadRoot?: boolean
-    preloadScripts?: string | string[]
-    preloadCss?: string | string[]
+    config: {
+        entry: string
+        label?: string
+        description?: string
+        preloadRoot?: boolean
+        preloadScripts?: string | string[]
+        preloadCss?: string | string[]
+        appendHead?: string
+        appendBody?: string
+    } & CFG
 }
 
-export type TNpmModuleData = {
+export type TNpmModuleData<CFG extends object = object> = {
     registry?: string,
     name: string,
     version?: string,
-} & Partial<TModuleData>
+} & Partial<TModuleData<CFG>>
 
 
 export interface TModuleRoutes {
