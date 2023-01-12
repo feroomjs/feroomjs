@@ -32,10 +32,13 @@ export async function getFilesByPattern(include: string[] = [], exclude: string[
 
 export function globPromise(path: string): Promise<string[]> {
     return new Promise((resolve, reject) => {
-        glob(path, (err, result) => {
+        glob(path, {
+            nodir: true,
+        }, (err, result) => {
             if (err) {
                 reject(err)
             } else {
+                console.log(result)
                 resolve(result)
             }
         })
