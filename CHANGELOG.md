@@ -1,3 +1,12 @@
+## [0.0.1-alpha.16](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.15...v0.0.1-alpha.16) (2023-01-12)
+
+
+### Bug Fixes
+
+* **vue-routes:** support booleans ([4a946b7](https://github.com/feroomjs/feroomjs/commit/4a946b7b4772fa109ded1c9090430e1b65a8e06f))
+
+
+
 ## [0.0.1-alpha.15](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.14...v0.0.1-alpha.15) (2023-01-12)
 
 

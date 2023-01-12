@@ -1,6 +1,6 @@
 {
   "name": "@feroomjs/vue-routes",
-  "version": "0.0.1-alpha.15",
+  "version": "0.0.1-alpha.16",
   "description": "@feroomjs/vue-routes",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/feroomjs/feroomjs/tree/main/packages/vue-routes#readme",
   "peerDependencies": {
-    "feroom": "0.0.1-alpha.15",
+    "feroom": "0.0.1-alpha.16",
     "@moostjs/event-http": "^0.2.4",
     "@wooksjs/event-http": "^0.2.5",
     "moost": "^0.2.4",
