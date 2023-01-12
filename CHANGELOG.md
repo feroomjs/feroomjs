@@ -1,3 +1,12 @@
+## [0.0.1-alpha.11](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.10...v0.0.1-alpha.11) (2023-01-12)
+
+
+### Features
+
+* **tools:** add render fe conf ([0cb3a1c](https://github.com/feroomjs/feroomjs/commit/0cb3a1c0f7f3056bb70249595cc47c296f3f263a))
+
+
+
 ## [0.0.1-alpha.10](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.9...v0.0.1-alpha.10) (2023-01-12)
 
 
