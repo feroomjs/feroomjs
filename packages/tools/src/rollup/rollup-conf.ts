@@ -6,6 +6,7 @@ import virtual from 'rollup-plugin-virtual'
 
 export interface TFeRoomRollupOptions {
     input: string
+    ts?: boolean
     vue?: boolean
     css?: string | object
     feroomConfPath?: string
@@ -15,7 +16,7 @@ export interface TFeRoomRollupOptions {
 
 export async function createFeroomRollupConfig(options: TFeRoomRollupOptions) {
     const plugins = []
-    if (options.input.endsWith('.ts')) {
+    if (options.input.endsWith('.ts') || options.ts) {
         if (!options.plugins?.find(p => ['rpt2', 'rpt', 'typescritpt', 'rollup-plugin-typescript', 'rollup-plugin-typescript2'].includes(p.name))) {
             const typescript = (await import('rollup-plugin-typescript2')).default
             plugins.push(typescript())
