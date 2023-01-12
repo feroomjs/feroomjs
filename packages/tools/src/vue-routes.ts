@@ -35,7 +35,7 @@ export function getVueRoutesMap(vueRoutes: TVueRoute[]) {
 }
 
 export function getVueRoutes() {
-    return getFeConf().vueRoutes as TVueRoute[]
+    return (getFeConf().vueRoutes || []) as TVueRoute[]
 }
 
 export function getVueRenderedRoutes(vueRoutes: TVueRoute[], moduleId: string) {
