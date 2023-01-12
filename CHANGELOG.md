@@ -1,3 +1,12 @@
+## [0.0.1-alpha.15](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.14...v0.0.1-alpha.15) (2023-01-12)
+
+
+### Bug Fixes
+
+* **vue-routes:** prop format ([4e84160](https://github.com/feroomjs/feroomjs/commit/4e84160e4dec7f954114bfcbb924bf9288a888c0))
+
+
+
 ## [0.0.1-alpha.14](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.13...v0.0.1-alpha.14) (2023-01-12)
 
 
