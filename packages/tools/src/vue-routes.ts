@@ -34,8 +34,8 @@ export function getVueRoutesMap(vueRoutes: TVueRoute[]) {
     return components
 }
 
-export function getVueRoutes() {
-    return (getFeConf().vueRoutes || []) as TVueRoute[]
+export function getVueRoutes(confPath?: string) {
+    return (getFeConf(confPath).vueRoutes || []) as TVueRoute[]
 }
 
 export function getVueRenderedRoutes(vueRoutes: TVueRoute[], moduleId: string) {
