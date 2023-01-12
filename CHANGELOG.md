@@ -1,3 +1,12 @@
+## [0.0.1-alpha.4](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.3...v0.0.1-alpha.4) (2023-01-12)
+
+
+### Features
+
+* vue-router & shared-menu ([552d51f](https://github.com/feroomjs/feroomjs/commit/552d51f2aab323667d4062fb1caa540dae3ee7f7))
+
+
+
 ## [0.0.1-alpha.3](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.2...v0.0.1-alpha.3) (2023-01-11)
 
 
