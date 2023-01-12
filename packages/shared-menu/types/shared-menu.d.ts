@@ -11,4 +11,5 @@ declare module '@feroom-dynamic/shared-menu' {
     export type TSharedMenu = Record<string, TMenuItem>
         
     export const sharedMenu: TSharedMenu
+    export default sharedMenu
 }

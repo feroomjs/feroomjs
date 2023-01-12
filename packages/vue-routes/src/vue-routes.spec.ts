@@ -40,8 +40,7 @@ const vueRoutes = new VueRoutesController(reg)
 describe('vue-routes', () => {
     it('must render routes', () => {
         expect(vueRoutes.routes()).toMatchInlineSnapshot(`
-"
-export const routes = [{
+"export const vueRoutes = [{
   "path": "/m1path",
   "name": "m1:index",
   "component": () => import('module'),
@@ -64,7 +63,7 @@ export const routes = [{
   ],
 },
 ]
-        "
+export default vueRoutes"
 `)
     })
 })

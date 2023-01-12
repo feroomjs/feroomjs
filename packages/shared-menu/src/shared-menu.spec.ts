@@ -74,7 +74,8 @@ describe('vue-routes', () => {
   "Module 2": {
     "route": "m2"
   }
-}"
+}
+export default sharedMenu"
 `)
     })
 })

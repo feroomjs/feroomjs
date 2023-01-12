@@ -71,8 +71,6 @@ export class VueRoutesController {
             content += this.renderRoute(route) + ',\n'
         }
 
-        return `
-export const vueRoutes = [${ content }]
-        `
+        return `export const vueRoutes = [${ content }]\nexport default vueRoutes`
     }
 }

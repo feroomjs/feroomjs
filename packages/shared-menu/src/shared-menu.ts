@@ -45,6 +45,6 @@ export class SharedMenuController {
             }
             return target
         }
-        return `export const sharedMenu = ${ JSON.stringify(mergedMenu, null, '  ') }`
+        return `export const sharedMenu = ${ JSON.stringify(mergedMenu, null, '  ') }\nexport default sharedMenu`
     }
 }
