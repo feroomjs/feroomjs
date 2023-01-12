@@ -1,8 +1,9 @@
 
-import { writeFileSync } from 'node:fs'
+import { writeFileSync, mkdirSync } from 'node:fs'
 import { TFeRoomConfig } from './types'
 import { buildPath, pkg } from './utils'
 import { getVueRenderedRoutes, getVueRoutes } from './vue-routes'
+import { dirname } from 'node:path'
 
 const { readFileSync, existsSync } = require('node:fs')
 
@@ -34,7 +35,9 @@ export function renderFeConf(target?: string): TFeRoomConfig {
         conf.vueRoutes = getVueRenderedRoutes(getVueRoutes(), id)
     }
     if (target) {
-        writeFileSync(buildPath(target), JSON.stringify(conf, null, '  '))
+        const path = buildPath(target)
+        mkdirSync(dirname(path), { recursive: true})
+        writeFileSync(path, JSON.stringify(conf, null, '  '))
     }
     return conf
 }
