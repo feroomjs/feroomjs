@@ -1,3 +1,12 @@
+## [0.0.1-alpha.6](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.5...v0.0.1-alpha.6) (2023-01-12)
+
+
+### Bug Fixes
+
+* import feroom ([8f4ce9b](https://github.com/feroomjs/feroomjs/commit/8f4ce9bb5e77cd75729cb6fbd6e91a5b3713c4eb))
+
+
+
 ## [0.0.1-alpha.5](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.4...v0.0.1-alpha.5) (2023-01-12)
 
 
