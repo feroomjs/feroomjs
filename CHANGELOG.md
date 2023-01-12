@@ -1,3 +1,12 @@
+## [0.0.1-alpha.13](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.12...v0.0.1-alpha.13) (2023-01-12)
+
+
+### Features
+
+* **tools:** add virtual index ([c0c90f7](https://github.com/feroomjs/feroomjs/commit/c0c90f7c54e00281896f9904dbd8e517e08971e1))
+
+
+
 ## [0.0.1-alpha.12](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.11...v0.0.1-alpha.12) (2023-01-12)
 
 
