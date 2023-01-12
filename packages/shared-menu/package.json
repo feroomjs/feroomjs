@@ -1,6 +1,6 @@
 {
   "name": "@feroomjs/shared-menu",
-  "version": "0.0.1-alpha.16",
+  "version": "0.0.1-alpha.17",
   "description": "@feroomjs/shared-menu",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/feroomjs/feroomjs/tree/main/packages/shared-menu#readme",
   "peerDependencies": {
-    "feroom": "0.0.1-alpha.16",
+    "feroom": "0.0.1-alpha.17",
     "@moostjs/event-http": "^0.2.4",
     "@wooksjs/event-http": "^0.2.5",
     "moost": "^0.2.4"

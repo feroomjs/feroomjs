@@ -1,6 +1,6 @@
 {
   "name": "@feroomjs/npm-fetcher",
-  "version": "0.0.1-alpha.16",
+  "version": "0.0.1-alpha.17",
   "description": "@feroomjs/npm-fetcher",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",

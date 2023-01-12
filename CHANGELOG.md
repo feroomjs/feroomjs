@@ -1,3 +1,12 @@
+## [0.0.1-alpha.17](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.16...v0.0.1-alpha.17) (2023-01-12)
+
+
+### Features
+
+* add rollup plugin ([7b94f4d](https://github.com/feroomjs/feroomjs/commit/7b94f4de61fec68d70f2089d48bfce8cfb1ddada))
+
+
+
 ## [0.0.1-alpha.16](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.15...v0.0.1-alpha.16) (2023-01-12)
 
 
