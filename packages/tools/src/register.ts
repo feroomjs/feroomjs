@@ -1,9 +1,8 @@
 import { log, logError, warn } from 'common/log'
-import { getFeConf, renderFeConf } from './fe-conf'
+import { renderFeConf } from './fe-conf'
 import { getFilesByPattern, pkg, unbuildPath } from './utils'
 import { readFileSync } from 'node:fs'
 import { panic } from 'common/panic'
-import { getVueRenderedRoutes, getVueRoutes } from './vue-routes'
 
 export class FeRoomRegister {
     constructor(private opts: {
