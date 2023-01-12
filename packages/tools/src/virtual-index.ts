@@ -6,6 +6,5 @@ export function getVirtualIndex(input: string, confPath?: string) {
         content += `export * from '${ input }';\n`
     }
     content += getVueRoutesExports(getVueRoutes(confPath))
-    console.log(content)
     return content
 }

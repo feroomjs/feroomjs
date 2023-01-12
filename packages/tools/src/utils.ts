@@ -17,12 +17,12 @@ export function unbuildPath(path: string) {
 
 export async function getFilesByPattern(include: string[] = [], exclude: string[] = []): Promise<string[]> {
     const files: Record<string, boolean> = {}
-    for (const path of include.map(p => buildPath(p))) {
+    for (const path of (include || []).map(p => buildPath(p))) {
         for (const file of (await globPromise(path))) {
             files[file] = true
         }
     }
-    for (const path of exclude.map(p => buildPath(p))) {
+    for (const path of (exclude || []).map(p => buildPath(p))) {
         for (const file of (await globPromise(path))) {
             files[file] = false
         }
