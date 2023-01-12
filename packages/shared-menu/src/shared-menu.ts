@@ -1,4 +1,4 @@
-import { FeRegistry, TModuleData } from '@feroomjs/feroom'
+import { FeRegistry, TModuleData } from 'feroom'
 import { Get } from '@moostjs/event-http'
 import { useSetHeader } from '@wooksjs/event-http'
 import { Controller } from 'moost'
@@ -17,7 +17,7 @@ export interface TSharedMenuCfg { sharedMenu?: TSharedMenu }
 
 @Controller()
 export class SharedMenuController {
-    constructor(protected _registry: FeRegistry<TSharedMenuCfg>) {}
+    constructor(protected _registry: FeRegistry) {}
 
     getModuleMenu(module: TModuleData<TSharedMenuCfg>): TSharedMenu {
         return module.config.sharedMenu || {}

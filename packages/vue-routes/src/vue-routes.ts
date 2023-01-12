@@ -1,4 +1,4 @@
-import { FeRegistry, TModuleData } from '@feroomjs/feroom'
+import { FeRegistry, TModuleData } from 'feroom'
 import { Get } from '@moostjs/event-http'
 import { useSetHeader } from '@wooksjs/event-http'
 import { Controller } from 'moost'
@@ -15,7 +15,7 @@ export interface TRoutesCfg { vueRoutes?: TVueRoute[] }
 
 @Controller()
 export class VueRoutesController {
-    constructor(protected _registry: FeRegistry<TRoutesCfg>) {}
+    constructor(protected _registry: FeRegistry) {}
 
     getModuleRoutes(module: TModuleData<TRoutesCfg>): TVueRoute[] {
         return module.config.vueRoutes || []
