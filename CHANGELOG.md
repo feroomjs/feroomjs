@@ -1,3 +1,12 @@
+## [0.0.1-alpha.14](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.13...v0.0.1-alpha.14) (2023-01-12)
+
+
+### Bug Fixes
+
+* **tool:** vue routes empty array ([7d1636f](https://github.com/feroomjs/feroomjs/commit/7d1636fc7b052e7fcabc20e169727c54389358c5))
+
+
+
 ## [0.0.1-alpha.13](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.12...v0.0.1-alpha.13) (2023-01-12)
 
 
