@@ -1,3 +1,12 @@
+## [0.0.1-alpha.12](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.11...v0.0.1-alpha.12) (2023-01-12)
+
+
+### Bug Fixes
+
+* **tools:** create dir in renderFeConf ([2336724](https://github.com/feroomjs/feroomjs/commit/233672430d0537fa29a9a294b340294fb9d8b82b))
+
+
+
 ## [0.0.1-alpha.11](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.10...v0.0.1-alpha.11) (2023-01-12)
 
 
