@@ -1,3 +1,17 @@
+## [0.0.1-alpha.8](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.7...v0.0.1-alpha.8) (2023-01-12)
+
+
+### Bug Fixes
+
+* proper registerHttpModulePath ([4ef70e7](https://github.com/feroomjs/feroomjs/commit/4ef70e797831e5b670ca74b5670ebcf1c0477c7a))
+
+
+### Features
+
+* add pkg tools ([0350c70](https://github.com/feroomjs/feroomjs/commit/0350c7007a27ecb22ec720e89873ef09dc4b312a))
+
+
+
 ## [0.0.1-alpha.7](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.6...v0.0.1-alpha.7) (2023-01-12)
 
 

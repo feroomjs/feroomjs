@@ -1,6 +1,6 @@
 {
   "name": "@feroomjs/tools",
-  "version": "0.0.1-alpha.7",
+  "version": "0.0.1-alpha.8",
   "description": "@feroomjs/tools",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
@@ -26,6 +26,6 @@
   },
   "homepage": "https://github.com/feroomjs/feroomjs/tree/main/packages/tools#readme",
   "dependencies": {
-    "glob": ""
+    "glob": "^8.0.3"
   }
 }
