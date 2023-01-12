@@ -40,15 +40,6 @@ export class FeRoomServe {
         const location = useSetHeader('location')
         const contentType = useSetHeader('content-type')
         const module = this._registry.readModule(id, version)
-        console.log('serveModule', {
-            id,
-            version,
-            path,
-            module: {
-                ...module,
-                files: Object.keys(module.files),
-            },
-        })
         if (!path) {
             status.value = 307
             location.value = join('/', this.config.modulesPrefixPath, module.id, module.config.entry)

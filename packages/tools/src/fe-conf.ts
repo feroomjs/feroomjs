@@ -1,6 +1,8 @@
 
-import { TFeRoomConfig } from "./types"
-import { buildPath } from "./utils"
+import { writeFileSync } from 'node:fs'
+import { TFeRoomConfig } from './types'
+import { buildPath, pkg } from './utils'
+import { getVueRenderedRoutes, getVueRoutes } from './vue-routes'
 
 const { readFileSync, existsSync } = require('node:fs')
 
@@ -20,4 +22,19 @@ export function getFeConf() {
         }
     }
     return cached
+}
+
+export function renderFeConf(target?: string): TFeRoomConfig {
+    const conf = JSON.parse(JSON.stringify(getFeConf()))
+    const id = conf.id || pkg.name
+    if (!conf.entry) {
+        conf.entry = pkg.module || pkg.main
+    }
+    if (conf.vueRoutes) {
+        conf.vueRoutes = getVueRenderedRoutes(getVueRoutes(), id)
+    }
+    if (target) {
+        writeFileSync(buildPath(target), JSON.stringify(conf, null, '  '))
+    }
+    return conf
 }

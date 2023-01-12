@@ -1,5 +1,5 @@
 import { log, logError, warn } from 'common/log'
-import { getFeConf } from './fe-conf'
+import { getFeConf, renderFeConf } from './fe-conf'
 import { getFilesByPattern, pkg, unbuildPath } from './utils'
 import { readFileSync } from 'node:fs'
 import { panic } from 'common/panic'
@@ -18,11 +18,8 @@ export class FeRoomRegister {
     }
 
     async register() {
-        const conf = JSON.parse(JSON.stringify(getFeConf()))
+        const conf = renderFeConf()
         const id = conf.id || pkg.name
-        if (conf.vueRoutes) {
-            conf.vueRoutes = getVueRenderedRoutes(getVueRoutes(), id)
-        }
         const files: Record<string, string | Buffer> = {}
         const paths = await getFilesByPattern(conf.include || pkg.files, conf.exclude)
         for (const path of paths) {
@@ -34,10 +31,7 @@ export class FeRoomRegister {
             }
             log(`${ __DYE_CYAN__ }+ ${ relPath }`)
         }
-        if (!conf.entry) {
-            conf.entry = pkg.module || pkg.main
-        }
-        if (!files[conf.entry]) {
+        if (!files[conf.entry as string]) {
             warn(`Entry "${ conf.entry }" file is not included in files list`)
         }
         if (!files['feroom.config.json']) {

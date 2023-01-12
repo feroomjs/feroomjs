@@ -38,7 +38,6 @@ export function globPromise(path: string): Promise<string[]> {
             if (err) {
                 reject(err)
             } else {
-                console.log(result)
                 resolve(result)
             }
         })
