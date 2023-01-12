@@ -27,6 +27,9 @@ export class VueRoutesController {
     }
 
     renderFunc(name: string, value: string, indent: string = '') {
+        if (typeof value === 'boolean') {
+            return this.renderProp(name, value, indent)
+        }
         if (typeof value !== 'string') {
             logError(`Prop "${ name }" has unsupported type "${ typeof value }"`)
             return `${ indent }  ${ JSON.stringify(name) }: null`
