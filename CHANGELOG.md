@@ -1,3 +1,12 @@
+## [0.0.1-alpha.9](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.8...v0.0.1-alpha.9) (2023-01-12)
+
+
+### Bug Fixes
+
+* exclude dirs from glob search ([af32a51](https://github.com/feroomjs/feroomjs/commit/af32a51b7b57891816099a5d718677b59e77c0d9))
+
+
+
 ## [0.0.1-alpha.8](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.7...v0.0.1-alpha.8) (2023-01-12)
 
 
