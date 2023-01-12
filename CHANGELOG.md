@@ -1,3 +1,12 @@
+## [0.0.1-alpha.7](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.6...v0.0.1-alpha.7) (2023-01-12)
+
+
+### Bug Fixes
+
+* vueRoutes and sharedMenu types ([dd6833e](https://github.com/feroomjs/feroomjs/commit/dd6833e0c14cbd41ad2dfd8f30501145cdf73cd1))
+
+
+
 ## [0.0.1-alpha.6](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.5...v0.0.1-alpha.6) (2023-01-12)
 
 
