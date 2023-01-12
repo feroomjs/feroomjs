@@ -17,20 +17,20 @@ export class FeRoomServe {
     protected registered: Record<string, boolean> = {}
 
     registerHttpModulePath(data: TModuleData) {
-        const fullId = data.id + '@' + data.version
-        if (!this.registered[fullId]) {
+        if (!this.registered[data.id]) {
             const serve = () => {
                 return this.serveModule(data.id, useRouteParams().get('version') as string)
             }
             const serveFile = () => {
                 return this.serveModule(data.id, useRouteParams().get('version') as string, useRouteParams().get('*') as string)
             }
+            this.registered[data.id] = true
             this.wHttp.get(this.config.modulesPrefixPath + data.id, serve)
-            this.wHttp.get(this.config.modulesPrefixPath + data.id + '@:version', serve)
             this.wHttp.get(this.config.modulesPrefixPath + data.id + '/*', serveFile)
+            log(this.config.modulesPrefixPath + data.id + '/*' + ' registered')
+            this.wHttp.get(this.config.modulesPrefixPath + data.id + '@:version', serve)
             this.wHttp.get(this.config.modulesPrefixPath + data.id + '@:version' + '/*', serveFile)
             log(this.config.modulesPrefixPath + data.id + '@:version' + '/*' + ' registered')
-            this.registered[fullId] = true
         }
         return data
     }
