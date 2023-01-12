@@ -40,9 +40,13 @@ export class FeRoomRegister {
         if (!files[conf.entry]) {
             warn(`Entry "${ conf.entry }" file is not included in files list`)
         }
+        if (!files['feroom.config.json']) {
+            log(`${ __DYE_CYAN__ }+ feroom.config.json`)
+        }
         files['feroom.config.json'] = JSON.stringify(conf)
         if (!files['package.json']) {
-            files['feroom.config.json'] = JSON.stringify(pkg)
+            files['package.json'] = JSON.stringify(pkg)
+            log(`${ __DYE_CYAN__ }+ package.json`)
         }
         const res = await fetch(this.getUrl('feroom-module/register'), {
             method: 'POST',
@@ -51,6 +55,7 @@ export class FeRoomRegister {
             },
             body: JSON.stringify({
                 id,
+                version: pkg.version,
                 files,
             })
         })
