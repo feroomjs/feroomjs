@@ -5,6 +5,7 @@ import { FeRoomServe } from './feroom-serve'
 import { TFeRoomOptions } from './types'
 import { FeRoomConfig } from './config'
 import { FeRoomIndex } from './index-html'
+import { FeRoomApi } from './feroom-api'
 
 export class FeRoom extends Moost {
 
@@ -19,6 +20,6 @@ export class FeRoom extends Moost {
             [FeRegistry, () => this._registry],
             [FeRoomConfig, () => this._config],
         ))
-        this.registerControllers(FeRoomServe, FeRoomIndex)
+        this.registerControllers(FeRoomServe, FeRoomIndex, FeRoomApi)
     }
 }
