@@ -1,3 +1,12 @@
+## [0.0.1-alpha.18](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.17...v0.0.1-alpha.18) (2023-01-12)
+
+
+### Bug Fixes
+
+* **tools:** safe call include array map ([532b516](https://github.com/feroomjs/feroomjs/commit/532b5165b552f7d495f1205c7b6e297510a24460))
+
+
+
 ## [0.0.1-alpha.17](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.16...v0.0.1-alpha.17) (2023-01-12)
 
 
