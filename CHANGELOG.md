@@ -1,3 +1,12 @@
+## [0.0.1-alpha.10](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.9...v0.0.1-alpha.10) (2023-01-12)
+
+
+### Bug Fixes
+
+* register package json ([0a87587](https://github.com/feroomjs/feroomjs/commit/0a87587e1c37aebce7456c58ffcdb02c9b61f3ce))
+
+
+
 ## [0.0.1-alpha.9](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.8...v0.0.1-alpha.9) (2023-01-12)
 
 
