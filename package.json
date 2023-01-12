@@ -79,6 +79,7 @@
     "node-fetch-native": "^1.0.1",
     "rollup": "^3.3.0",
     "rollup-plugin-typescript2": "^0.34.1",
+    "rollup-plugin-virtual": "^1.0.1",
     "semver": "^7.3.8",
     "tar-stream": "^3.0.0",
     "ts-jest": "^29.0.3",

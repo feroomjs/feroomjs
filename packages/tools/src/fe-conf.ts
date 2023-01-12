@@ -9,7 +9,15 @@ const { readFileSync, existsSync } = require('node:fs')
 
 let cached: TFeRoomConfig
 
-export function getFeConf() {
+export function getFeConf(path?: string) {
+    if (path) {
+        const isJs = path.endsWith('.js')
+        const bPath = buildPath(path)
+        if (existsSync(bPath)) {
+            return isJs ? require(bPath) : JSON.parse(readFileSync(bPath).toString())
+        }
+        return {}
+    }
     if (!cached) {
         const jsonPath = buildPath('feroom.config.json')
         const jsPath = buildPath('feroom.config.js')
@@ -25,8 +33,8 @@ export function getFeConf() {
     return cached
 }
 
-export function renderFeConf(target?: string): TFeRoomConfig {
-    const conf = JSON.parse(JSON.stringify(getFeConf()))
+export function renderFeConf(_conf?: TFeRoomConfig, target?: string): TFeRoomConfig {
+    const conf = JSON.parse(JSON.stringify(_conf || getFeConf()))
     const id = conf.id || pkg.name
     if (!conf.entry) {
         conf.entry = pkg.module || pkg.main

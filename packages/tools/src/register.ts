@@ -3,6 +3,7 @@ import { renderFeConf } from './fe-conf'
 import { getFilesByPattern, pkg, unbuildPath } from './utils'
 import { readFileSync } from 'node:fs'
 import { panic } from 'common/panic'
+import { TFeRoomConfig } from './types'
 
 export class FeRoomRegister {
     constructor(private opts: {
@@ -16,9 +17,25 @@ export class FeRoomRegister {
         return host + '/' + path
     }
 
-    async register() {
-        const conf = renderFeConf()
+    async register(_conf?: TFeRoomConfig) {
+        const conf = renderFeConf(_conf)
         const id = conf.id || pkg.name
+        const files = await this.gatherFiles(conf)
+
+        try {
+            await this.postModule({
+                id,
+                version: pkg.version,
+                files,
+            })
+            log(`✔ Module "${ id }" Registered`)
+        } catch (e) {
+            logError(`Failed to register module "${ id }"`)
+            logError((e as Error).message)
+        }
+    }
+
+    async gatherFiles(conf: TFeRoomConfig) {
         const files: Record<string, string | Buffer> = {}
         const paths = await getFilesByPattern(conf.include || pkg.files, conf.exclude)
         for (const path of paths) {
@@ -41,23 +58,20 @@ export class FeRoomRegister {
             files['package.json'] = JSON.stringify(pkg)
             log(`${ __DYE_CYAN__ }+ package.json`)
         }
+        return files
+    }
+
+    async postModule(module: { id: string, version: string, files: Record<string, string | Buffer> }) {
         const res = await fetch(this.getUrl('feroom-module/register'), {
             method: 'POST',
             headers: {
                 'content-type': 'application/json'
             },
-            body: JSON.stringify({
-                id,
-                version: pkg.version,
-                files,
-            })
+            body: JSON.stringify(module)
         })
         if (res.status > 299) {
             const text = await res.text()
-            logError(`Failed to register module "${ id }"`)
             throw panic(res.status + ' ' + text)
-        } else {
-            log(`✔ Module "${ id }" Registered`)
         }
     }
 }
