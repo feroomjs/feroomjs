@@ -1,3 +1,12 @@
+## [0.0.1-alpha.20](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.19...v0.0.1-alpha.20) (2023-01-12)
+
+
+### Features
+
+* **tools:** add ts option ([b0b119f](https://github.com/feroomjs/feroomjs/commit/b0b119f6e280fbde9fb32ef6e13bb460bbf0899d))
+
+
+
 ## [0.0.1-alpha.19](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.18...v0.0.1-alpha.19) (2023-01-12)
 
 
