@@ -29,11 +29,11 @@ export class FeModule<EXT extends object = object> {
     }
 
     entryPath(version?: string): string {
-        return this.buildPath(this.getRegisterOptions().entry || '', version)
+        return this.buildPath(this.data.entry || '', version)
     }
 
     hasEntry(): boolean {
-        return !!this.getRegisterOptions().entry
+        return !!this.data.entry
     }
 
     renderPreloadCss(): string {
@@ -52,6 +52,13 @@ export class FeModule<EXT extends object = object> {
 
     getImportMap(reg: FeRegistry): Record<string, string> {
         const map: Record<string, string> = {}
+        // if (this.id === 'vue') {
+            console.log({
+                'this.hasEntry()': this.hasEntry(),
+                'this.entryPath()': this.entryPath(),
+                'this.id': this.id,
+            })
+        // }
         if (this.hasEntry()) {
             map[this.data.id] = '/' + this.entryPath()
         }
