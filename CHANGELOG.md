@@ -1,3 +1,12 @@
+## [0.0.1-alpha.23](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.22...v0.0.1-alpha.23) (2023-01-13)
+
+
+### Features
+
+* active version ([d389660](https://github.com/feroomjs/feroomjs/commit/d3896605e922ac6303f44daba8c2474839deedeb))
+
+
+
 ## [0.0.1-alpha.22](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.21...v0.0.1-alpha.22) (2023-01-13)
 
 

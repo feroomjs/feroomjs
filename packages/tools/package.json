@@ -1,6 +1,6 @@
 {
   "name": "@feroomjs/tools",
-  "version": "0.0.1-alpha.22",
+  "version": "0.0.1-alpha.23",
   "description": "@feroomjs/tools",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
