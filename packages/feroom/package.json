@@ -1,6 +1,6 @@
 {
   "name": "feroom",
-  "version": "0.0.1-alpha.23",
+  "version": "0.0.1-alpha.24",
   "description": "feroom",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
@@ -31,7 +31,7 @@
     "@wooksjs/event-http": "^0.2.5",
     "moost": "^0.2.4",
     "@prostojs/infact": "^0.0.13",
-    "@feroomjs/npm-fetcher": "0.0.1-alpha.23",
+    "@feroomjs/npm-fetcher": "0.0.1-alpha.24",
     "events": "^3.3.0"
   }
 }
