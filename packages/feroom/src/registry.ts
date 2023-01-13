@@ -42,6 +42,7 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
     registerModule(data: Partial<TModuleData<CFG>>) {
         const normData = this.normalizeModuleData(data)
         const module = registry[normData.id] = registry[normData.id] || {}
+        console.log({ ...normData, files: Object.keys(normData.files).length })
         module[normData.version] = normData
         const latest = Object.keys(module).filter(a => a !== 'latest').sort((a, b) => a > b ? 1 : -1).pop() as string
         module.latest = module[latest]

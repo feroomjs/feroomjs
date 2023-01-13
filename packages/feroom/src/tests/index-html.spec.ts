@@ -64,15 +64,20 @@ reg.registerModule({
 const index = new FeRoomIndex(reg, config)
 
 describe('index-html', () => {
+    
     const modules = index.getModules()
     
-    it('must render import map', () => {
+    it('must render import map', async () => {
+        jest.setTimeout(20000);
+        await reg.registerFromNpm({ name: 'vue' })
+        const modules = index.getModules()
         expect(index.getImportmap(modules)).toMatchInlineSnapshot(`
 "{
   "module": "/feroom-module/module/index.js",
   "module2": "/feroom-module/module2/index2.js",
   "module-root": "/feroom-module/module-root/root-app.js",
   "module2@1": "/feroom-module/module2@1/index2.js",
+  "vue": "/feroom-module/vue/dist/vue.runtime.esm-bundler.js",
   "test": "test.js"
 }"
 `)
