@@ -6,7 +6,10 @@ import { TModuleData, TNpmModuleData } from './types'
 
 const registry: {
     [id: string]: {
-        [version: string]: TModuleData<object>
+        activeVersion: string
+        versions: {
+            [version: string]: TModuleData<object>
+        }
     }
 } = {}
 
@@ -41,12 +44,12 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
 
     registerModule(data: Partial<TModuleData<CFG>>) {
         const normData = this.normalizeModuleData(data)
-        const module = registry[normData.id] = registry[normData.id] || {}
-        console.log({ ...normData, files: Object.keys(normData.files).length })
-        module[normData.version] = normData
-        const latest = Object.keys(module).filter(a => a !== 'latest').sort((a, b) => a > b ? 1 : -1).pop() as string
-        module.latest = module[latest]
-        log(`Module has been registered ${__DYE_CYAN__}${ normData.id } v${ normData.version }`)
+        const module = registry[normData.id] = registry[normData.id] || { activeVersion: normData.version, versions: {}}
+        if (normData.activate) {
+            module.activeVersion = normData.version
+        }
+        module.versions[normData.version] = normData
+        log(`Module has been registered ${__DYE_CYAN__}${ normData.id } v${ normData.version }. Active version: ${ module.activeVersion }`)
         this.emit('register-module', normData)
         return {
             ...normData,
@@ -63,13 +66,14 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
             files,
         }
         return this.registerModule(module)
-    }    
+    }
 
     readModule(id: string, version?: string): TModuleData<CFG> {
-        if (!registry[id]) throw panic(`No module "${ id }" found`)
-        const ver = version || 'latest'
-        if (!registry[id][ver]) throw panic(`No module version "${ ver }" found for module "${ id }"`)
-        return registry[id][ver] as TModuleData<CFG>
+        const reg = registry[id]
+        if (!reg) throw panic(`No module "${ id }" found`)
+        const ver = version || reg.activeVersion
+        if (!reg.versions[ver]) throw panic(`No module version "${ ver }" found for module "${ id }"`)
+        return reg.versions[ver] as TModuleData<CFG>
     }
 
     getModulesList(): string[] {

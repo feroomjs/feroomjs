@@ -6,6 +6,7 @@ export interface TModuleData<EXT extends object = object> {
     files: Record<string, string | {type: 'Buffer', data: number[]}>
     entry: string
     config: TFeRoomConfig<EXT>
+    activate?: boolean
 }
 
 export type TNpmModuleData<EXT extends object = object> = {
