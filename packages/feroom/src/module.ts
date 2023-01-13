@@ -64,9 +64,10 @@ export class FeModule<EXT extends object = object> {
         }
         if (this.data.config.registerOptions?.lockDependency) {
             for (const [dep, ver] of Object.entries(this.data.config.registerOptions.lockDependency)) {
+                const active = reg.getActiveVersion(dep)
                 const m = reg.readModule(dep, ver)
                 if (m) {
-                    map[m.id + '@' + ver] = '/' + (new FeModule(m, this.config).entryPath(ver))
+                    map[m.id + '@' + ver] = '/' + (new FeModule(m, this.config).entryPath(active === ver ? '' : ver))
                 }
             }
         }

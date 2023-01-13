@@ -76,6 +76,12 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
         return reg.versions[ver] as TModuleData<CFG>
     }
 
+    getActiveVersion(id: string) {
+        const reg = registry[id]
+        if (!reg) throw panic(`No module "${ id }" found`)
+        return reg.activeVersion
+    }
+
     getModulesList(): string[] {
         return Object.keys(registry)
     }
