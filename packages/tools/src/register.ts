@@ -15,8 +15,8 @@ export class FeRoomRegister {
         return host + '/' + path
     }
 
-    async register(_conf?: TFeRoomConfig) {
-        const conf = renderFeConf(_conf)
+    async register(opts?: {conf?: TFeRoomConfig, activate?: boolean}) {
+        const conf = renderFeConf(opts?.conf)
         const id = conf.registerOptions?.id || pkg.name
         const files = await this.gatherFiles(conf)
 
@@ -25,6 +25,7 @@ export class FeRoomRegister {
                 id,
                 version: pkg.version,
                 files,
+                activate: opts?.activate,
             })
             log(`✔ Module "${ id }" Registered on ${ this.opts.host }`)
         } catch (e) {
@@ -59,7 +60,7 @@ export class FeRoomRegister {
         return files
     }
 
-    async postModule(module: { id: string, version: string, files: Record<string, string | Buffer> }) {
+    async postModule(module: { id: string, version: string, files: Record<string, string | Buffer>, activate?: boolean }) {
         const res = await fetch(this.getUrl('feroom-module/register'), {
             method: 'POST',
             headers: {
