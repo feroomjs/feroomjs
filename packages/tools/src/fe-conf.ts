@@ -36,13 +36,21 @@ export function getFeConf(path?: string | TFeRoomConfig): TFeRoomConfig {
 }
 
 export function renderFeConf(_conf?: TFeRoomConfig, target?: string): TFeRoomConfig {
-    const conf = JSON.parse(JSON.stringify(_conf || getFeConf()))
-    const id = conf.id || pkg.name
-    if (!conf.entry) {
-        conf.entry = pkg.module || pkg.main
+    const conf = JSON.parse(JSON.stringify(_conf || getFeConf())) as TFeRoomConfig
+    conf.registerOptions = conf.registerOptions || {}
+    const id = conf.registerOptions.id || pkg.name
+    if (!conf.registerOptions.entry) {
+        conf.registerOptions.entry = pkg.module || pkg.main
     }
-    if (conf.vueRoutes) {
-        conf.vueRoutes = getVueRenderedRoutes(getVueRoutes(), id)
+    if (conf.extensions?.vueRoutes) {
+        conf.extensions.vueRoutes = getVueRenderedRoutes(getVueRoutes(), id)
+    }
+    if (conf.buildOptions?.dependencies?.lockVersion) {
+        conf.registerOptions.lockDependency = {}
+        for (const dep of conf.buildOptions.dependencies.lockVersion) {
+            const version = getLockVersion(dep)
+            conf.registerOptions.lockDependency[dep] = version
+        }
     }
     if (target) {
         const path = buildPath(target)
@@ -50,4 +58,8 @@ export function renderFeConf(_conf?: TFeRoomConfig, target?: string): TFeRoomCon
         writeFileSync(path, JSON.stringify(conf, null, '  '))
     }
     return conf
+}
+
+export function getLockVersion(dep: string) {
+    return JSON.parse(readFileSync(buildPath('node_modules', dep, 'package.json')).toString()).version
 }

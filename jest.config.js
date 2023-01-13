@@ -25,7 +25,7 @@ export default {
     moduleNameMapper: {
       '^@feroomjs/(.*?)$': '<rootDir>/packages/$1/src',
       '^feroom$': '<rootDir>/packages/feroom/src',
-      '^common/(.*?)$': '<rootDir>/common/$1'
+      '^common$': '<rootDir>/common'
     },
     globals: {
       __DYE_RED_BRIGHT__: dye('red-bright').open,

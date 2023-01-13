@@ -3,6 +3,7 @@ import { FeRoomConfig } from './config'
 import { TModuleData } from './types'
 import { join } from 'path'
 import { renderCssTag, renderModuleScriptTag } from './utils'
+import { FeRegistry } from './registry'
 
 export class FeModule<EXT extends object = object> {
     constructor(protected data: TModuleData<EXT>, protected config: FeRoomConfig) {}
@@ -23,12 +24,12 @@ export class FeModule<EXT extends object = object> {
         return this.data.config.extensions
     }
 
-    buildPath(path: string): string {
-        return join(this.config.modulesPrefixPath, this.data.id, path)
+    buildPath(path: string, version?: string): string {
+        return join(this.config.modulesPrefixPath, this.data.id + (version ? `@${ version }` : ''), path)
     }
 
-    entryPath(): string {
-        return this.buildPath(this.getRegisterOptions().entry || '')
+    entryPath(version?: string): string {
+        return this.buildPath(this.getRegisterOptions().entry || '', version)
     }
 
     hasEntry(): boolean {
@@ -49,10 +50,18 @@ export class FeModule<EXT extends object = object> {
         return renderModuleScriptTag(this.entryPath())
     }
 
-    getImportMap(): Record<string, string> {
+    getImportMap(reg: FeRegistry): Record<string, string> {
         const map: Record<string, string> = {}
         if (this.hasEntry()) {
-            map[this.data.id] = './' + this.entryPath()
+            map[this.data.id] = '/' + this.entryPath()
+        }
+        if (this.data.config.registerOptions?.lockDependency) {
+            for (const [dep, ver] of Object.entries(this.data.config.registerOptions.lockDependency)) {
+                const m = reg.readModule(dep, ver)
+                if (m) {
+                    map[m.id + '@' + ver] = '/' + (new FeModule(m, this.config).entryPath(ver))
+                }
+            }
         }
         return map
     }

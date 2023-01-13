@@ -60,7 +60,9 @@ function createConfig(target, type, declaration = false) {
     },
     plugins: [
       commonJS({ sourceMap: false }),
-      nodeResolve(),
+      nodeResolve({
+        preferBuiltins: true,
+      }),
       typescript({
         check: true,
         tsconfig: './tsconfig.json',

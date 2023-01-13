@@ -42,7 +42,7 @@ export class FeRoomServe {
         const module = new FeModule(this._registry.readModule(id, version), this.config)
         if (!path) {
             status.value = 307
-            location.value = module.entryPath()
+            location.value = '/' + module.entryPath(version)
             return ''
         }
         const ext = (path.split('.').pop() || '') as keyof typeof extensions

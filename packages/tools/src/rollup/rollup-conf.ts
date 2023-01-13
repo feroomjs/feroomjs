@@ -1,11 +1,11 @@
 import { Plugin } from 'rollup'
-import { buildPath, pkg } from '../utils'
+import { pkg } from '../utils'
 import { getVirtualIndex } from '../virtual-index'
 import { feroomConfPlugin } from './feroom-plugin'
 import virtual from 'rollup-plugin-virtual'
 import nodeResolve from '@rollup/plugin-node-resolve'
 import { log, panic, TFeRoomRollupOptions } from 'common'
-import { readFileSync } from 'fs'
+import { getLockVersion } from '../fe-conf'
 
 const defaultTs = {
     tsconfigOverride: {
@@ -39,7 +39,7 @@ export async function createFeroomRollupConfig(buildOptions: TFeRoomRollupOption
     const paths: Record<string, string> = {}
     if (buildOptions.dependencies?.lockVersion) {
         for (const dep of buildOptions.dependencies.lockVersion) {
-            const version = JSON.parse(readFileSync(buildPath('node_modules', dep, 'package.json')).toString()).version
+            const version = getLockVersion(dep)
             paths[dep] = `${ dep }@${ version }`
             log(`Locking version of "${ dep }" to v${ version }`)
         }

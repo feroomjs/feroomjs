@@ -1,6 +1,6 @@
-import { FeRoomConfig } from './config'
-import { FeRoomIndex } from './index-html'
-import { FeRegistry } from './registry'
+import { FeRoomConfig } from '../config'
+import { FeRoomIndex } from '../index-html'
+import { FeRegistry } from '../registry'
 
 const config = new FeRoomConfig({
     importMap: {
@@ -52,6 +52,9 @@ reg.registerModule({
     files: {},
     config: {
         registerOptions: {
+            lockDependency: {
+                'module2': '1',
+            },
             entry: 'root-app.js',
             preloadRoot: true,
         }
@@ -66,9 +69,10 @@ describe('index-html', () => {
     it('must render import map', () => {
         expect(index.getImportmap(modules)).toMatchInlineSnapshot(`
 "{
-  "module": "./feroom-module/module/index.js",
-  "module2": "./feroom-module/module2/index2.js",
-  "module-root": "./feroom-module/module-root/root-app.js",
+  "module": "/feroom-module/module/index.js",
+  "module2": "/feroom-module/module2/index2.js",
+  "module-root": "/feroom-module/module-root/root-app.js",
+  "module2@1": "/feroom-module/module2@1/index2.js",
   "test": "test.js"
 }"
 `)

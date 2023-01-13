@@ -20,7 +20,7 @@ export class FeRoomIndex {
 
     getImportmap(modules: FeModule[]) {
         const map: Record<string, string> = {}
-        modules.forEach(module => Object.assign(map, module.getImportMap()))
+        modules.forEach(module => Object.assign(map, module.getImportMap(this._registry)))
 
         return JSON.stringify({
             ...map,

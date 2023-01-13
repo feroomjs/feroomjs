@@ -23,6 +23,9 @@ export interface TFeRoomRegisterOptions {
     preloadCss?: string | string[]
     appendHead?: string
     appendBody?: string
+    lockDependency?: {
+        [name: string]: string
+    }
 }
 
 export interface TFeRoomRollupOptions {
