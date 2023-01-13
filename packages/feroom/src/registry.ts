@@ -1,8 +1,7 @@
-import { getNpmPackageFiles } from "@feroomjs/npm-fetcher";
-import { log } from "common/log";
-import { panic } from "common/panic";
-import EventEmitter from "events";
-import { TModuleData, TNpmModuleData } from "./types";
+import { getNpmPackageFiles } from '@feroomjs/npm-fetcher'
+import { log, panic, TFeRoomConfig } from 'common'
+import EventEmitter from 'events'
+import { TModuleData, TNpmModuleData } from './types'
 
 
 const registry: {
@@ -19,23 +18,23 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
             throw panic(`Failed to normallize module "${ data.id }": no files in module`)
         }
         const pkg = JSON.parse(files['package.json'] || '{}') as Record<string, string>
-        const feConf = JSON.parse(files['dist/feroom.config.json'] as string || files['feroom.config.json'] as string || '{}')
+        const feConf = JSON.parse(files['dist/feroom.config.json'] as string || files['feroom.config.json'] as string || '{}') as TFeRoomConfig<CFG>
+        feConf.registerOptions = feConf.registerOptions || {}
+        feConf.extensions = feConf.extensions || {} as CFG
+        Object.assign(feConf.registerOptions, data.config?.registerOptions || {})
+        Object.assign(feConf.extensions, data.config?.extensions || {})
         const module: TModuleData<CFG> = {
-            id: data.id || feConf.id || pkg.name,
-            version: data.version || feConf.version || pkg.version,
-            config: {
-                ...(data.config || {}),
-                ...feConf,
-                description: feConf.description || pkg.description,
-                entry: data.config?.entry || feConf.entry || pkg.module || pkg.main,
-            },
+            id: data.id || feConf.registerOptions?.id || pkg.name,
+            version: data.version || pkg.version,
+            entry: data.entry || feConf.registerOptions?.entry || pkg.module,
             files,
+            config: feConf,
         }
         if (!module.id) {
-            throw panic(`Failed to normallize module "${ module.id }": missing "id"`)
+            throw panic(`Failed to normallize module "${ module.id }": missing "id".`)
         }
-        if (!module.config.entry) {
-            throw panic(`Failed to normallize module "${ module.id }": missing "entry"`)
+        if (!module.entry) {
+            throw panic(`Failed to normallize module "${ module.id }": missing "entry". Please make sure package.json has "module" value.`)
         }
         return module
     }

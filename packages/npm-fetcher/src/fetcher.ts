@@ -1,4 +1,4 @@
-import { panic } from 'common/panic'
+import { panic } from 'common'
 import { join } from 'path'
 import { TDistTags, TPackageInfo } from './types'
 

@@ -27,7 +27,7 @@
         "paths": {
           "@feroomjs/*": ["packages/*/src"],
           "feroom": ["packages/feroom/src"],
-          "common/*": ["common/*"]
+          "common": ["common/index"]
         }
     },
     "include": [

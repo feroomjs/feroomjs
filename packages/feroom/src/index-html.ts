@@ -1,99 +1,95 @@
-import { Get } from '@moostjs/event-http'
-import { join } from 'path'
 import { Controller } from 'moost'
 import { FeRoomConfig } from './config'
 import { FeRegistry } from './registry'
-import { TModuleData } from './types'
 import { useSetHeader } from '@wooksjs/event-http'
+import { FeModule } from './module'
+import { Get } from '@moostjs/event-http'
+import { renderCssTag, renderModuleScriptTag } from './utils'
 
 @Controller()
 export class FeRoomIndex {
     constructor(protected _registry: FeRegistry, protected config: FeRoomConfig) {}
 
-    getGlobals() {
+    getModules(): FeModule[] {
+        return this._registry.getAllModules().map(data => new FeModule(data, this.config))
+    }
+
+    getGlobals(modules: FeModule[]) {
         return Object.keys(this.config.globals).map(key => `window[${ JSON.stringify(key) }] = ${JSON.stringify(this.config.globals[key as keyof typeof this.config.globals])};\n`).join('')
     }
 
-    getImportmap() {
-        const list = this._registry.getModulesList()
-
+    getImportmap(modules: FeModule[]) {
         const map: Record<string, string> = {}
-        list
-            .map(id => this._registry.readModule(id))
-            .forEach((m: TModuleData) => map[m.id] = `./${ join(this.config.modulesPrefixPath, m.id, m.config.entry) }`)
+        modules.forEach(module => Object.assign(map, module.getImportMap()))
 
         return JSON.stringify({
             ...map,
             ...this.config.importMap,
+        }, null, '  ')
+    }
+
+    getCss(modules: FeModule[]) {
+        const preloadCss = this.config.preloadCss || []
+        let content = ''
+        preloadCss.forEach(item => {
+            if (typeof item === 'string') {
+                content += renderCssTag(item) + '\n'
+            } else {
+                const module = new FeModule(this._registry.readModule(item[0]), this.config)
+                content += renderCssTag(module.buildPath(item[1])) + '\n'
+            }
         })
+        modules.forEach(m => content += m.renderPreloadCss())
+        return content
     }
 
-    getModulePath(id: string, path?: string) {
-        const m = this._registry.readModule(id)
-        return join(this.config.modulesPrefixPath, m.id, path || m.config.entry)
+    getScripts(modules: FeModule[]) {
+        const preloadScript = this.config.preloadScript || []
+        let content = ''
+        preloadScript.forEach(item => {
+            if (typeof item === 'string') {
+                content += renderModuleScriptTag(item) + '\n'
+            } else {
+                const module = new FeModule(this._registry.readModule(item[0]), this.config)
+                content += renderModuleScriptTag(module.buildPath(item[1])) + '\n'
+            }
+        })
+        modules.forEach(m => content += m.renderPreloadScript())
+        return content
     }
 
-    getCss() {
-        const items = [ ...this.config.preloadCss ]
-        const modules = this._registry.getAllModules()
-        for (const { id, config: { preloadCss } } of modules) {
-            if (preloadCss) {
-                const mItems = Array.isArray(preloadCss) ? preloadCss : [ preloadCss ]
-                mItems.forEach(path => items.push([id, path]))
-            }
-        }
-        return items.map(path => {
-            let target = path
-            if (Array.isArray(path)) {
-                target = this.getModulePath(path[0], path[1])
-            }
-            return `<link type="text/css" rel="stylesheet" href="${ target }">`
-        }).join('\n')
-    }
-
-    getScripts() {
-        const items = [ ...this.config.preloadScript ]
-        const modules = this._registry.getAllModules()
-        for (const { id, config: { preloadScripts } } of modules) {
-            if (preloadScripts) {
-                const mItems = Array.isArray(preloadScripts) ? preloadScripts : [ preloadScripts ]
-                mItems.forEach(path => items.push([id, path]))
-            }
-        }
-        return items.map(path => {
-            let target = path
-            if (Array.isArray(path)) {
-                target = this.getModulePath(path[0], path[1])
-            }            
-            return `<script type="module" src="${ target }"></script>`
-        }).join('\n')
-    }
-
-    getPreloadModule() {
-        const items = [ ...this.config.preloadModule ]
-        const modules = this._registry.getAllModules()
-        for (const { id, config: { preloadRoot } } of modules) {
-            if (preloadRoot) {
-                items.push(id)
-            }
-        }
+    getPreloadModule(modules: FeModule[]) {
+        const items: FeModule[] = []
+        modules.forEach(m => (this.config.preloadModule.includes(m.id) || m.getRegisterOptions().preloadRoot) && items.push(m))
         return items
-            .map(id => this.getModulePath(id))
-            .map(path => `<script type="module" src="${ path }"></script>`)
+            .map(m => m.renderPreloadModule())
             .join('\n')
+    }
+
+    getHead(modules: FeModule[]) {
+        let content = (this.config.head || '') + '\n'
+        modules.forEach(m => m.getRegisterOptions().appendHead ? content += m.getRegisterOptions().appendHead + '\n' : null)
+        return content
+    }
+
+    getBody(modules: FeModule[]) {
+        let content = (this.config.body || '') + '\n'
+        modules.forEach(m => m.getRegisterOptions().appendBody ? content += m.getRegisterOptions().appendBody + '\n' : null)
+        return content
     }
 
     @Get('')
     @Get('index.html')
     index() {
         useSetHeader('content-type').value = 'text/html'
+        const modules = this.getModules()
         return `<html>
 <head>
 <title>${ this.config.title }</title>
-${ this.config.head }
+${ this.getHead(modules) }
 <script>
 // globals
-${ this.getGlobals() }
+${ this.getGlobals(modules) }
 </script>
 
 <script>
@@ -110,17 +106,17 @@ window.__loadCss = function (path) {
 
 <script type="importmap">
 {
-    "imports": ${ this.getImportmap() }
+    "imports": ${ this.getImportmap(modules) }
 }
 </script>
 
-${ this.getScripts() }
-${ this.getPreloadModule() }
-${ this.getCss() }
+${ this.getScripts(modules) }
+${ this.getPreloadModule(modules) }
+${ this.getCss(modules) }
 
 </head>
 <body>
-${ this.config.body }
+${ this.getBody(modules) }
 </body>
 </html>`
     }

@@ -20,7 +20,7 @@ export class SharedMenuController {
     constructor(protected _registry: FeRegistry) {}
 
     getModuleMenu(module: TModuleData<TSharedMenuCfg>): TSharedMenu {
-        return module.config.sharedMenu || {}
+        return module.config.extensions?.sharedMenu || {}
     }
 
     @Get('/feroom-dynamic/shared-menu.js')

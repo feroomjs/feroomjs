@@ -6,6 +6,13 @@
   },
   "compiler": {
     "overrideTsconfig": {
+      "compilerOptions": {
+        "paths": {
+          "@feroomjs/*": ["packages/vue-routes/dist/packages/*/src"],
+          "feroom": ["packages/vue-routes/dist/packages/feroom/src"],
+          "common": ["packages/vue-routes/dist/common"]
+        }
+      },         
       "include": [
         "packages/vue-routes/dist/packages",
         "packages/vue-routes/dist/common"

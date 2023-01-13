@@ -1,9 +1,7 @@
-import { log, logError, warn } from 'common/log'
+import { log, logError, warn, panic, TFeRoomConfig } from 'common'
 import { renderFeConf } from './fe-conf'
 import { getFilesByPattern, pkg, unbuildPath } from './utils'
 import { readFileSync } from 'node:fs'
-import { panic } from 'common/panic'
-import { TFeRoomConfig } from './types'
 
 export class FeRoomRegister {
     constructor(private opts: {
@@ -19,7 +17,7 @@ export class FeRoomRegister {
 
     async register(_conf?: TFeRoomConfig) {
         const conf = renderFeConf(_conf)
-        const id = conf.id || pkg.name
+        const id = conf.registerOptions?.id || pkg.name
         const files = await this.gatherFiles(conf)
 
         try {
@@ -28,7 +26,7 @@ export class FeRoomRegister {
                 version: pkg.version,
                 files,
             })
-            log(`✔ Module "${ id }" Registered`)
+            log(`✔ Module "${ id }" Registered on ${ this.opts.host }`)
         } catch (e) {
             logError(`Failed to register module "${ id }"`)
             logError((e as Error).message)
@@ -37,7 +35,7 @@ export class FeRoomRegister {
 
     async gatherFiles(conf: TFeRoomConfig) {
         const files: Record<string, string | Buffer> = {}
-        const paths = await getFilesByPattern(conf.include || pkg.files, conf.exclude)
+        const paths = await getFilesByPattern(conf.registerOptions?.include || pkg.files, conf.registerOptions?.exclude)
         for (const path of paths) {
             const relPath = unbuildPath(path)
             if (path.endsWith('.js') || path.endsWith('.map') || path.endsWith('.css') || path.endsWith('.json') || path.endsWith('.txt') || path.endsWith('.mjs') || path.endsWith('.cjs')) {
@@ -47,8 +45,8 @@ export class FeRoomRegister {
             }
             log(`${ __DYE_CYAN__ }+ ${ relPath }`)
         }
-        if (!files[conf.entry as string]) {
-            warn(`Entry "${ conf.entry }" file is not included in files list`)
+        if (!files[conf.registerOptions?.entry as string]) {
+            warn(`Entry "${ conf.registerOptions?.entry }" file is not included in files list`)
         }
         if (!files['feroom.config.json']) {
             log(`${ __DYE_CYAN__ }+ feroom.config.json`)

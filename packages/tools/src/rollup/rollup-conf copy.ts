@@ -1,40 +1,40 @@
-import { Plugin } from 'rollup'
 import { buildPath, pkg } from '../utils'
 import { getVirtualIndex } from '../virtual-index'
 import { feroomConfPlugin } from './feroom-plugin'
 import virtual from 'rollup-plugin-virtual'
-import nodeResolve from '@rollup/plugin-node-resolve'
+import { readFileSync } from 'node:fs'
 import { log, panic, TFeRoomRollupOptions } from 'common'
-import { readFileSync } from 'fs'
-
-const defaultTs = {
-    tsconfigOverride: {
-        compilerOptions: { noImplicitAny: false },
-    }
-}
+import { Plugin } from 'rollup'
 
 export async function createFeroomRollupConfig(buildOptions: TFeRoomRollupOptions) {
     const plugins: Plugin[] = []
     if (buildOptions.input?.endsWith('.ts') || buildOptions.ts) {
         await appendIfNotExists(
             ['rpt2', 'rpt', 'typescritpt', 'rollup-plugin-typescript', 'rollup-plugin-typescript2'], 
-            async () => (await import('rollup-plugin-typescript2')).default(typeof buildOptions.ts === 'boolean' ? defaultTs : buildOptions.ts),
+            async () => (await import('@rollup/plugin-typescript')).default(typeof buildOptions.ts === 'boolean' ? undefined : buildOptions.ts),
             'Could not append rollup plugin rollup-plugin-typescript2. Please check if it\'s installed "npm i -sD rollup-plugin-typescript2"'
-        )        
+        )
     }
     if (buildOptions.vue) {
         await appendIfNotExists(
             ['vue'], 
-            async () => (await import('rollup-plugin-vue')).default(typeof buildOptions.vue === 'boolean' ? undefined : buildOptions.vue), // 
+            async () => (await import('rollup-plugin-vue')).default(), // typeof buildOptions.vue === 'boolean' ? undefined : buildOptions.vue
             'Could not append rollup plugin rollup-plugin-vue. Please check if it\'s installed "npm i -sD rollup-plugin-vue"'
-        )        
+        )
     }
     if (buildOptions.css) {
         await appendIfNotExists(
             ['scss'],
             async () => (await import('rollup-plugin-scss')).default(typeof buildOptions.css === 'string' ? { fileName: buildOptions.css } : buildOptions.css),
             'Could not append rollup plugin rollup-plugin-scss. Please check if it\'s installed "npm i -sD rollup-plugin-scss"'
-        )        
+        )
+    }
+    if (buildOptions.nodeResolve) {
+        await appendIfNotExists(
+            ['node-resolve'], 
+            async () => (await import('@rollup/plugin-node-resolve')).default(typeof buildOptions.nodeResolve === 'boolean' ? { browser: true } : buildOptions.nodeResolve),
+            'Could not append rollup plugin @rollup/plugin-node-resolve. Please check if it\'s installed "npm i -sD @rollup/plugin-node-resolve"'
+        )
     }
     const paths: Record<string, string> = {}
     if (buildOptions.dependencies?.lockVersion) {
@@ -49,7 +49,6 @@ export async function createFeroomRollupConfig(buildOptions: TFeRoomRollupOption
             log(`Bundling in "${ dep }"`)
         }
     }
-    const bundle = buildOptions.dependencies?.bundle ? [buildOptions.dependencies?.bundle].flat(1) : []
     return {
         input: './virtual-index.js',
         output: {
@@ -59,14 +58,13 @@ export async function createFeroomRollupConfig(buildOptions: TFeRoomRollupOption
             sourcemap: true,
             paths,
         },
-        external: Object.keys(pkg.dependencies).filter(dep => !bundle.includes(dep)),
+        external: Object.keys(pkg.dependencies).filter(dep => !(buildOptions.dependencies?.bundle || []).includes(dep)),
         plugins: [
             virtual({
                 './virtual-index.js': getVirtualIndex(buildOptions.input, buildOptions.feroomConfPath),
             }),
             ...plugins,
             ...(buildOptions.plugins || []),
-            nodeResolve(buildOptions.nodeResolve || { browser: true }),
             feroomConfPlugin(buildOptions.feroomConfPath),
         ]
     }

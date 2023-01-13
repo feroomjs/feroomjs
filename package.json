@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "bootstrap": "node ./scripts/bootstrap",
+    "local": "node ./scripts/local",
     "build": "node ./scripts/build",
     "release": "node ./scripts/release",
     "test": "jest --runInBand",
@@ -82,6 +83,7 @@
     "rollup-plugin-typescript2": "^0.34.1",
     "rollup-plugin-virtual": "^1.0.1",
     "rollup-plugin-vue": "^6.0.0",
+    "sass": "^1.57.1",
     "semver": "^7.3.8",
     "tar-stream": "^3.0.0",
     "ts-jest": "^29.0.3",

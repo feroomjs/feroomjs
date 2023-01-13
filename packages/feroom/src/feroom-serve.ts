@@ -3,9 +3,9 @@ import { Controller } from 'moost'
 import { useRouteParams } from 'wooks'
 import { FeRegistry } from './registry'
 import { TModuleData } from './types'
-import { join } from 'path'
-import { log } from 'common/log'
+import { log } from 'common'
 import { FeRoomConfig } from './config'
+import { FeModule } from './module'
 
 @Controller()
 export class FeRoomServe {
@@ -39,10 +39,10 @@ export class FeRoomServe {
         const status = useStatus()
         const location = useSetHeader('location')
         const contentType = useSetHeader('content-type')
-        const module = this._registry.readModule(id, version)
+        const module = new FeModule(this._registry.readModule(id, version), this.config)
         if (!path) {
             status.value = 307
-            location.value = join('/', this.config.modulesPrefixPath, module.id, module.config.entry)
+            location.value = module.entryPath()
             return ''
         }
         const ext = (path.split('.').pop() || '') as keyof typeof extensions

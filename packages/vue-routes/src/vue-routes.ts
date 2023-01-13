@@ -2,7 +2,7 @@ import { FeRegistry, TModuleData } from 'feroom'
 import { Get } from '@moostjs/event-http'
 import { useSetHeader } from '@wooksjs/event-http'
 import { Controller } from 'moost'
-import { logError } from 'common/log'
+import { logError } from 'common'
 
 export interface TVueRoute {
     path: string
@@ -19,7 +19,7 @@ export class VueRoutesController {
     constructor(protected _registry: FeRegistry) {}
 
     getModuleRoutes(module: TModuleData<TRoutesCfg>): TVueRoute[] {
-        return module.config.vueRoutes || []
+        return module.config.extensions?.vueRoutes || []
     }
 
     renderProp(name: string, value: string, indent: string = '') {

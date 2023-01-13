@@ -1,4 +1,5 @@
 import { getFeConf } from './fe-conf'
+import { TFeRoomConfig } from 'common'
 
 interface TVueRoute {
     path: string
@@ -34,8 +35,8 @@ export function getVueRoutesMap(vueRoutes: TVueRoute[]) {
     return components
 }
 
-export function getVueRoutes(confPath?: string) {
-    return (getFeConf(confPath).vueRoutes || []) as TVueRoute[]
+export function getVueRoutes(confPath?: string | TFeRoomConfig) {
+    return (getFeConf(confPath).extensions?.vueRoutes || []) as TVueRoute[]
 }
 
 export function getVueRenderedRoutes(vueRoutes: TVueRoute[], moduleId: string) {

@@ -6,6 +6,13 @@
   },
   "compiler": {
     "overrideTsconfig": {
+      "compilerOptions": {
+        "paths": {
+          "@feroomjs/*": ["packages/feroom/dist/packages/*/src"],
+          "feroom": ["packages/feroom/dist/packages/feroom/src"],
+          "common": ["packages/feroom/dist/common"]
+        }
+      },         
       "include": [
         "packages/feroom/dist/packages",
         "packages/feroom/dist/common"

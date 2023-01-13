@@ -7,8 +7,9 @@ reg.registerModule({
     id: 'module',
     version: '1',
     files: {},
+    entry: 'dummy',
     config: {
-        entry: 'dummy',
+      extensions: {
         sharedMenu: {
             'Module 1': { route: 'm1' },
             'Main Menu': {
@@ -18,14 +19,16 @@ reg.registerModule({
                 },
             },
         },
+      },
     }
 })
 reg.registerModule({
     id: 'module2',
     version: '1',
     files: {},
+    entry: 'dummy',
     config: {
-        entry: 'dummy',
+      extensions: {
         sharedMenu: {
             'Module 2': { route: 'm2' },
             'Main Menu': {
@@ -35,14 +38,15 @@ reg.registerModule({
                 },
             },
         },
+      },
     }
 })
 reg.registerModule({
     id: 'module-root',
     version: '1',
     files: {},
+    entry: 'dummy',
     config: {
-        entry: 'dummy',
     }
 })
 

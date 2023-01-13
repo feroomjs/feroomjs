@@ -6,6 +6,13 @@
   },
   "compiler": {
     "overrideTsconfig": {
+      "compilerOptions": {
+        "paths": {
+          "@feroomjs/*": ["packages/npm-fetcher/dist/packages/*/src"],
+          "feroom": ["packages/npm-fetcher/dist/packages/feroom/src"],
+          "common": ["packages/npm-fetcher/dist/common"]
+        }
+      },         
       "include": [
         "packages/npm-fetcher/dist/packages",
         "packages/npm-fetcher/dist/common"

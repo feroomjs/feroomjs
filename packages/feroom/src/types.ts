@@ -1,24 +1,18 @@
-export interface TModuleData<CFG extends object = object> {
+import { TFeRoomConfig } from 'common'
+
+export interface TModuleData<EXT extends object = object> {
     id: string
     version: string
     files: Record<string, string | {type: 'Buffer', data: number[]}>
-    config: {
-        entry: string
-        label?: string
-        description?: string
-        preloadRoot?: boolean
-        preloadScripts?: string | string[]
-        preloadCss?: string | string[]
-        appendHead?: string
-        appendBody?: string
-    } & CFG
+    entry: string
+    config: TFeRoomConfig<EXT>
 }
 
-export type TNpmModuleData<CFG extends object = object> = {
+export type TNpmModuleData<EXT extends object = object> = {
     registry?: string,
     name: string,
     version?: string,
-} & Partial<TModuleData<CFG>>
+} & Partial<TModuleData<EXT>>
 
 
 export interface TModuleRoutes {

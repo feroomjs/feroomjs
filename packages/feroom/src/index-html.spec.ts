@@ -27,9 +27,11 @@ reg.registerModule({
     version: '1',
     files: {},
     config: {
+        registerOptions: {
         entry: 'index.js',
-        preloadScripts: 'm1.js',
-        preloadCss: ['m1-1.css', 'm1-2.css'],
+            preloadScripts: 'm1.js',
+            preloadCss: ['m1-1.css', 'm1-2.css'],
+        }
     }
 })
 reg.registerModule({
@@ -37,9 +39,11 @@ reg.registerModule({
     version: '1',
     files: {},
     config: {
+        registerOptions: {
         entry: 'index2.js',
-        preloadScripts: ['m2-1.js', 'm2-2.js'],
-        preloadCss: 'm2.css',
+            preloadScripts: ['m2-1.js', 'm2-2.js'],
+            preloadCss: 'm2.css',
+        }
     }
 })
 reg.registerModule({
@@ -47,52 +51,63 @@ reg.registerModule({
     version: '1',
     files: {},
     config: {
-        entry: 'root-app.js',
-        preloadRoot: true,
+        registerOptions: {
+            entry: 'root-app.js',
+            preloadRoot: true,
+        }
     }
 })
 
 const index = new FeRoomIndex(reg, config)
 
 describe('index-html', () => {
+    const modules = index.getModules()
+    
     it('must render import map', () => {
-        expect(index.getImportmap()).toBe('{"module":"./feroom-module/module/index.js","module2":"./feroom-module/module2/index2.js","test":"test.js"}')
+        expect(index.getImportmap(modules)).toMatchInlineSnapshot(`
+"{
+  "module": "./feroom-module/module/index.js",
+  "module2": "./feroom-module/module2/index2.js",
+  "module-root": "./feroom-module/module-root/root-app.js",
+  "test": "test.js"
+}"
+`)
     })
 
     it('must render globals', () => {
-        expect(index.getGlobals()).toMatchInlineSnapshot(`
+        expect(index.getGlobals(modules)).toMatchInlineSnapshot(`
             "window["_VAR_"] = "var-value";
             window["process"] = {"env":{"NODE_ENV":"dev"}};
             "
         `)
     })
 
-    it('must render module path', () => {
-        expect(index.getModulePath('module')).toBe('feroom-module/module/index.js')
-    })
-
     it('must render css links', () => {
-        expect(index.getCss()).toMatchInlineSnapshot(`
-            "<link type="text/css" rel="stylesheet" href="stand-alone.css">
-            <link type="text/css" rel="stylesheet" href="feroom-module/module2/style.css">
-            <link type="text/css" rel="stylesheet" href="feroom-module/module/m1-1.css">
-            <link type="text/css" rel="stylesheet" href="feroom-module/module/m1-2.css">
-            <link type="text/css" rel="stylesheet" href="feroom-module/module2/m2.css">"
-        `)
+        expect(index.getCss(modules)).toMatchInlineSnapshot(`
+"<link type="text/css" rel="stylesheet" href="stand-alone.css">
+<link type="text/css" rel="stylesheet" href="feroom-module/module2/style.css">
+<link type="text/css" rel="stylesheet" href="feroom-module/module/m1-1.css">
+<link type="text/css" rel="stylesheet" href="feroom-module/module/m1-2.css">
+<link type="text/css" rel="stylesheet" href="feroom-module/module2/m2.css">
+
+"
+`)
     })
 
-    it('must render script links', () => {
-        expect(index.getScripts()).toMatchInlineSnapshot(`
-            "<script type="module" src="stand-alone.js"></script>
-            <script type="module" src="feroom-module/module2/bundle.js"></script>
-            <script type="module" src="feroom-module/module/m1.js"></script>
-            <script type="module" src="feroom-module/module2/m2-1.js"></script>
-            <script type="module" src="feroom-module/module2/m2-2.js"></script>"
-        `)
+    it('must render preload script links', () => {
+        expect(index.getScripts(modules)).toMatchInlineSnapshot(`
+"<script type="module" src="stand-alone.js"></script>
+<script type="module" src="feroom-module/module2/bundle.js"></script>
+<script type="module" src="feroom-module/module/m1.js"></script>
+<script type="module" src="feroom-module/module2/m2-1.js"></script>
+<script type="module" src="feroom-module/module2/m2-2.js"></script>
+
+"
+`)
     })
 
     it('must render script links for module preload', () => {
-        expect(index.getPreloadModule()).toMatchInlineSnapshot(`
+        expect(index.getPreloadModule(modules)).toMatchInlineSnapshot(`
             "<script type="module" src="feroom-module/module/index.js"></script>
             <script type="module" src="feroom-module/module-root/root-app.js"></script>"
         `)
