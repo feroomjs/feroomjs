@@ -1,3 +1,13 @@
+## [0.0.1-alpha.22](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.21...v0.0.1-alpha.22) (2023-01-13)
+
+
+### Bug Fixes
+
+* entry logic ([f6878e3](https://github.com/feroomjs/feroomjs/commit/f6878e32ef2f88a264870e7cdae239faffcb91f6))
+* entry logic ([08f8e6d](https://github.com/feroomjs/feroomjs/commit/08f8e6d6a57aad69fd0e17aa3671c8e2be79bd63))
+
+
+
 ## [0.0.1-alpha.21](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.20...v0.0.1-alpha.21) (2023-01-13)
 
 
