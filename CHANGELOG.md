@@ -1,3 +1,13 @@
+## [0.0.1-alpha.21](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.20...v0.0.1-alpha.21) (2023-01-13)
+
+
+### Features
+
+* improve rollup conf ([d0005f8](https://github.com/feroomjs/feroomjs/commit/d0005f89b3487f71edc00c809f48202460b5b782))
+* lock version ([46e8329](https://github.com/feroomjs/feroomjs/commit/46e832939cb709921d85edb0c7249f272620f34a))
+
+
+
 ## [0.0.1-alpha.20](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.19...v0.0.1-alpha.20) (2023-01-12)
 
 

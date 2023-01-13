@@ -1,6 +1,6 @@
 {
   "name": "@feroomjs/tools",
-  "version": "0.0.1-alpha.20",
+  "version": "0.0.1-alpha.21",
   "description": "@feroomjs/tools",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
@@ -28,7 +28,7 @@
   "dependencies": {
     "glob": "^8.0.3",
     "rollup-plugin-virtual": "^1.0.1",
-    "@rollup/plugin-node-resolve": ""
+    "@rollup/plugin-node-resolve": "^15.0.1"
   },
   "peerDependencies": {
     "rollup-plugin-vue": "^6.0.0",
