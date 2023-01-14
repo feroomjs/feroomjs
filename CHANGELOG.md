@@ -1,3 +1,12 @@
+## [0.0.1-alpha.26](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.25...v0.0.1-alpha.26) (2023-01-14)
+
+
+### Bug Fixes
+
+* type import ([47bc1c7](https://github.com/feroomjs/feroomjs/commit/47bc1c7e468fe3e66ef9a58104419d02f6e725d3))
+
+
+
 ## [0.0.1-alpha.25](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.24...v0.0.1-alpha.25) (2023-01-14)
 
 
