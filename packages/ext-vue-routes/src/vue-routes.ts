@@ -1,6 +1,5 @@
 import { FeRegistry, FeRoomExtension, TFeRoomExtension } from 'feroom'
-import { Get } from '@moostjs/event-http'
-import { useSetHeader } from '@wooksjs/event-http'
+import { Get, SetHeader } from '@moostjs/event-http'
 import { Controller } from 'moost'
 import { logError, TModuleData } from 'common'
 
@@ -70,12 +69,8 @@ export class VueRoutesExt implements TFeRoomExtension {
     }
 
     @Get('/feroom-ext/vue-routes.js')
+    @SetHeader('content-type', 'application/javascript')
     routes() {
-        try {
-            useSetHeader('content-type').value = 'application/javascript'
-        } catch(e) {
-            //
-        }
         const routes = this._registry.getAllModules().map(m => this.getModuleRoutes(m)).flat(1)
 
         let content = ''

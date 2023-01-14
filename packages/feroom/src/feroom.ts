@@ -9,12 +9,15 @@ import { FeRoomApi } from './feroom-api'
 import { log, panic, TClassConstructor } from 'common'
 import { feroomMate } from './decorators'
 import { TFeRoomExtension } from './extension'
+import { isConstructor } from '@prostojs/mate'
+
+interface TWrappedExt { instance: TFeRoomExtension, name: string }
 
 export class FeRoom extends Moost {
 
     protected _registry: FeRegistry
     protected _config: FeRoomConfig
-    protected _ext: (() => Promise<{ instance: TFeRoomExtension, name: string }>)[] = []
+    protected _ext: (() => Promise<TWrappedExt> | TWrappedExt)[] = []
 
     constructor(options?: TFeRoomOptions, registry?: FeRegistry) {
         super()
@@ -28,7 +31,7 @@ export class FeRoom extends Moost {
         this.registerControllers(FeRoomServe, FeRoomIndex, FeRoomApi)
     }
 
-    async ext(...args: TClassConstructor[]) {
+    async ext(...args: (TClassConstructor<TFeRoomExtension> | TFeRoomExtension)[]) {
         const infact = getMoostInfact()
         const thisMeta = feroomMate.read(this)
         const provide = { ...(thisMeta?.provide || {}), ...this.provide }
@@ -43,12 +46,17 @@ export class FeRoom extends Moost {
             if (meta?.controller) {
                 this.registerControllers(ext)
             }
-            this._ext.push(async () => {
-                infact.silent()
-                const instance = await infact.get(ext as (new () => unknown), provide) as TFeRoomExtension
-                infact.silent(false)
-                return { instance, name: meta.feroom_extensionName as string }
-            })
+            if (isConstructor(ext)) {
+                this._ext.push(async () => {
+                    infact.silent()
+                    const instance = await infact.get(ext as (new () => unknown), provide) as TFeRoomExtension
+                    infact.silent(false)
+                    return { instance, name: meta.feroom_extensionName as string }
+                })
+            } else {
+                infact.setProvideRegByInstance(ext, provide)
+                this._ext.push(() => ({ instance: ext, name: meta.feroom_extensionName as string }))
+            }
             log(`Extension ${ __DYE_BOLD__ }${ meta?.feroom_extensionName }${ __DYE_BOLD_OFF__ + __DYE_DIM__ } has been installed.`)
         }
     }

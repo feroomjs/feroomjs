@@ -64,7 +64,8 @@ export class FeRoomRegister {
         const res = await fetch(this.getUrl('feroom-module/register'), {
             method: 'POST',
             headers: {
-                'content-type': 'application/json'
+                'content-type': 'application/json',
+                'accept': 'text/plain',
             },
             body: JSON.stringify(module)
         })

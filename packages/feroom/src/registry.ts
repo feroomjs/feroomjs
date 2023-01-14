@@ -93,12 +93,12 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
     }
 
     exists(id: string, version?: string): boolean {
-        try {
-            this.readModule(id, version)
-            return true
-        } catch (e) {
-            return false
+        const reg = registry[id]
+        if (reg) {
+            const ver = version || reg.activeVersion
+            return !!reg.versions[ver]
         }
+        return false
     }
 
     getActiveVersion(id: string) {

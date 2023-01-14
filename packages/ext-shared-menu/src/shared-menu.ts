@@ -1,6 +1,5 @@
 import { FeRegistry, FeRoomExtension, TFeRoomExtension } from 'feroom'
-import { Get } from '@moostjs/event-http'
-import { useSetHeader } from '@wooksjs/event-http'
+import { Get, SetHeader } from '@moostjs/event-http'
 import { Controller } from 'moost'
 import { TModuleData } from 'common'
 
@@ -30,12 +29,8 @@ export class SharedMenuExt implements TFeRoomExtension {
     }
 
     @Get('/feroom-ext/shared-menu.js')
+    @SetHeader('content-type', 'application/javascript')
     menu() {
-        try {
-            useSetHeader('content-type').value = 'application/javascript'
-        } catch (e) {
-            //
-        }
         const menus = this._registry.getAllModules().map(m => this.getModuleMenu(m))
         let mergedMenu: TSharedMenu = {}
         for (const menu of menus) {

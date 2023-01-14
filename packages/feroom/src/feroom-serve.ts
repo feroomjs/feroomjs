@@ -26,10 +26,9 @@ export class FeRoomServe {
             this.registered[data.id] = true
             this.wHttp.get(this.config.modulesPrefixPath + data.id, serve)
             this.wHttp.get(this.config.modulesPrefixPath + data.id + '/*', serveFile)
-            log(this.config.modulesPrefixPath + data.id + '/*' + ' registered')
             this.wHttp.get(this.config.modulesPrefixPath + data.id + '@:version', serve)
             this.wHttp.get(this.config.modulesPrefixPath + data.id + '@:version' + '/*', serveFile)
-            log(this.config.modulesPrefixPath + data.id + '@:version' + '/*' + ' registered')
+            log(`• ${__DYE_CYAN__}(GET)${__DYE_GREEN__}/${ this.config.modulesPrefixPath + data.id } → FeRoomServe[${ data.id }]`)
         }
         return data
     }

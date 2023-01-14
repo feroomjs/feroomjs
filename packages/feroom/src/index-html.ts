@@ -1,9 +1,8 @@
 import { Controller, Inject } from 'moost'
 import { FeRoomConfig } from './config'
 import { FeRegistry } from './registry'
-import { useSetHeader } from '@wooksjs/event-http'
 import { FeModule } from './module'
-import { Get } from '@moostjs/event-http'
+import { Get, SetHeader } from '@moostjs/event-http'
 import { renderCssTag, renderModuleScriptTag } from './utils'
 import { TFeRoomExtension } from './extension'
 
@@ -106,8 +105,8 @@ export class FeRoomIndex {
 
     @Get('')
     @Get('index.html')
+    @SetHeader('content-type', 'text/html')
     async index() {
-        useSetHeader('content-type').value = 'text/html'
         const modules = this.getModules()
         return `<html>
 <head>
