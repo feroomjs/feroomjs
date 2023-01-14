@@ -2,8 +2,7 @@ import { HttpError, useSetHeader, useStatus, WooksHttp } from '@wooksjs/event-ht
 import { Controller } from 'moost'
 import { useRouteParams } from 'wooks'
 import { FeRegistry } from './registry'
-import { TModuleData } from './types'
-import { log } from 'common'
+import { log, TModuleData } from 'common'
 import { FeRoomConfig } from './config'
 import { FeModule } from './module'
 

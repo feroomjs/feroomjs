@@ -1,7 +1,7 @@
 import { Body, Post } from '@moostjs/event-http'
 import { Controller } from 'moost'
 import { FeRegistry } from './registry'
-import { TModuleData, TNpmModuleData } from './types'
+import { TModuleData, TNpmModuleData } from 'common'
 
 @Controller()
 export class FeRoomApi {

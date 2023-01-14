@@ -1,6 +1,5 @@
-import { TFeRoomRegisterOptions } from 'common'
+import { TFeRoomRegisterOptions, TModuleData } from 'common'
 import { FeRoomConfig } from './config'
-import { TModuleData } from './types'
 import { join } from 'path'
 import { renderCssTag, renderModuleScriptTag } from './utils'
 import { FeRegistry } from './registry'
@@ -16,6 +15,10 @@ export class FeModule<EXT extends object = object> {
         return this.data.files
     }
 
+    getGlobals() {
+        return this.getRegisterOptions().globals || {}
+    }
+
     getRegisterOptions(): TFeRoomRegisterOptions {
         return this.data.config.registerOptions || {}
     }
@@ -29,7 +32,7 @@ export class FeModule<EXT extends object = object> {
     }
 
     entryPath(version?: string): string {
-        return this.buildPath(this.data.entry || '', version)
+        return this.buildPath(this.data.entry || '', version || this.data.version)
     }
 
     hasEntry(): boolean {
@@ -38,36 +41,41 @@ export class FeModule<EXT extends object = object> {
 
     renderPreloadCss(): string {
         const items = [this.getRegisterOptions().preloadCss || []].flat(1)
-        return items.map(path => renderCssTag(this.buildPath(path))).join('\n') + '\n'
+        let content = ''
+        if (items.length) {
+            content += this.renderComment('Preload Css')
+        }
+        return content + items.map(path => renderCssTag(this.buildPath(path))).join('\n') + '\n'
     }
 
     renderPreloadScript(): string {
         const items = [this.getRegisterOptions().preloadScripts || []].flat(1)
-        return items.map(path => renderModuleScriptTag(this.buildPath(path))).join('\n') + '\n'
+        let content = ''
+        if (items.length) {
+            content += this.renderComment('Preload Script')
+        }
+        return content + items.map(path => renderModuleScriptTag(this.buildPath(path))).join('\n') + '\n'
+    }
+
+    renderComment(text: string) {
+        return `<!-- ${ this.id }@${ this.data.version }: ${ text } -->\n`
     }
 
     renderPreloadModule(): string {
-        return renderModuleScriptTag(this.entryPath())
+        return this.renderComment('Preload Entry') + renderModuleScriptTag(this.entryPath())
     }
 
     getImportMap(reg: FeRegistry): Record<string, string> {
         const map: Record<string, string> = {}
-        // if (this.id === 'vue') {
-            console.log({
-                'this.hasEntry()': this.hasEntry(),
-                'this.entryPath()': this.entryPath(),
-                'this.id': this.id,
-            })
-        // }
         if (this.hasEntry()) {
-            map[this.data.id] = '/' + this.entryPath()
+            map[this.data.id] = '/' + this.entryPath(this.data.version)
         }
         if (this.data.config.registerOptions?.lockDependency) {
             for (const [dep, ver] of Object.entries(this.data.config.registerOptions.lockDependency)) {
-                const active = reg.getActiveVersion(dep)
+                // const active = reg.getActiveVersion(dep)
                 const m = reg.readModule(dep, ver)
                 if (m) {
-                    map[m.id + '@' + ver] = '/' + (new FeModule(m, this.config).entryPath(active === ver ? '' : ver))
+                    map[m.id + '@' + ver] = '/' + (new FeModule(m, this.config).entryPath(ver))
                 }
             }
         }

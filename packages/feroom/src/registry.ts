@@ -1,8 +1,6 @@
 import { getNpmPackageFiles } from '@feroomjs/npm-fetcher'
-import { log, panic, TFeRoomConfig } from 'common'
+import { log, panic, TFeRoomConfig, TModuleData, TNpmModuleData } from 'common'
 import EventEmitter from 'events'
-import { TModuleData, TNpmModuleData } from './types'
-
 
 const registry: {
     [id: string]: {
@@ -31,6 +29,7 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
             version: data.version || pkg.version,
             entry: data.entry || feConf.registerOptions?.entry || pkg.module,
             files,
+            activate: !!data.activate,
             config: feConf,
         }
         if (!module.id) {

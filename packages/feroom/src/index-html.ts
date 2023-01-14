@@ -15,7 +15,10 @@ export class FeRoomIndex {
     }
 
     getGlobals(modules: FeModule[]) {
-        return Object.keys(this.config.globals).map(key => `window[${ JSON.stringify(key) }] = ${JSON.stringify(this.config.globals[key as keyof typeof this.config.globals])};\n`).join('')
+        let obj = {}
+        modules.forEach(m => Object.assign(obj, m.getGlobals()))
+        obj = { ...obj, ...this.config.globals }
+        return Object.keys(obj).map(key => `window[${ JSON.stringify(key) }] = ${JSON.stringify(obj[key as keyof typeof obj])};\n`).join('')
     }
 
     getImportmap(modules: FeModule[]) {
@@ -60,21 +63,23 @@ export class FeRoomIndex {
 
     getPreloadModule(modules: FeModule[]) {
         const items: FeModule[] = []
-        modules.forEach(m => (this.config.preloadModule.includes(m.id) || m.getRegisterOptions().preloadRoot) && items.push(m))
+        modules.forEach(m => (this.config.preloadModule.includes(m.id) || [true, 'head'].includes(m.getRegisterOptions().preloadEntry as boolean)) && items.push(m))
         return items
             .map(m => m.renderPreloadModule())
             .join('\n')
     }
 
     getHead(modules: FeModule[]) {
-        let content = (this.config.head || '') + '\n'
-        modules.forEach(m => m.getRegisterOptions().appendHead ? content += m.getRegisterOptions().appendHead + '\n' : null)
+        let content = `<title>${ this.config.title }</title>\n` + (this.config.head || '') + '\n'
+        modules.forEach(m => m.getRegisterOptions().appendHead ? content += m.renderComment('Append Head') + m.getRegisterOptions().appendHead + '\n' : null)
         return content
     }
 
     getBody(modules: FeModule[]) {
         let content = (this.config.body || '') + '\n'
-        modules.forEach(m => m.getRegisterOptions().appendBody ? content += m.getRegisterOptions().appendBody + '\n' : null)
+        modules.forEach(m => m.getRegisterOptions().preloadEntry === 'body:first' && (content += m.renderPreloadModule() + '\n'))
+        modules.forEach(m => m.getRegisterOptions().appendBody ? content += m.renderComment('Append Body') + m.getRegisterOptions().appendBody + '\n' : null)
+        modules.forEach(m => m.getRegisterOptions().preloadEntry === 'body:last' && (content += m.renderPreloadModule() + '\n'))
         return content
     }
 
@@ -85,7 +90,6 @@ export class FeRoomIndex {
         const modules = this.getModules()
         return `<html>
 <head>
-<title>${ this.config.title }</title>
 ${ this.getHead(modules) }
 <script>
 // globals
