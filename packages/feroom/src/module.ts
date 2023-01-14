@@ -28,7 +28,7 @@ export class FeModule<EXT extends object = object> {
     }
 
     buildPath(path: string, version?: string): string {
-        return join(this.config.modulesPrefixPath, this.data.id + (version ? `@${ version }` : ''), path)
+        return join(this.config.modulesPrefixPath, this.data.id + `@${ version || this.data.version }`, path)
     }
 
     entryPath(version?: string): string {

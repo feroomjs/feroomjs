@@ -1,5 +1,5 @@
 import { FeRegistry } from '@feroomjs/feroom'
-import { TRoutesCfg, VueRoutesController } from './vue-routes'
+import { TRoutesCfg, VueRoutesExt } from './vue-routes'
 
 const reg = new FeRegistry<TRoutesCfg>()
 reg.registerModule({
@@ -38,9 +38,9 @@ reg.registerModule({
     }
 })
 
-const vueRoutes = new VueRoutesController(reg)
+const vueRoutes = new VueRoutesExt(reg)
 
-describe('vue-routes', () => {
+describe('ext-vue-routes', () => {
     it('must render routes', () => {
         expect(vueRoutes.routes()).toMatchInlineSnapshot(`
 "export const vueRoutes = [{

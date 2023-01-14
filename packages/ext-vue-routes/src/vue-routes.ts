@@ -1,4 +1,4 @@
-import { FeRegistry } from 'feroom'
+import { FeRegistry, FeRoomExtension, TFeRoomExtension } from 'feroom'
 import { Get } from '@moostjs/event-http'
 import { useSetHeader } from '@wooksjs/event-http'
 import { Controller } from 'moost'
@@ -14,9 +14,14 @@ export interface TVueRoute {
 
 export interface TRoutesCfg { vueRoutes?: TVueRoute[] }
 
+@FeRoomExtension('VueRoutes')
 @Controller()
-export class VueRoutesController {
+export class VueRoutesExt implements TFeRoomExtension {
     constructor(protected _registry: FeRegistry) {}
+
+    injectImportMap(): Record<string, string> {
+        return { '@feroom-ext/vue-routes': '/feroom-ext/vue-routes.js' }
+    }
 
     getModuleRoutes(module: TModuleData<TRoutesCfg>): TVueRoute[] {
         return module.config.extensions?.vueRoutes || []
@@ -64,7 +69,7 @@ export class VueRoutesController {
         return s + `${ indent }}`
     }
 
-    @Get('/feroom-dynamic/vue-routes.js')
+    @Get('/feroom-ext/vue-routes.js')
     routes() {
         try {
             useSetHeader('content-type').value = 'application/javascript'

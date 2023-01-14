@@ -1,11 +1,11 @@
 import { Plugin } from 'rollup'
 
-export interface TFeRoomExtionsOptionsAll {
+export interface TFeRoomExtensionsOptionsAll {
     sharedMenu?: object
     vueRoutes?: object[]
 }
 
-export interface TFeRoomConfig<EXT extends object = TFeRoomExtionsOptionsAll> {
+export interface TFeRoomConfig<EXT extends object = TFeRoomExtensionsOptionsAll> {
     registerOptions?: TFeRoomRegisterOptions
     buildOptions?: TFeRoomRollupOptions
     extensions?: EXT
@@ -63,3 +63,5 @@ export type TNpmModuleData<EXT extends object = object> = {
     version?: string
     rebuildIfExists?: boolean
 } & Partial<TModuleData<EXT>>
+
+export type TClassConstructor<T = unknown> = new (...args : any[]) => T

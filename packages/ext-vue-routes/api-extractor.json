@@ -1,0 +1,22 @@
+{
+  "extends": "../../api-extractor.json",
+  "mainEntryPointFilePath": "./dist/packages/ext-vue-routes/src/index.d.ts",
+  "dtsRollup": {
+    "publicTrimmedFilePath": "./dist/index.d.ts"
+  },
+  "compiler": {
+    "overrideTsconfig": {
+      "compilerOptions": {
+        "paths": {
+          "@feroomjs/*": ["packages/ext-vue-routes/dist/packages/*/src"],
+          "feroom": ["packages/ext-vue-routes/dist/packages/feroom/src"],
+          "common": ["packages/ext-vue-routes/dist/common"]
+        }
+      },         
+      "include": [
+        "packages/ext-vue-routes/dist/packages",
+        "packages/ext-vue-routes/dist/common"
+      ]
+    }
+  }
+}

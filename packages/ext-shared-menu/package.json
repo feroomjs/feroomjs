@@ -1,7 +1,7 @@
 {
-  "name": "@feroomjs/shared-menu",
+  "name": "@feroomjs/ext-shared-menu",
   "version": "0.0.1-alpha.26",
-  "description": "@feroomjs/shared-menu",
+  "description": "@feroomjs/ext-shared-menu",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -11,7 +11,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/feroomjs/feroomjs.git",
-    "directory": "packages/shared-menu"
+    "directory": "packages/ext-shared-menu"
   },
   "keywords": [
     "feroom",
@@ -24,7 +24,7 @@
   "bugs": {
     "url": "https://github.com/feroomjs/feroomjs/issues"
   },
-  "homepage": "https://github.com/feroomjs/feroomjs/tree/main/packages/shared-menu#readme",
+  "homepage": "https://github.com/feroomjs/feroomjs/tree/main/packages/ext-shared-menu#readme",
   "peerDependencies": {
     "feroom": "0.0.1-alpha.26",
     "@moostjs/event-http": "^0.2.4",

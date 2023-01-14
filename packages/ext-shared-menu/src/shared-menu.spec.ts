@@ -1,5 +1,5 @@
 import { FeRegistry } from "@feroomjs/feroom"
-import { SharedMenuController, TSharedMenuCfg } from "./shared-menu"
+import { SharedMenuExt, TSharedMenuCfg } from "./shared-menu"
 
 
 const reg = new FeRegistry<TSharedMenuCfg>()
@@ -50,10 +50,10 @@ reg.registerModule({
     }
 })
 
-const sharedMenu = new SharedMenuController(reg)
+const sharedMenu = new SharedMenuExt(reg)
 
-describe('vue-routes', () => {
-    it('must render routes', () => {
+describe('ext-shared-menu', () => {
+    it('must render menu', () => {
         expect(sharedMenu.menu()).toMatchInlineSnapshot(`
 "export const sharedMenu = {
   "Module 1": {

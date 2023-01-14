@@ -1,29 +1,50 @@
-import { Controller } from 'moost'
+import { Controller, Inject } from 'moost'
 import { FeRoomConfig } from './config'
 import { FeRegistry } from './registry'
 import { useSetHeader } from '@wooksjs/event-http'
 import { FeModule } from './module'
 import { Get } from '@moostjs/event-http'
 import { renderCssTag, renderModuleScriptTag } from './utils'
+import { TFeRoomExtension } from './extension'
+
+interface TWrappedExt { instance: TFeRoomExtension, name: string }
 
 @Controller()
 export class FeRoomIndex {
-    constructor(protected _registry: FeRegistry, protected config: FeRoomConfig) {}
+    constructor(protected _registry: FeRegistry, protected config: FeRoomConfig, @Inject('FEROOM_EXT_ARRAY') protected ext: (() => Promise<TWrappedExt> | TWrappedExt)[]) {}
+
+    async getExtInstances(): Promise<{ instance: TFeRoomExtension, name: string }[]> {
+        const instances = []
+        for (const ext of this.ext) {
+            instances.push(await ext())
+        }
+        return instances
+    }
+
+    async getExtHead() {
+        return (await this.getExtInstances()).map(e => e.instance.injectHead && (`<!-- EXT: ${ e.name } -->\n` + e.instance.injectHead())).join('\n') + '\n'
+    }
+
+    async getExtBody() {
+        return (await this.getExtInstances()).map(e => e.instance.injectIndexBody && (`<!-- EXT: ${ e.name } -->\n` + e.instance.injectIndexBody())).join('\n') + '\n'
+    }
 
     getModules(): FeModule[] {
         return this._registry.getAllModules().map(data => new FeModule(data, this.config))
     }
 
-    getGlobals(modules: FeModule[]) {
-        let obj = {}
+    async getGlobals(modules: FeModule[]) {
+        let obj = {};
+        (await this.getExtInstances()).forEach(e => e.instance.injectGlobals && Object.assign(obj, e.instance.injectGlobals()))
         modules.forEach(m => Object.assign(obj, m.getGlobals()))
         obj = { ...obj, ...this.config.globals }
         return Object.keys(obj).map(key => `window[${ JSON.stringify(key) }] = ${JSON.stringify(obj[key as keyof typeof obj])};\n`).join('')
     }
 
-    getImportmap(modules: FeModule[]) {
+    async getImportmap(modules: FeModule[]) {
         const map: Record<string, string> = {}
-        modules.forEach(module => Object.assign(map, module.getImportMap(this._registry)))
+        modules.forEach(module => Object.assign(map, module.getImportMap(this._registry)));
+        (await this.getExtInstances()).map(e => e.instance.injectImportMap && Object.assign(map, e.instance.injectImportMap()))
 
         return JSON.stringify({
             ...map,
@@ -69,31 +90,31 @@ export class FeRoomIndex {
             .join('\n')
     }
 
-    getHead(modules: FeModule[]) {
+    async getHead(modules: FeModule[]) {
         let content = `<title>${ this.config.title }</title>\n` + (this.config.head || '') + '\n'
         modules.forEach(m => m.getRegisterOptions().appendHead ? content += m.renderComment('Append Head') + m.getRegisterOptions().appendHead + '\n' : null)
-        return content
+        return content + await this.getExtHead()
     }
 
-    getBody(modules: FeModule[]) {
+    async getBody(modules: FeModule[]) {
         let content = (this.config.body || '') + '\n'
         modules.forEach(m => m.getRegisterOptions().preloadEntry === 'body:first' && (content += m.renderPreloadModule() + '\n'))
         modules.forEach(m => m.getRegisterOptions().appendBody ? content += m.renderComment('Append Body') + m.getRegisterOptions().appendBody + '\n' : null)
         modules.forEach(m => m.getRegisterOptions().preloadEntry === 'body:last' && (content += m.renderPreloadModule() + '\n'))
-        return content
+        return content + await this.getExtBody()
     }
 
     @Get('')
     @Get('index.html')
-    index() {
+    async index() {
         useSetHeader('content-type').value = 'text/html'
         const modules = this.getModules()
         return `<html>
 <head>
-${ this.getHead(modules) }
+${ await this.getHead(modules) }
 <script>
 // globals
-${ this.getGlobals(modules) }
+${ await this.getGlobals(modules) }
 </script>
 
 <script>
@@ -110,7 +131,7 @@ window.__loadCss = function (path) {
 
 <script type="importmap">
 {
-    "imports": ${ this.getImportmap(modules) }
+    "imports": ${ await this.getImportmap(modules) }
 }
 </script>
 
@@ -120,7 +141,7 @@ ${ this.getCss(modules) }
 
 </head>
 <body>
-${ this.getBody(modules) }
+${ await this.getBody(modules) }
 </body>
 </html>`
     }

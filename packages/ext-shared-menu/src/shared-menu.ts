@@ -1,4 +1,4 @@
-import { FeRegistry } from 'feroom'
+import { FeRegistry, FeRoomExtension, TFeRoomExtension } from 'feroom'
 import { Get } from '@moostjs/event-http'
 import { useSetHeader } from '@wooksjs/event-http'
 import { Controller } from 'moost'
@@ -16,15 +16,20 @@ export type TSharedMenu = Record<string, TMenuItem>
 
 export interface TSharedMenuCfg { sharedMenu?: TSharedMenu }
 
+@FeRoomExtension('Shared-Menu')
 @Controller()
-export class SharedMenuController {
+export class SharedMenuExt implements TFeRoomExtension {
     constructor(protected _registry: FeRegistry) {}
+
+    injectImportMap(): Record<string, string> {
+        return { '@feroom-ext/shared-menu': '/feroom-ext/shared-menu.js' }
+    }
 
     getModuleMenu(module: TModuleData<TSharedMenuCfg>): TSharedMenu {
         return module.config.extensions?.sharedMenu || {}
     }
 
-    @Get('/feroom-dynamic/shared-menu.js')
+    @Get('/feroom-ext/shared-menu.js')
     menu() {
         try {
             useSetHeader('content-type').value = 'application/javascript'

@@ -32,6 +32,7 @@
     "moost": "^0.2.4",
     "@prostojs/infact": "^0.0.13",
     "@feroomjs/npm-fetcher": "0.0.1-alpha.26",
+    "@prostojs/mate": "",
     "events": "^3.3.0"
   }
 }

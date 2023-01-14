@@ -1,5 +1,5 @@
-// FeRoom dynamic module "@feroom-dynamic/shared-menu"
-declare module '@feroom-dynamic/shared-menu' {
+// FeRoom dynamic module "@feroom-ext/shared-menu"
+declare module '@feroom-ext/shared-menu' {
     export interface TMenuItem {
         icon?: string
         route?: string

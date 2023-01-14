@@ -1,0 +1,22 @@
+{
+  "extends": "../../api-extractor.json",
+  "mainEntryPointFilePath": "./dist/packages/ext-shared-menu/src/index.d.ts",
+  "dtsRollup": {
+    "publicTrimmedFilePath": "./dist/index.d.ts"
+  },
+  "compiler": {
+    "overrideTsconfig": {
+      "compilerOptions": {
+        "paths": {
+          "@feroomjs/*": ["packages/ext-shared-menu/dist/packages/*/src"],
+          "feroom": ["packages/ext-shared-menu/dist/packages/feroom/src"],
+          "common": ["packages/ext-shared-menu/dist/common"]
+        }
+      },         
+      "include": [
+        "packages/ext-shared-menu/dist/packages",
+        "packages/ext-shared-menu/dist/common"
+      ]
+    }
+  }
+}
