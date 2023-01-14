@@ -1,3 +1,14 @@
+## [0.0.1-alpha.25](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.24...v0.0.1-alpha.25) (2023-01-14)
+
+
+### Features
+
+* better versioning ([fab3178](https://github.com/feroomjs/feroomjs/commit/fab317875c250121b80d4cce29ce254361d99c67))
+* option importNpmDependencies ([657cef3](https://github.com/feroomjs/feroomjs/commit/657cef36bef26c1a8d9672916ca779f650172bc4))
+* **tools:** add activate option ([682ab66](https://github.com/feroomjs/feroomjs/commit/682ab66ce5eb77d616347487ce8fb859488d62ac))
+
+
+
 ## [0.0.1-alpha.24](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.23...v0.0.1-alpha.24) (2023-01-13)
 
 
