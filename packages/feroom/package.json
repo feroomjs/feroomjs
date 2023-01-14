@@ -1,6 +1,6 @@
 {
   "name": "feroom",
-  "version": "0.0.1-alpha.26",
+  "version": "0.0.1-alpha.27",
   "description": "feroom",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
@@ -26,13 +26,13 @@
   },
   "homepage": "https://github.com/feroomjs/feroomjs/tree/main/packages/feroom#readme",
   "dependencies": {
-    "@moostjs/event-http": "^0.2.4",
+    "@moostjs/event-http": "^0.2.6",
     "wooks": "^0.2.5",
     "@wooksjs/event-http": "^0.2.5",
-    "moost": "^0.2.4",
+    "moost": "^0.2.6",
     "@prostojs/infact": "^0.0.13",
-    "@feroomjs/npm-fetcher": "0.0.1-alpha.26",
-    "@prostojs/mate": "",
+    "@feroomjs/npm-fetcher": "0.0.1-alpha.27",
+    "@prostojs/mate": "^0.1.10",
     "events": "^3.3.0"
   }
 }

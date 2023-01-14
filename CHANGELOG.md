@@ -1,3 +1,12 @@
+## [0.0.1-alpha.27](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.26...v0.0.1-alpha.27) (2023-01-14)
+
+
+### Features
+
+* **ext:** improve extensions ([fbca031](https://github.com/feroomjs/feroomjs/commit/fbca031b29b67ea868d02ebb0b2eb534e6ebee3a))
+
+
+
 ## [0.0.1-alpha.26](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.25...v0.0.1-alpha.26) (2023-01-14)
 
 
