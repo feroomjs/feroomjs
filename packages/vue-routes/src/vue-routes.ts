@@ -1,8 +1,8 @@
-import { FeRegistry, TModuleData } from 'feroom'
+import { FeRegistry } from 'feroom'
 import { Get } from '@moostjs/event-http'
 import { useSetHeader } from '@wooksjs/event-http'
 import { Controller } from 'moost'
-import { logError } from 'common'
+import { logError, TModuleData } from 'common'
 
 export interface TVueRoute {
     path: string
