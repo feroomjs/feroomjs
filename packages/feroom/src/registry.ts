@@ -1,4 +1,4 @@
-import { getNpmPackageFiles } from '@feroomjs/npm-fetcher'
+import { getNpmPackageFiles, getNpmPackageVersion } from '@feroomjs/npm-fetcher'
 import { log, panic, TFeRoomConfig, TModuleData, TNpmModuleData } from 'common'
 import EventEmitter from 'events'
 
@@ -29,6 +29,7 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
             version: data.version || pkg.version,
             entry: data.entry || feConf.registerOptions?.entry || pkg.module,
             files,
+            source: data.source || '',
             activate: !!data.activate,
             config: feConf,
         }
@@ -50,6 +51,15 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
         module.versions[normData.version] = normData
         log(`Module has been registered ${__DYE_CYAN__}${ normData.id } v${ normData.version }. Active version: ${ module.activeVersion }`)
         this.emit('register-module', normData)
+        if (normData.config.registerOptions?.importNpmDependencies) {
+            for (const [dep, conf] of Object.entries(normData.config.registerOptions.importNpmDependencies)) {
+                this.registerFromNpm({
+                    ...conf,
+                    name: dep,
+                    activate: normData.activate,
+                } as TNpmModuleData<CFG>)
+            }
+        }
         return {
             ...normData,
             files: Object.keys(normData.files),
@@ -57,12 +67,19 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
     }
 
     async registerFromNpm(npmData: TNpmModuleData<CFG>) {
-        const files = await getNpmPackageFiles(npmData.registry || 'https://registry.npmjs.org', npmData.name, npmData.version)
+        const registry = npmData.registry || 'https://registry.npmjs.org'
+        const version = await getNpmPackageVersion(registry, npmData.name, npmData.version)
+        if (!npmData.rebuildIfExists && this.exists(npmData.name, version)) {
+            log(`Module ${__DYE_CYAN__}${ npmData.name } v${ version } ${ __DYE_GREEN__ } already registerd. Nothing changed. Use "rebuildIfExists" option to force re-register of the module.`)
+            return 'Module alread exists'
+        }
+        const files = await getNpmPackageFiles(registry, npmData.name, version)
         const pkg = JSON.parse(files['package.json'] || '{}') as Record<string, string>
         const module: Partial<TModuleData<CFG>> = {
             id: npmData.id || pkg.name || npmData.name,
             version: pkg.version,
             files,
+            source: 'npm:' + registry
         }
         return this.registerModule(module)
     }
@@ -73,6 +90,15 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
         const ver = version || reg.activeVersion
         if (!reg.versions[ver]) throw panic(`No module version "${ ver }" found for module "${ id }"`)
         return reg.versions[ver] as TModuleData<CFG>
+    }
+
+    exists(id: string, version?: string): boolean {
+        try {
+            this.readModule(id, version)
+            return true
+        } catch (e) {
+            return false
+        }
     }
 
     getActiveVersion(id: string) {

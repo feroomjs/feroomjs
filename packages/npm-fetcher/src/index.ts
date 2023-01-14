@@ -4,6 +4,14 @@ import { pKey } from './utils'
 
 const cache: Record<string, Promise<Record<string, string>>> = {}
 
+export async function getNpmPackageVersion(registryUrl: string, packageName: string, version?: string) {
+    if (!version) {
+        const tags = await fetchDistTags(registryUrl, packageName)
+        version = tags.latest
+    }
+    return version
+}
+
 export async function getNpmPackageFiles(registryUrl: string, packageName: string, version?: string) {
     if (!version) {
         const tags = await fetchDistTags(registryUrl, packageName)

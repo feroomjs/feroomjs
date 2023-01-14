@@ -52,12 +52,14 @@ export interface TModuleData<EXT extends object = object> {
     version: string
     files: Record<string, string | {type: 'Buffer', data: number[]}>
     entry: string
+    source: string
     config: TFeRoomConfig<EXT>
     activate?: boolean
 }
 
 export type TNpmModuleData<EXT extends object = object> = {
-    registry?: string,
-    name: string,
-    version?: string,
+    registry?: string
+    name: string
+    version?: string
+    rebuildIfExists?: boolean
 } & Partial<TModuleData<EXT>>
