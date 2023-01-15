@@ -73,8 +73,6 @@ packages.forEach(({shortName, name, pkg, pkgPath}) => {
     "overrideTsconfig": {
       "compilerOptions": {
         "paths": {
-          "@feroomjs/*": ["packages/${shortName}/dist/packages/*/src"],
-          "feroom": ["packages/${shortName}/dist/packages/feroom/src"],
           "common": ["packages/${shortName}/dist/common"]
         }
       },         

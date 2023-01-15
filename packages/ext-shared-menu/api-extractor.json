@@ -8,8 +8,6 @@
     "overrideTsconfig": {
       "compilerOptions": {
         "paths": {
-          "@feroomjs/*": ["packages/ext-shared-menu/dist/packages/*/src"],
-          "feroom": ["packages/ext-shared-menu/dist/packages/feroom/src"],
           "common": ["packages/ext-shared-menu/dist/common"]
         }
       },         

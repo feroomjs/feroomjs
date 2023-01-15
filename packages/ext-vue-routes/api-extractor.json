@@ -8,8 +8,6 @@
     "overrideTsconfig": {
       "compilerOptions": {
         "paths": {
-          "@feroomjs/*": ["packages/ext-vue-routes/dist/packages/*/src"],
-          "feroom": ["packages/ext-vue-routes/dist/packages/feroom/src"],
           "common": ["packages/ext-vue-routes/dist/common"]
         }
       },         
