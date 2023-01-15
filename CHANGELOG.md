@@ -1,3 +1,12 @@
+## [0.0.1-alpha.28](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.27...v0.0.1-alpha.28) (2023-01-15)
+
+
+### Features
+
+* load css file ([bcec9ed](https://github.com/feroomjs/feroomjs/commit/bcec9ed9c6b0c6ee89efe5c74e8726097aa7769f))
+
+
+
 ## [0.0.1-alpha.27](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.26...v0.0.1-alpha.27) (2023-01-14)
 
 
