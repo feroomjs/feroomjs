@@ -61,7 +61,7 @@ export type TNpmModuleData<EXT extends object = object> = {
     registry?: string
     name: string
     version?: string
-    rebuildIfExists?: boolean
+    forceRegister?: boolean
 } & Partial<TModuleData<EXT>>
 
 export type TClassConstructor<T = unknown> = new (...args : any[]) => T

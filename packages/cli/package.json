@@ -1,0 +1,37 @@
+{
+  "name": "@feroomjs/cli",
+  "version": "0.0.1-alpha.28",
+  "description": "@feroomjs/cli",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "feroom": "feroom"
+  },
+  "files": [
+    "dist",
+    "feroom"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/feroomjs/feroomjs.git",
+    "directory": "packages/cli"
+  },
+  "keywords": [
+    "feroom",
+    "feroomjs",
+    "SPA",
+    "MFE"
+  ],
+  "author": "Artem Maltsev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/feroomjs/feroomjs/issues"
+  },
+  "homepage": "https://github.com/feroomjs/feroomjs/tree/main/packages/cli#readme",
+  "dependencies": {
+    "@moostjs/event-cli": "",
+    "moost": "",
+    "@feroomjs/tools": ""
+  }
+}
