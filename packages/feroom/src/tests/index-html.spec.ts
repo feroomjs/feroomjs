@@ -123,6 +123,7 @@ describe('index-html', () => {
 window["__MODULE__"] = "value";
 window["_VAR_"] = "var-value";
 window["process"] = {"env":{"NODE_ENV":"dev"}};
+window["__feroom"] = {"modulesPrefixPath":"feroom-module/"};
 "
 `)
     })

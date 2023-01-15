@@ -36,7 +36,7 @@ export class FeRoomIndex {
         let obj = {};
         (await this.getExtInstances()).forEach(e => e.instance.injectGlobals && Object.assign(obj, e.instance.injectGlobals()))
         modules.forEach(m => Object.assign(obj, m.getGlobals()))
-        obj = { ...obj, ...this.config.globals }
+        obj = { ...obj, ...this.config.globals, __feroom: { modulesPrefixPath: this.config.modulesPrefixPath } }
         return Object.keys(obj).map(key => `window[${ JSON.stringify(key) }] = ${JSON.stringify(obj[key as keyof typeof obj])};\n`).join('')
     }
 

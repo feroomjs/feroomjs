@@ -62,7 +62,7 @@ export async function createFeroomRollupConfig(buildOptions: TFeRoomRollupOption
         external: Object.keys(pkg.dependencies).filter(dep => !bundle.includes(dep)),
         plugins: [
             virtual({
-                './virtual-index.js': getVirtualIndex(buildOptions.input, buildOptions.feroomConfPath),
+                './virtual-index.js': getVirtualIndex(buildOptions),
             }),
             ...plugins,
             ...(buildOptions.plugins || []),
