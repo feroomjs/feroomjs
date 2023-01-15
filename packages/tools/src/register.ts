@@ -31,6 +31,7 @@ export class FeRoomRegister {
         } catch (e) {
             logError(`Failed to register module "${ id }"`)
             logError((e as Error).message)
+            throw (e)
         }
     }
 

@@ -2,9 +2,13 @@ import { FeRoomCli } from './cli'
 import { MoostCli } from '@moostjs/event-cli'
 import { getMoostInfact } from 'moost'
 
-getMoostInfact().silent()
+export { TFeRoomConfig } from 'common'
 
-const app = new FeRoomCli()
-const cli = new MoostCli()
-app.adapter(cli)
-app.init()
+export const cli = () => {
+    getMoostInfact().silent()
+
+    const app = new FeRoomCli()
+    const cli = new MoostCli()
+    app.adapter(cli)
+    app.init()
+}

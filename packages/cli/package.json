@@ -31,7 +31,11 @@
   "homepage": "https://github.com/feroomjs/feroomjs/tree/main/packages/cli#readme",
   "dependencies": {
     "@moostjs/event-cli": "",
+    "@wooksjs/event-cli": "",
     "moost": "",
-    "@feroomjs/tools": ""
+    "@rollup/plugin-node-resolve": "",
+    "@rollup/plugin-commonjs": "",
+    "@rollup/plugin-typescript": "",
+    "@types/node": ""
   }
 }
