@@ -27,10 +27,10 @@ export class CliDev {
             ext: configData.devServer?.ext || [],
         }
 
-        const service = new FeRoom()
+        const server = new FeRoom()
 
         for (const ext of devServer.ext) {
-            service.ext(ext)
+            server.ext(ext)
         }
 
         logger.step('Building bundle...')
@@ -41,8 +41,8 @@ export class CliDev {
 
         const target = `http://localhost:${ devServer.port }`
 
-        service.adapter(new MoostHttp()).listen(devServer.port, () => logger.info('FeRoom dev server is up: ' + target))
-        await service.init()
+        server.adapter(new MoostHttp()).listen(devServer.port, () => logger.info('FeRoom dev server is up: ' + target))
+        await server.init()
 
         await bundlePromise
 

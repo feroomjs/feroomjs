@@ -3,7 +3,7 @@ import nodeResolve from '@rollup/plugin-node-resolve'
 import cjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs'
-import { buildPath, unbuildPath } from '../utils'
+import { buildPath, pkg, unbuildPath } from '../utils'
 import { panic, TFeRoomConfig } from 'common'
 import { logger } from '../logger'
 
@@ -25,7 +25,7 @@ export async function readFeRoomConfigFile(files: string[]): Promise<TFeRoomConf
     if (!filePath) {
         throw panic('Feroom config file was not found.')
     }
-    
+
     logger.step('Importing FeRoom config file from ' + filePath)
     
     const isJs = filePath.endsWith('.js')
@@ -41,10 +41,16 @@ export async function readFeRoomConfigFile(files: string[]): Promise<TFeRoomConf
     try {
         const bundle = await rollup({
             input: filePath,
+            external: [
+                ...Object.keys((pkg.dependencies || {})),
+                ...Object.keys((pkg.devDependencies || {})),
+                ...Object.keys((pkg.peerDependencies || {})),
+            ],
             plugins: [
                 ...ts,
                 nodeResolve({
                     modulePaths: [buildPath('./node_modules')],
+                    preferBuiltins: false,
                 }),
                 cjs(),
             ]
