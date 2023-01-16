@@ -48,6 +48,8 @@ export class FeRoomServe {
         const data = module.files[path]
         if (typeof data === 'string') {
             return data
+        } else if (data instanceof Buffer) {
+            return data
         } else if (typeof data === 'object' && data.type === 'Buffer') {
             return Buffer.from(data.data)
         }

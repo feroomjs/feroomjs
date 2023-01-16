@@ -77,7 +77,7 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
             return 'Module alread exists'
         }
         const files = await getNpmPackageFiles(registry, npmData.name, version)
-        const pkg = JSON.parse(files['package.json'] || '{}') as Record<string, string>
+        const pkg = JSON.parse(files['package.json'] as string || '{}') as Record<string, string>
         const module: Partial<TModuleData<CFG>> = {
             id: npmData.id || pkg.name || npmData.name,
             version: pkg.version,

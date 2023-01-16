@@ -44,7 +44,8 @@ export class FeRoomRegister {
             const relPath = unbuildPath(path)
             if (replace && replace[relPath as keyof typeof replace]) {
                 continue
-            } else if (path.endsWith('.js') || path.endsWith('.map') || path.endsWith('.css') || path.endsWith('.json') || path.endsWith('.txt') || path.endsWith('.mjs') || path.endsWith('.cjs')) {
+            } else if (path.endsWith('.js') || path.endsWith('.map') || path.endsWith('.css') || path.endsWith('.json') || path.endsWith('.txt')
+                || path.endsWith('.mjs') || path.endsWith('.cjs') || path.endsWith('.md') || path.endsWith('.html')) {
                 files[relPath] = readFileSync(path).toString()
             } else {
                 files[relPath] = readFileSync(path)

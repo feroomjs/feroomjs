@@ -2,7 +2,7 @@ import { fetchDistTags, fetchTgz } from './fetcher'
 import { unpackTgzToMemory } from './unpack'
 import { pKey } from './utils'
 
-const cache: Record<string, Promise<Record<string, string>>> = {}
+const cache: Record<string, Promise<Record<string, string | Buffer>>> = {}
 
 export async function getNpmPackageVersion(registryUrl: string, packageName: string, version?: string) {
     if (!version) {
