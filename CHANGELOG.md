@@ -1,3 +1,13 @@
+## [0.0.1](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.28...v0.0.1) (2023-01-16)
+
+
+### Features
+
+* **cli:** implement build command ([08a1ad7](https://github.com/feroomjs/feroomjs/commit/08a1ad76537bf68ed349df9d1a3b98712b36b0a5))
+* **cli:** init package ([9a143b5](https://github.com/feroomjs/feroomjs/commit/9a143b50f3b7472e81a547396a464188cca15a21))
+
+
+
 ## [0.0.1-alpha.28](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.27...v0.0.1-alpha.28) (2023-01-15)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "@feroomjs/cli",
-  "version": "0.0.1-alpha.28",
+  "version": "0.0.1",
   "description": "@feroomjs/cli",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
@@ -30,9 +30,9 @@
   },
   "homepage": "https://github.com/feroomjs/feroomjs/tree/main/packages/cli#readme",
   "dependencies": {
-    "@moostjs/event-cli": "",
+    "@moostjs/event-cli": "^0.2.9",
     "@wooksjs/event-cli": "",
-    "@feroomjs/tools": "",
-    "moost": ""
+    "@feroomjs/tools": "0.0.1",
+    "moost": "^0.2.9"
   }
 }
