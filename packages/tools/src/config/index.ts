@@ -5,6 +5,8 @@ import { getVueRenderedRoutes } from './vue-routes'
 
 export class FeRoomConfigFile {
     protected files: string[] = [
+        './feroom/config.ts',
+        './feroom/config.js',
         './feroom.config.ts',
         './feroom.config.js',
         './feroom.config.json',
