@@ -1,3 +1,12 @@
+## [0.0.5](https://github.com/feroomjs/feroomjs/compare/v0.0.4...v0.0.5) (2023-01-16)
+
+
+### Bug Fixes
+
+* **cli:** improve dev server ([bab9b22](https://github.com/feroomjs/feroomjs/commit/bab9b22f4ccee5b4cb7adb280f5ee75d89b7f4d5))
+
+
+
 ## [0.0.4](https://github.com/feroomjs/feroomjs/compare/v0.0.3...v0.0.4) (2023-01-16)
 
 

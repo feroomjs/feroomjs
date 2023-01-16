@@ -1,6 +1,6 @@
 {
   "name": "feroom",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "feroom",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
@@ -33,8 +33,8 @@
     "@moostjs/event-http": "^0.2.9",
     "@moostjs/event-cli": "^0.2.9",
     "@wooksjs/event-cli": "^0.2.5",
-    "@feroomjs/tools": "0.0.4",
-    "@feroomjs/server": "0.0.4",
+    "@feroomjs/tools": "0.0.5",
+    "@feroomjs/server": "0.0.5",
     "moost": "^0.2.9"
   }
 }
