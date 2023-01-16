@@ -1,3 +1,12 @@
+## [0.0.6](https://github.com/feroomjs/feroomjs/compare/v0.0.5...v0.0.6) (2023-01-16)
+
+
+### Bug Fixes
+
+* **npm-fetcher:** binary files ([c3db2d7](https://github.com/feroomjs/feroomjs/commit/c3db2d79c64cc6f9ade389c02074b42857d29d4a))
+
+
+
 ## [0.0.5](https://github.com/feroomjs/feroomjs/compare/v0.0.4...v0.0.5) (2023-01-16)
 
 
