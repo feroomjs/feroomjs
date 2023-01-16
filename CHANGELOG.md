@@ -1,3 +1,12 @@
+## [0.0.3](https://github.com/feroomjs/feroomjs/compare/v0.0.2...v0.0.3) (2023-01-16)
+
+
+### Features
+
+* **cli:** dev server ([67f3491](https://github.com/feroomjs/feroomjs/commit/67f3491c252ac8a6453e7c3bb605026bcaf75c2a))
+
+
+
 ## [0.0.2](https://github.com/feroomjs/feroomjs/compare/v0.0.1...v0.0.2) (2023-01-16)
 
 
