@@ -32,10 +32,7 @@
   "dependencies": {
     "@moostjs/event-cli": "",
     "@wooksjs/event-cli": "",
-    "moost": "",
-    "@rollup/plugin-node-resolve": "",
-    "@rollup/plugin-commonjs": "",
-    "@rollup/plugin-typescript": "",
-    "@types/node": ""
+    "@feroomjs/tools": "",
+    "moost": ""
   }
 }

@@ -1,11 +1,10 @@
-import { TFeRoomRollupOptions } from 'common'
-import { getVueRoutes, getVueRoutesExports } from './vue-routes'
-import { getFeConf } from './fe-conf'
+import { TFeRoomConfig, TVueRoute } from 'common'
 import { dirname, join } from 'path'
-import { pkg } from './utils'
+import { getVueRoutesExports } from '../config/vue-routes'
+import { pkg } from '../utils'
 
-export function getVirtualIndex(buildOptions: TFeRoomRollupOptions) {
-    const conf = getFeConf(buildOptions.feroomConfPath)
+export function getVirtualIndex(conf: TFeRoomConfig) {
+    const buildOptions = conf.buildOptions || {}
     let content = ''
     if (buildOptions.input) {
         content += `export * from '${ buildOptions.input }';\n`
@@ -23,6 +22,6 @@ export function getVirtualIndex(buildOptions: TFeRoomRollupOptions) {
             content += `__loadCss(window.__feroom.modulesPrefixPath + '${ conf.registerOptions?.id || pkg.name }/${ cssPath }');\n`
         }
     }
-    content += getVueRoutesExports(getVueRoutes(buildOptions.feroomConfPath))
+    content += getVueRoutesExports(conf.extensions?.vueRoutes as TVueRoute[] || [])
     return content
 }

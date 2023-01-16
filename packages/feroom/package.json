@@ -5,8 +5,12 @@
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "bin": {
+    "feroom": "cli"
+  },
   "files": [
-    "dist"
+    "dist",
+    "cli"
   ],
   "repository": {
     "type": "git",
@@ -26,13 +30,9 @@
   },
   "homepage": "https://github.com/feroomjs/feroomjs/tree/main/packages/feroom#readme",
   "dependencies": {
-    "@moostjs/event-http": "^0.2.6",
-    "wooks": "^0.2.5",
-    "@wooksjs/event-http": "^0.2.5",
-    "moost": "^0.2.6",
-    "@prostojs/infact": "^0.0.13",
-    "@feroomjs/npm-fetcher": "0.0.1-alpha.28",
-    "@prostojs/mate": "^0.1.10",
-    "events": "^3.3.0"
+    "@moostjs/event-cli": "",
+    "@wooksjs/event-cli": "",
+    "@feroomjs/tools": "",
+    "moost": ""
   }
 }

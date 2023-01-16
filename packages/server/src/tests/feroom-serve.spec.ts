@@ -16,6 +16,7 @@ reg.registerModule({
     files: {
         'index.js': 'module v1 index.js content'
     },
+    activate: true,
     config: {
         registerOptions: {
             entry: 'index.js',
@@ -28,6 +29,7 @@ reg.registerModule({
     files: {
         'index.js': 'module v2 index.js content'
     },
+    activate: false,
     config: {
         registerOptions: {
             entry: 'index.js',
@@ -62,10 +64,10 @@ describe('feroom serve', () => {
     it('must serve file from module', () => {
         const location = useSetHeader('location')
         expect(serve.serveModule('module')).toBe('')
-        expect(location.value).toBe('/feroom-module/module/index.js')
-        expect(serve.serveModule('module', '', 'index.js')).toBe('module v2 index.js content')
-        expect(serve.serveModule('module', '1', '')).toBe('')
         expect(location.value).toBe('/feroom-module/module@1/index.js')
+        expect(serve.serveModule('module', '', 'index.js')).toBe('module v1 index.js content')
+        expect(serve.serveModule('module', '2', '')).toBe('')
+        expect(location.value).toBe('/feroom-module/module@2/index.js')
         expect(serve.serveModule('module', '1', 'index.js')).toBe('module v1 index.js content')
         expect(serve.serveModule('module2', '', 'index2.js')).toBe('module2 index.js content')
     })

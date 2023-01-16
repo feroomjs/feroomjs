@@ -1,11 +1,11 @@
-import { Plugin } from 'rollup'
-import { pkg } from '../utils'
-import { getVirtualIndex } from '../virtual-index'
-import { feroomConfPlugin } from './feroom-plugin'
+import { Plugin, RollupOptions } from 'rollup'
+import { getLockVersion, pkg } from '../utils'
+import { getVirtualIndex } from './virtual-index'
+import { feRoomConfPlugin } from './feroom-plugin'
 import virtual from 'rollup-plugin-virtual'
 import nodeResolve from '@rollup/plugin-node-resolve'
-import { log, panic, TFeRoomRollupOptions } from 'common'
-import { getLockVersion } from '../fe-conf'
+import { log, panic } from 'common'
+import { FeRoomConfigFile } from '../config'
 
 const defaultTs = {
     tsconfigOverride: {
@@ -13,7 +13,9 @@ const defaultTs = {
     }
 }
 
-export async function createFeroomRollupConfig(buildOptions: TFeRoomRollupOptions) {
+export async function createFeRoomRollupConfig(config: FeRoomConfigFile): Promise<RollupOptions> {
+    const conf = await config.get()
+    const buildOptions = conf.buildOptions || {}
     const plugins: Plugin[] = []
     if (buildOptions.input?.endsWith('.ts') || buildOptions.ts) {
         await appendIfNotExists(
@@ -62,12 +64,12 @@ export async function createFeroomRollupConfig(buildOptions: TFeRoomRollupOption
         external: Object.keys(pkg.dependencies).filter(dep => !bundle.includes(dep)),
         plugins: [
             virtual({
-                './virtual-index.js': getVirtualIndex(buildOptions),
+                './virtual-index.js': getVirtualIndex(conf),
             }),
             ...plugins,
             ...(buildOptions.plugins || []),
             nodeResolve(buildOptions.nodeResolve || { browser: true }),
-            feroomConfPlugin(buildOptions.feroomConfPath),
+            feRoomConfPlugin(await config.render()),
         ]
     }
     

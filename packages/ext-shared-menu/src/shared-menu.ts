@@ -1,19 +1,7 @@
-import { FeRegistry, FeRoomExtension, TFeRoomExtension } from 'feroom'
+import { FeRegistry, FeRoomExtension, TFeRoomExtension } from '@feroomjs/server'
 import { Get, SetHeader } from '@moostjs/event-http'
 import { Controller } from 'moost'
-import { TModuleData } from 'common'
-
-export interface TMenuItem {
-    icon?: string
-    route?: string
-    children?: Record<string, TMenuItem>
-    description?: string
-    params?: Record<string, string>
-}
-
-export type TSharedMenu = Record<string, TMenuItem>
-
-export interface TSharedMenuCfg { sharedMenu?: TSharedMenu }
+import { TModuleData, TSharedMenuCfg, TSharedMenu } from 'common'
 
 @FeRoomExtension('Shared-Menu')
 @Controller()

@@ -1,6 +1,6 @@
 {
   "extends": "../../api-extractor.json",
-  "mainEntryPointFilePath": "./dist/packages/feroom/src/index.d.ts",
+  "mainEntryPointFilePath": "./dist/packages/server/src/index.d.ts",
   "dtsRollup": {
     "publicTrimmedFilePath": "./dist/index.d.ts"
   },
@@ -8,13 +8,12 @@
     "overrideTsconfig": {
       "compilerOptions": {
         "paths": {
-          "common": ["packages/feroom/dist/common"],
-          "common/types": ["packages/feroom/dist/common/types"]
+          "common": ["packages/server/dist/common"]
         }
       },         
       "include": [
-        "packages/feroom/dist/packages",
-        "packages/feroom/dist/common"
+        "packages/server/dist/packages",
+        "packages/server/dist/common"
       ]
     }
   }

@@ -27,8 +27,12 @@
   "homepage": "https://github.com/feroomjs/feroomjs/tree/main/packages/tools#readme",
   "dependencies": {
     "glob": "^8.0.3",
+    "rollup": "",
     "rollup-plugin-virtual": "^1.0.1",
-    "@rollup/plugin-node-resolve": "^15.0.1"
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-commonjs": "",
+    "@rollup/plugin-typescript": "",
+    "@types/node": ""
   },
   "peerDependencies": {
     "rollup-plugin-vue": "^6.0.0",

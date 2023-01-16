@@ -1,7 +1,7 @@
 import { log, logError, warn, panic, TFeRoomConfig } from 'common'
-import { renderFeConf } from './fe-conf'
 import { getFilesByPattern, pkg, unbuildPath } from './utils'
 import { readFileSync } from 'node:fs'
+import { FeRoomConfigFile } from './config'
 
 export class FeRoomRegister {
     constructor(private opts: {
@@ -15,8 +15,8 @@ export class FeRoomRegister {
         return host + '/' + path
     }
 
-    async register(opts?: {conf?: TFeRoomConfig, activate?: boolean}) {
-        const conf = renderFeConf(opts?.conf)
+    async register(opts?: {conf?: TFeRoomConfig | string, activate?: boolean}) {
+        const conf = await (new FeRoomConfigFile(opts?.conf).render())
         const id = conf.registerOptions?.id || pkg.name
         const files = await this.gatherFiles(conf)
 

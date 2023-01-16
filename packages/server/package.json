@@ -1,7 +1,7 @@
 {
-  "name": "@feroomjs/ext-vue-routes",
+  "name": "@feroomjs/server",
   "version": "0.0.1-alpha.28",
-  "description": "@feroomjs/ext-vue-routes",
+  "description": "@feroomjs/server",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -11,7 +11,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/feroomjs/feroomjs.git",
-    "directory": "packages/ext-vue-routes"
+    "directory": "packages/server"
   },
   "keywords": [
     "feroom",
@@ -24,12 +24,15 @@
   "bugs": {
     "url": "https://github.com/feroomjs/feroomjs/issues"
   },
-  "homepage": "https://github.com/feroomjs/feroomjs/tree/main/packages/ext-vue-routes#readme",
-  "peerDependencies": {
-    "@feroomjs/server": "0.0.1-alpha.28",
+  "homepage": "https://github.com/feroomjs/feroomjs/tree/main/packages/server#readme",
+  "dependencies": {
+    "wooks": "^0.2.5",
+    "moost": "^0.2.6",
     "@moostjs/event-http": "^0.2.6",
     "@wooksjs/event-http": "^0.2.5",
-    "moost": "^0.2.6",
-    "vue-router": "^4.1.6"
+    "@prostojs/infact": "^0.0.13",
+    "@feroomjs/npm-fetcher": "0.0.1-alpha.28",
+    "@prostojs/mate": "^0.1.11",
+    "events": "^3.3.0"
   }
 }

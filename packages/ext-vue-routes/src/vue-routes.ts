@@ -1,17 +1,8 @@
-import { FeRegistry, FeRoomExtension, TFeRoomExtension } from 'feroom'
+import { FeRegistry, FeRoomExtension, TFeRoomExtension } from '@feroomjs/server'
 import { Get, SetHeader } from '@moostjs/event-http'
 import { Controller } from 'moost'
 import { logError, TModuleData } from 'common'
-
-export interface TVueRoute {
-    path: string
-    component?: string
-    children?: TVueRoute[]
-    name?: string
-    props?: boolean
-}
-
-export interface TRoutesCfg { vueRoutes?: TVueRoute[] }
+import { TVueRoute, TVueRoutesCfg } from 'common'
 
 @FeRoomExtension('VueRoutes')
 @Controller()
@@ -22,7 +13,7 @@ export class VueRoutesExt implements TFeRoomExtension {
         return { '@feroom-ext/vue-routes': '/feroom-ext/vue-routes.js' }
     }
 
-    getModuleRoutes(module: TModuleData<TRoutesCfg>): TVueRoute[] {
+    getModuleRoutes(module: TModuleData<TVueRoutesCfg>): TVueRoute[] {
         return module.config.extensions?.vueRoutes || []
     }
 

@@ -1,9 +1,8 @@
 import { Plugin } from 'rollup'
+import { TSharedMenuCfg } from './shared-menu.types'
+import { TVueRoutesCfg } from './vue-route.types'
 
-export interface TFeRoomExtensionsOptionsAll {
-    sharedMenu?: object
-    vueRoutes?: object[]
-}
+export type TFeRoomExtensionsOptionsAll = TSharedMenuCfg & TVueRoutesCfg
 
 export interface TFeRoomConfig<EXT extends object = TFeRoomExtensionsOptionsAll> {
     registerOptions?: TFeRoomRegisterOptions
@@ -42,7 +41,6 @@ export interface TFeRoomRollupOptions {
         bundle?: string[]
         lockVersion?: string[]
     }
-    feroomConfPath?: string
     output?: string // './dist/index.js'
     plugins?: Plugin[]
 }
@@ -65,3 +63,6 @@ export type TNpmModuleData<EXT extends object = object> = {
 } & Partial<TModuleData<EXT>>
 
 export type TClassConstructor<T = unknown> = new (...args : any[]) => T
+
+export * from './vue-route.types'
+export * from './shared-menu.types'

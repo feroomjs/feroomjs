@@ -1,7 +1,8 @@
-import { FeRegistry } from '@feroomjs/feroom'
-import { TRoutesCfg, VueRoutesExt } from './vue-routes'
+import { FeRegistry } from '@feroomjs/server'
+import { TVueRoutesCfg } from 'common'
+import { VueRoutesExt } from './vue-routes'
 
-const reg = new FeRegistry<TRoutesCfg>()
+const reg = new FeRegistry<TVueRoutesCfg>()
 reg.registerModule({
     id: 'module',
     version: '1',

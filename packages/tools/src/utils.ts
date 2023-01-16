@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs'
 export const rootPath = process.cwd()
 
 export function buildPath(...parts: string[]) {
-    return join(rootPath, ...parts)
+    return parts[0].startsWith('/') ? join(...parts) : join(rootPath, ...parts)
 }
 
 export function unbuildPath(path: string) {
@@ -45,3 +45,7 @@ export function globPromise(path: string): Promise<string[]> {
 }
 
 export const pkg = JSON.parse(readFileSync(buildPath('./package.json')).toString())
+
+export function getLockVersion(dep: string) {
+    return JSON.parse(readFileSync(buildPath('node_modules', dep, 'package.json')).toString()).version
+}

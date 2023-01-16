@@ -1,8 +1,16 @@
-export * from './registry'
-export * from './feroom'
-export * from './types'
-export * from './feroom-serve'
-export * from './config'
-export * from './index-html'
-export * from './extension'
-export * from './decorators'
+import { FeRoomCli } from './cli'
+import { MoostCli } from '@moostjs/event-cli'
+import { getMoostInfact } from 'moost'
+
+export { TFeRoomConfig } from 'common'
+
+export const cli = () => {
+    getMoostInfact().silent()
+
+    const app = new FeRoomCli()
+    const cli = new MoostCli()
+    app.adapter(cli)
+    app.init()
+}
+
+export * from 'common/types'

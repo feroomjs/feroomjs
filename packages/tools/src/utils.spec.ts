@@ -7,6 +7,7 @@ describe('tools utils', () => {
   "/home/amaltsev/feroomjs/scripts/build.js",
   "/home/amaltsev/feroomjs/scripts/deps.js",
   "/home/amaltsev/feroomjs/scripts/jiti.js",
+  "/home/amaltsev/feroomjs/scripts/local.js",
   "/home/amaltsev/feroomjs/scripts/release.js",
   "/home/amaltsev/feroomjs/scripts/utils.js",
   "/home/amaltsev/feroomjs/scripts/verifyCommit.js",

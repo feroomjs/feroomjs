@@ -1,5 +1,6 @@
-import { FeRegistry } from "@feroomjs/feroom"
-import { SharedMenuExt, TSharedMenuCfg } from "./shared-menu"
+import { FeRegistry } from '@feroomjs/server'
+import { TSharedMenuCfg } from 'common'
+import { SharedMenuExt } from './shared-menu'
 
 
 const reg = new FeRegistry<TSharedMenuCfg>()
