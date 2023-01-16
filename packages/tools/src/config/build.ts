@@ -5,10 +5,14 @@ import typescript from '@rollup/plugin-typescript'
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs'
 import { buildPath, unbuildPath } from '../utils'
 import { panic, TFeRoomConfig } from 'common'
+import { logger } from '../logger'
 
 export async function readFeRoomConfigFile(files: string[]): Promise<TFeRoomConfig> {
     let filePath: string = ''
     let builtFilePath = ''
+
+    logger.step('Looking for FeRoom config file...')
+
     for (const file of files) {
         filePath = buildPath(file)
         if (existsSync(filePath)) {
@@ -21,6 +25,8 @@ export async function readFeRoomConfigFile(files: string[]): Promise<TFeRoomConf
     if (!filePath) {
         throw panic('Feroom config file was not found.')
     }
+    
+    logger.step('Importing FeRoom config file from ' + filePath)
     
     const isJs = filePath.endsWith('.js')
     const isTs = filePath.endsWith('.ts')

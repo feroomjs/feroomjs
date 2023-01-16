@@ -1,7 +1,8 @@
-import { log, logError, warn, panic, TFeRoomConfig } from 'common'
+import { TFeRoomConfig } from 'common'
 import { getFilesByPattern, pkg, unbuildPath } from './utils'
 import { readFileSync } from 'node:fs'
 import { FeRoomConfigFile } from './config'
+import { logger } from './logger'
 
 export class FeRoomRegister {
     constructor(private opts: {
@@ -27,15 +28,16 @@ export class FeRoomRegister {
                 files,
                 activate: opts?.activate,
             })
-            log(`✔ Module "${ id }" Registered on ${ this.opts.host }`)
+            logger.info(`\n✔ Module "${ id }" Registered on ${ this.opts.host }`)
         } catch (e) {
-            logError(`Failed to register module "${ id }"`)
-            logError((e as Error).message)
+            logger.error(`Failed to register module "${ id }"`)
+            logger.error((e as Error).message)
             throw (e)
         }
     }
 
     async gatherFiles(conf: TFeRoomConfig) {
+        logger.step('Lookup files...')
         const files: Record<string, string | Buffer> = {}
         const paths = await getFilesByPattern(conf.registerOptions?.include || pkg.files, conf.registerOptions?.exclude)
         for (const path of paths) {
@@ -45,23 +47,25 @@ export class FeRoomRegister {
             } else {
                 files[relPath] = readFileSync(path)
             }
-            log(`${ __DYE_CYAN__ }+ ${ relPath }`)
-        }
-        if (!files[conf.registerOptions?.entry as string]) {
-            warn(`Entry "${ conf.registerOptions?.entry }" file is not included in files list`)
+            const dts = relPath.endsWith('.d.ts')
+            logger.info(`• ${dts ? __DYE_DIM__ + __DYE_CYAN__ : ''}${ relPath } ${ __DYE_GREEN__+__DYE_DIM__ }→ ${ this.opts.host }`)
         }
         if (!files['feroom.config.json']) {
-            log(`${ __DYE_CYAN__ }+ feroom.config.json`)
+            logger.info(`${ __DYE_GREEN__ }• feroom.config.json ${ __DYE_DIM__ }→ ${ this.opts.host }`)
         }
         files['feroom.config.json'] = JSON.stringify(conf)
         if (!files['package.json']) {
             files['package.json'] = JSON.stringify(pkg)
-            log(`${ __DYE_CYAN__ }+ package.json`)
+            logger.info(`${ __DYE_GREEN__ }• package.json ${ __DYE_DIM__ }→ ${ this.opts.host }`)
+        }
+        if (!files[conf.registerOptions?.entry as string] && !files[(conf.registerOptions?.entry || '').replace(/^\.\//, '')]) {
+            logger.warn(`Entry "${ conf.registerOptions?.entry }" file is not included in files list`)
         }
         return files
     }
 
     async postModule(module: { id: string, version: string, files: Record<string, string | Buffer>, activate?: boolean }) {
+        logger.step('Posting files...')
         const res = await fetch(this.getUrl('feroom-module/register'), {
             method: 'POST',
             headers: {
@@ -71,8 +75,9 @@ export class FeRoomRegister {
             body: JSON.stringify(module)
         })
         if (res.status > 299) {
-            const text = await res.text()
-            throw panic(res.status + ' ' + text)
+            const text = res.status + ' ' + (await res.text())
+            logger.error(text)
+            throw new Error(text)
         }
     }
 }

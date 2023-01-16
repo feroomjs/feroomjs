@@ -4,8 +4,9 @@ import { getVirtualIndex } from './virtual-index'
 import { feRoomConfPlugin } from './feroom-plugin'
 import virtual from 'rollup-plugin-virtual'
 import nodeResolve from '@rollup/plugin-node-resolve'
-import { log, panic } from 'common'
+import { panic } from 'common'
 import { FeRoomConfigFile } from '../config'
+import { logger } from '../logger'
 
 const defaultTs = {
     tsconfigOverride: {
@@ -43,12 +44,12 @@ export async function createFeRoomRollupConfig(config: FeRoomConfigFile): Promis
         for (const dep of buildOptions.dependencies.lockVersion) {
             const version = getLockVersion(dep)
             paths[dep] = `${ dep }@${ version }`
-            log(`Locking version of "${ dep }" to v${ version }`)
+            logger.step(`Locking version of "${ dep }" to v${ version }`)
         }
     }
     if (buildOptions.dependencies?.bundle) {
         for (const dep of buildOptions.dependencies.bundle) {
-            log(`Bundling in "${ dep }"`)
+            logger.step(`Bundling in "${ dep }"`)
         }
     }
     const bundle = buildOptions.dependencies?.bundle ? [buildOptions.dependencies?.bundle].flat(1) : []

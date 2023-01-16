@@ -9,5 +9,11 @@ export class FeRoomCli extends Moost {
             FeRoomCliBuild,
             FeRoomCliRegister,
         )
+        this.applyGlobalInterceptors((before, after, onError) => {
+            onError((error) => {
+                console.error(error.message)
+                process.exit(1)
+            })
+        })
     }
 }
