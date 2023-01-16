@@ -62,7 +62,13 @@ export async function createFeRoomRollupConfig(config: FeRoomConfigFile): Promis
             sourcemap: true,
             paths,
         },
-        external: Object.keys(pkg.dependencies).filter(dep => !bundle.includes(dep)),
+        external: [
+            ...Object.keys(pkg.dependencies || {}).filter(dep => !bundle.includes(dep)),
+            ...Object.keys(pkg.peerDependencies || {}).filter(dep => !bundle.includes(dep)),
+            // ext dynamic imports
+            '@feroom-ext/vue-routes',
+            '@feroom-ext/shared-menu',
+        ],
         plugins: [
             virtual({
                 './virtual-index.js': getVirtualIndex(conf),

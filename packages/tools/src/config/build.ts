@@ -73,11 +73,12 @@ export async function readFeRoomConfigFile(files: string[]): Promise<TFeRoomConf
         throw panic(message)
     }
 
-    const data = require(builtFilePath) as TFeRoomConfig
-    
-    if (builtFilePath && existsSync(builtFilePath)) {
+    try {
+        const data = require(builtFilePath) as TFeRoomConfig
         unlinkSync(builtFilePath)
+        return data
+    } catch (e) {
+        unlinkSync(builtFilePath)
+        throw e
     }
-
-    return data
 }

@@ -16,10 +16,10 @@ export class FeRoomRegister {
         return host + '/' + path
     }
 
-    async register(opts?: {conf?: FeRoomConfigFile | TFeRoomConfig | string, activate?: boolean}) {
+    async register(opts?: {conf?: FeRoomConfigFile | TFeRoomConfig | string, activate?: boolean, files?: Record<string, string | Buffer>}) {
         const conf = await (opts?.conf instanceof FeRoomConfigFile ? opts.conf : new FeRoomConfigFile(opts?.conf)).render()
         const id = conf.registerOptions?.id || pkg.name
-        const files = await this.gatherFiles(conf)
+        const files = await this.gatherFiles(conf, opts?.files)
 
         try {
             await this.postModule({
@@ -36,19 +36,28 @@ export class FeRoomRegister {
         }
     }
 
-    async gatherFiles(conf: TFeRoomConfig) {
+    async gatherFiles(conf: TFeRoomConfig, replace?: Record<string, string | Buffer>) {
         logger.step('Lookup files...')
         const files: Record<string, string | Buffer> = {}
         const paths = await getFilesByPattern(conf.registerOptions?.include || pkg.files, conf.registerOptions?.exclude)
         for (const path of paths) {
             const relPath = unbuildPath(path)
-            if (path.endsWith('.js') || path.endsWith('.map') || path.endsWith('.css') || path.endsWith('.json') || path.endsWith('.txt') || path.endsWith('.mjs') || path.endsWith('.cjs')) {
+            if (replace && replace[relPath as keyof typeof replace]) {
+                continue
+            } else if (path.endsWith('.js') || path.endsWith('.map') || path.endsWith('.css') || path.endsWith('.json') || path.endsWith('.txt') || path.endsWith('.mjs') || path.endsWith('.cjs')) {
                 files[relPath] = readFileSync(path).toString()
             } else {
                 files[relPath] = readFileSync(path)
             }
             const dts = relPath.endsWith('.d.ts')
             logger.info(`• ${dts ? __DYE_DIM__ + __DYE_CYAN__ : ''}${ relPath } ${ __DYE_GREEN__+__DYE_DIM__ }→ ${ this.opts.host }`)
+        }
+        if (replace) {
+            for (const [relPath, file] of Object.entries(replace)) {
+                files[relPath] = file
+                const dts = relPath.endsWith('.d.ts')
+                logger.info(`• ${dts ? __DYE_DIM__ + __DYE_CYAN__ : ''}${ relPath } ${ __DYE_GREEN__+__DYE_DIM__ }→ ${ this.opts.host }`)
+            }
         }
         if (!files['feroom.config.json']) {
             logger.info(`${ __DYE_GREEN__ }• feroom.config.json ${ __DYE_DIM__ }→ ${ this.opts.host }`)

@@ -35,7 +35,7 @@ export class CliDev {
 
         logger.step('Building bundle...')
 
-        const bundlePromise = buildBundle(config)
+        const filesPromise = buildBundle(config, false)
 
         logger.step('Starting dev server...')
 
@@ -44,7 +44,7 @@ export class CliDev {
         server.adapter(new MoostHttp()).listen(devServer.port, () => logger.info('FeRoom dev server is up: ' + target))
         await server.init()
 
-        await bundlePromise
+        const files = await filesPromise
 
         logger.step('Registering dev module...')
 
@@ -52,6 +52,7 @@ export class CliDev {
         await fr.register({
             activate: true,
             conf: config,
+            files,
         })
 
         restoreCtx()
