@@ -30,9 +30,11 @@
   },
   "homepage": "https://github.com/feroomjs/feroomjs/tree/main/packages/feroom#readme",
   "dependencies": {
+    "@moostjs/event-http": "^0.2.9",
     "@moostjs/event-cli": "^0.2.9",
     "@wooksjs/event-cli": "",
     "@feroomjs/tools": "0.0.2",
+    "@feroomjs/server": "0.0.2",
     "moost": "^0.2.9"
   }
 }

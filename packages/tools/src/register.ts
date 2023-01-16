@@ -16,8 +16,8 @@ export class FeRoomRegister {
         return host + '/' + path
     }
 
-    async register(opts?: {conf?: TFeRoomConfig | string, activate?: boolean}) {
-        const conf = await (new FeRoomConfigFile(opts?.conf).render())
+    async register(opts?: {conf?: FeRoomConfigFile | TFeRoomConfig | string, activate?: boolean}) {
+        const conf = await (opts?.conf instanceof FeRoomConfigFile ? opts.conf : new FeRoomConfigFile(opts?.conf)).render()
         const id = conf.registerOptions?.id || pkg.name
         const files = await this.gatherFiles(conf)
 
@@ -53,7 +53,7 @@ export class FeRoomRegister {
         if (!files['feroom.config.json']) {
             logger.info(`${ __DYE_GREEN__ }• feroom.config.json ${ __DYE_DIM__ }→ ${ this.opts.host }`)
         }
-        files['feroom.config.json'] = JSON.stringify(conf)
+        files['feroom.config.json'] = JSON.stringify({ registerOptions: conf.registerOptions, extensions: conf.extensions })
         if (!files['package.json']) {
             files['package.json'] = JSON.stringify(pkg)
             logger.info(`${ __DYE_GREEN__ }• package.json ${ __DYE_DIM__ }→ ${ this.opts.host }`)

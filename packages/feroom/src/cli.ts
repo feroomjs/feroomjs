@@ -1,13 +1,15 @@
 import { Moost } from 'moost'
-import { FeRoomCliBuild } from './build'
-import { FeRoomCliRegister } from './register'
+import { CliBuild } from './build'
+import { CliDev } from './dev'
+import { CliRegister } from './register'
 
 export class FeRoomCli extends Moost {
     constructor() {
         super({ silent: true })
         this.registerControllers(
-            FeRoomCliBuild,
-            FeRoomCliRegister,
+            CliBuild,
+            CliRegister,
+            CliDev,
         )
         this.applyGlobalInterceptors((before, after, onError) => {
             onError((error) => {

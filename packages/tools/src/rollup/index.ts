@@ -9,8 +9,8 @@ import { logger } from '../logger'
 export * from './feroom-plugin'
 export * from './rollup-conf'
 
-export async function buildBundle(confPath?: string | TFeRoomConfig) {
-    const config = new FeRoomConfigFile(confPath)
+export async function buildBundle(confPath?: string | TFeRoomConfig | FeRoomConfigFile) {
+    const config = confPath instanceof FeRoomConfigFile ? confPath : new FeRoomConfigFile(confPath)
     const rollupConfig = await createFeRoomRollupConfig(config)
     try {
         logger.step('Bundling up files...')

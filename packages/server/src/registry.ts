@@ -67,6 +67,9 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
     }
 
     async registerFromNpm(npmData: TNpmModuleData<CFG>) {
+        if (!npmData.name) {
+            throw panic('Can not register npm module: option "name" is not provided.')
+        }
         const registry = npmData.registry || 'https://registry.npmjs.org'
         const version = await getNpmPackageVersion(registry, npmData.name, npmData.version)
         if (!npmData.forceRegister && this.exists(npmData.name, version)) {

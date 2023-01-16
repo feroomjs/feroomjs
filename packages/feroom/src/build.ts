@@ -5,7 +5,7 @@ import { useFlag } from '@wooksjs/event-cli'
 import { panic } from 'common'
 
 @Controller()
-export class FeRoomCliBuild {
+export class CliBuild {
     @Cli()
     async build() {
         logger.title('FeRoom Build')

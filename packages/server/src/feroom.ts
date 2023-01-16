@@ -2,13 +2,11 @@ import { getMoostInfact, Moost } from 'moost'
 import { FeRegistry } from './registry'
 import { createProvideRegistry } from '@prostojs/infact'
 import { FeRoomServe } from './feroom-serve'
-import { TFeRoomOptions } from './types'
 import { FeRoomConfig } from './config'
 import { FeRoomIndex } from './index-html'
 import { FeRoomApi } from './feroom-api'
-import { log, panic, TClassConstructor } from 'common'
+import { log, panic, TClassConstructor, TFeRoomExtension, TFeRoomServerOptions } from 'common'
 import { feroomMate } from './decorators'
-import { TFeRoomExtension } from './extension'
 import { isConstructor } from '@prostojs/mate'
 
 interface TWrappedExt { instance: TFeRoomExtension, name: string }
@@ -19,7 +17,7 @@ export class FeRoom extends Moost {
     protected _config: FeRoomConfig
     protected _ext: (() => Promise<TWrappedExt> | TWrappedExt)[] = []
 
-    constructor(options?: TFeRoomOptions, registry?: FeRegistry) {
+    constructor(options?: TFeRoomServerOptions, registry?: FeRegistry) {
         super()
         this._registry = registry || new FeRegistry()
         this._config = new FeRoomConfig(options || {})
@@ -29,6 +27,13 @@ export class FeRoom extends Moost {
             ['FEROOM_EXT_ARRAY', () => this._ext],
         ))
         this.registerControllers(FeRoomServe, FeRoomIndex, FeRoomApi)
+    }
+
+    async init() {
+        await super.init()
+        for (const dep of this._config.npmDeps) {
+            await this._registry.registerFromNpm(dep)
+        }
     }
 
     async ext(...args: (TClassConstructor<TFeRoomExtension> | TFeRoomExtension)[]) {

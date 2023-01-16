@@ -1,7 +1,7 @@
-import { TFeRoomOptions } from './types'
+import { TFeRoomServerOptions, TNpmModuleData } from 'common'
 
 export class FeRoomConfig {
-    constructor(protected options: TFeRoomOptions) {}
+    constructor(protected options: TFeRoomServerOptions) {}
 
     get modulesPrefixPath() {
         return this.options.modulesPrefixPath || 'feroom-module/'
@@ -37,6 +37,11 @@ export class FeRoomConfig {
 
     get importMap() {
         return this.options.importMap || {}
+    }
+
+    get npmDeps(): TNpmModuleData[] {
+        const deps = this.options.importNpmDependencies || {}
+        return Object.entries(deps).map(([name, value]) => ({...value, name}))
     }
 
 }

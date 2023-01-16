@@ -1,7 +1,7 @@
-import { FeRegistry, FeRoomExtension, TFeRoomExtension } from '@feroomjs/server'
+import { FeRegistry, FeRoomExtension } from '@feroomjs/server'
 import { Get, SetHeader } from '@moostjs/event-http'
 import { Controller } from 'moost'
-import { logError, TModuleData } from 'common'
+import { logError, TFeRoomExtension, TModuleData } from 'common'
 import { TVueRoute, TVueRoutesCfg } from 'common'
 
 @FeRoomExtension('VueRoutes')

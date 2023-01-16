@@ -5,7 +5,7 @@ import { panic } from 'common'
 import { FeRoomRegister, logger } from '@feroomjs/tools'
 
 @Controller()
-export class FeRoomCliRegister {
+export class CliRegister {
     @Cli()
     async register() {
         logger.title('FeRoom Register')

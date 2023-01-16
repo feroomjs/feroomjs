@@ -5,6 +5,7 @@ import { TVueRoutesCfg } from './vue-route.types'
 export type TFeRoomExtensionsOptionsAll = TSharedMenuCfg & TVueRoutesCfg
 
 export interface TFeRoomConfig<EXT extends object = TFeRoomExtensionsOptionsAll> {
+    devServer?: TFeRoomDevServerOptions
     registerOptions?: TFeRoomRegisterOptions
     buildOptions?: TFeRoomRollupOptions
     extensions?: EXT
@@ -57,12 +58,41 @@ export interface TModuleData<EXT extends object = object> {
 
 export type TNpmModuleData<EXT extends object = object> = {
     registry?: string
-    name: string
+    name?: string
     version?: string
     forceRegister?: boolean
 } & Partial<TModuleData<EXT>>
+
+export interface TFeRoomDevServerOptions {
+    port?: number
+    feroom?: TFeRoomServerOptions
+    ext?: (TClassConstructor<TFeRoomExtension> | TFeRoomExtension)[]
+}
+
+export interface TFeRoomExtension {
+    injectGlobals?(): Record<string, unknown>
+    injectImportMap?(): Record<string, string>
+    injectHead?(): string
+    injectIndexBody?(): string
+}
+
+export interface TFeRoomServerOptions {
+    modulesPrefixPath?: string
+    globals?: object
+    title?: string
+    preloadCss?: (string | [string, string])[] 
+    preloadScript?: (string | [string, string])[]
+    preloadModule?: string[]
+    body?: string
+    head?: string
+    importMap?: { [name: string]: string }
+    importNpmDependencies?: {
+        [name: string]: TNpmModuleData
+    }
+}
 
 export type TClassConstructor<T = unknown> = new (...args : any[]) => T
 
 export * from './vue-route.types'
 export * from './shared-menu.types'
+

@@ -4,7 +4,7 @@ import { FeRegistry } from './registry'
 import { FeModule } from './module'
 import { Get, SetHeader } from '@moostjs/event-http'
 import { renderCssTag, renderModuleScriptTag } from './utils'
-import { TFeRoomExtension } from './extension'
+import { TFeRoomExtension } from 'common'
 
 interface TWrappedExt { instance: TFeRoomExtension, name: string }
 
