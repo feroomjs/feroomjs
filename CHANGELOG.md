@@ -1,3 +1,12 @@
+## [0.0.2](https://github.com/feroomjs/feroomjs/compare/v0.0.1...v0.0.2) (2023-01-16)
+
+
+### Features
+
+* **cli:** improve logging ([b2be010](https://github.com/feroomjs/feroomjs/commit/b2be010ec0a04a48478e252989adce4bb668bc44))
+
+
+
 ## [0.0.1](https://github.com/feroomjs/feroomjs/compare/v0.0.1-alpha.28...v0.0.1) (2023-01-16)
 
 
