@@ -1,6 +1,6 @@
 {
   "name": "@feroomjs/server",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "@feroomjs/server",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
@@ -31,7 +31,7 @@
     "@moostjs/event-http": "^0.2.9",
     "@wooksjs/event-http": "^0.2.5",
     "@prostojs/infact": "^0.0.13",
-    "@feroomjs/npm-fetcher": "0.0.3",
+    "@feroomjs/npm-fetcher": "0.0.4",
     "@prostojs/mate": "^0.1.11",
     "events": "^3.3.0"
   }

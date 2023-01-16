@@ -1,3 +1,12 @@
+## [0.0.4](https://github.com/feroomjs/feroomjs/compare/v0.0.3...v0.0.4) (2023-01-16)
+
+
+### Bug Fixes
+
+* **cli:** add external to config build ([95af307](https://github.com/feroomjs/feroomjs/commit/95af3070a0667d5a201e9f3f0ad5130de7cf357c))
+
+
+
 ## [0.0.3](https://github.com/feroomjs/feroomjs/compare/v0.0.2...v0.0.3) (2023-01-16)
 
 
