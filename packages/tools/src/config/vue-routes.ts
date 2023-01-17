@@ -27,7 +27,7 @@ export function getVueRoutesMap(vueRoutes: TVueRoute[]) {
 }
 
 export function getVueRenderedRoutes(vueRoutes: TVueRoute[], moduleId: string) {
-    const _routes = JSON.parse(JSON.stringify(vueRoutes))
+    const _routes = JSON.parse(JSON.stringify(vueRoutes)) as TVueRoute[]
     const map = getVueRoutesMap(vueRoutes)
     iterateChildren(_routes)
     function iterateChildren(root: TVueRoute[]) {

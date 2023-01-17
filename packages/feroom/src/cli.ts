@@ -1,4 +1,4 @@
-import { Moost } from 'moost'
+import { Moost, validatePipe } from 'moost'
 import { CliBuild } from './build'
 import { CliDev } from './dev'
 import { CliRegister } from './register'
@@ -18,5 +18,6 @@ export class FeRoomCli extends Moost {
                 process.exit(1)
             })
         })
+        this.applyGlobalPipes(validatePipe())
     }
 }

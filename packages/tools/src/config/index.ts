@@ -1,4 +1,4 @@
-import { panic, TFeRoomConfig, TVueRoute } from 'common'
+import { panic, TFeRoomConfig } from 'common'
 import { getLockVersion, pkg } from '../utils'
 import { readFeRoomConfigFile } from './build'
 import { getVueRenderedRoutes } from './vue-routes'
@@ -41,7 +41,7 @@ export class FeRoomConfigFile {
                 data.registerOptions.entry = pkg?.module || pkg?.main
             }
             if (data.extensions?.vueRoutes) {
-                data.extensions.vueRoutes = getVueRenderedRoutes(data.extensions.vueRoutes as TVueRoute[], id)
+                data.extensions.vueRoutes = getVueRenderedRoutes(data.extensions.vueRoutes, id)
             }
             if (data.buildOptions?.dependencies?.lockVersion) {
                 data.registerOptions.lockDependency = {}

@@ -10,22 +10,23 @@ export const cli = () => {
     const app = new FeRoomCli()
     const cli = new MoostCli()
     app.adapter(cli)
-    app.init()
+    void app.init()
 }
 
-
 function supressNodeWarnings() {
-    const { emitWarning } = process;
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    const { emitWarning } = process
     process.emitWarning = (warning, ...args) => {
         if (args[0] === 'ExperimentalWarning') {
-            return;
+            return
         }
 
         if (args[0] && typeof args[0] === 'object' && args[0].type === 'ExperimentalWarning') {
-            return;
+            return
         }
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        return emitWarning(warning, ...args);
+        return emitWarning(warning, ...args)
     }    
 }
 

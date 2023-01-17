@@ -1,19 +1,22 @@
-import { Cli } from '@moostjs/event-cli'
-import { Controller } from 'moost'
+import { Cli, CliParam } from '@moostjs/event-cli'
+import { Controller, Injectable, Validate } from 'moost'
 import { buildBundle, logger } from '@feroomjs/tools'
-import { useFlag } from '@wooksjs/event-cli'
 import { panic } from 'common'
 
+@Injectable('FOR_EVENT')
 @Controller()
 export class CliBuild {
+    @CliParam(['c', 'configPath'], 'Path to the FeRoom Config file.')
+    @Validate(v => typeof v !== 'undefined' && typeof v !== 'string' ? 'string value expected with path to FeRoom Config file.' : true)
+    configPath?: string
+
     @Cli()
     async build() {
         logger.title('FeRoom Build')
 
-        const confPath = useFlag('c')
-        if (typeof confPath !== 'undefined' && typeof confPath !== 'string') throw panic('Key -c must has string value.')
+        if (typeof this.configPath !== 'undefined' && typeof this.configPath !== 'string') throw panic('Key -c must have string value.')
 
-        await buildBundle(confPath)
+        await buildBundle(this.configPath)
         
         logger.info('\n✔ Build done')
 

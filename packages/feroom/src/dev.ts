@@ -1,22 +1,26 @@
-import { Cli } from '@moostjs/event-cli'
-import { Controller } from 'moost'
-import { useCliContext, useFlag } from '@wooksjs/event-cli'
+import { Cli, CliParam } from '@moostjs/event-cli'
+import { Controller, Injectable, Validate } from 'moost'
+import { useCliContext } from '@wooksjs/event-cli'
 import { panic } from 'common'
 import { buildBundle, FeRoomConfigFile, FeRoomRegister, logger } from '@feroomjs/tools'
 import { FeRoom } from '@feroomjs/server'
 import { MoostHttp } from '@moostjs/event-http'
 
+@Injectable('FOR_EVENT')
 @Controller()
 export class CliDev {
+    @CliParam(['c', 'configPath'], 'Path to the FeRoom Config file.')
+    @Validate(v => typeof v !== 'undefined' && typeof v !== 'string' ? 'string value expected with path to FeRoom Config file.' : true)
+    configPath?: string
+
     @Cli()
     async dev() {
         logger.title('FeRoom Dev Server')
 
         const { restoreCtx } = useCliContext()
-        const confPath = useFlag('c')
-        if (typeof confPath !== 'undefined' && typeof confPath !== 'string') throw panic('Key -c must has string value.')
+        if (typeof this.configPath !== 'undefined' && typeof this.configPath !== 'string') throw panic('Key -c must has string value.')
 
-        const config = new FeRoomConfigFile(confPath)
+        const config = new FeRoomConfigFile(this.configPath)
         const configData = await config.get()
 
         const devServer: Required<(typeof configData)['devServer']> = {
@@ -30,7 +34,7 @@ export class CliDev {
         const server = new FeRoom()
 
         for (const ext of devServer.ext) {
-            server.ext(ext)
+            void server.ext(ext)
         }
 
         logger.step('Building bundle...')
@@ -41,7 +45,7 @@ export class CliDev {
 
         const target = `http://localhost:${ devServer.port }`
 
-        server.adapter(new MoostHttp()).listen(devServer.port, () => logger.info('FeRoom dev server is up: ' + target))
+        void server.adapter(new MoostHttp()).listen(devServer.port, () => logger.info('FeRoom dev server is up: ' + target))
         await server.init()
 
         const files = await filesPromise
