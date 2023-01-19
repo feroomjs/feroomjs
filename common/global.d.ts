@@ -55,7 +55,6 @@ declare var __DYE_BG_BLACK__: string
 declare var __DYE_BLACK_BRIGHT__: string
 declare var __DYE_BG_BLACK_BRIGHT__: string
 
-
 declare module 'rollup-plugin-virtual' {
     import { Plugin } from 'rollup'
     declare const pl: (opts: Record<string, string>) => Plugin

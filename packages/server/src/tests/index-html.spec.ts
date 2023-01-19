@@ -4,11 +4,11 @@ import { FeRegistry } from '../registry'
 
 const config = new FeRoomConfig({
     importMap: {
-        'test': 'test.js'
+        'test': 'test.js',
     },
     globals: {
         _VAR_: 'var-value',
-        process: { env: { NODE_ENV: 'dev' } }
+        process: { env: { NODE_ENV: 'dev' } },
     },
     preloadCss: [
         'stand-alone.css',
@@ -21,7 +21,7 @@ const config = new FeRoomConfig({
     preloadModule: ['module'],
     title: 'Title',
     head: '<meta />',
-    body: '<!-- body -->'
+    body: '<!-- body -->',
 })
 
 const reg = new FeRegistry()
@@ -35,8 +35,8 @@ reg.registerModule({
             preloadScripts: 'm1.js',
             preloadCss: ['m1-1.css', 'm1-2.css'],
             appendHead: '<meta module v1 />',
-        }
-    }
+        },
+    },
 })
 reg.registerModule({
     id: 'module2',
@@ -44,12 +44,12 @@ reg.registerModule({
     files: {},
     config: {
         registerOptions: {
-        entry: 'index2.js',
+            entry: 'index2.js',
             preloadScripts: ['m2-1.js', 'm2-2.js'],
             preloadCss: 'm2.css',
             preloadEntry: 'body:last',
-        }
-    }
+        },
+    },
 })
 reg.registerModule({
     id: 'module2',
@@ -62,8 +62,8 @@ reg.registerModule({
             preloadScripts: ['m2-1.js', 'm2-2.js'],
             preloadCss: 'm2.css',
             preloadEntry: 'body:last',
-        }
-    }
+        },
+    },
 })
 reg.registerModule({
     id: 'module-root',
@@ -80,8 +80,8 @@ reg.registerModule({
             entry: 'root-app.js',
             appendBody: '<div id="#module-root" />',
             preloadEntry: true,
-        }
-    }
+        },
+    },
 })
 
 const index = new FeRoomIndex(reg, config, [
@@ -93,15 +93,14 @@ const index = new FeRoomIndex(reg, config, [
             injectIndexBody: () => '<span> from ext </span>',
             injectImportMap: () => ({ fromExt: './toExt' }),            
         },
-    })
+    }),
 ])
 
 describe('index-html', () => {
-    
     const modules = index.getModules()
     
     it('must render import map', async () => {
-        jest.setTimeout(20000);
+        jest.setTimeout(20000)
         await reg.registerFromNpm({ name: 'vue', version: '3.2.45' })
         const modules = index.getModules()
         expect(await index.getImportmap(modules)).toMatchInlineSnapshot(`

@@ -1,13 +1,48 @@
 import { panic, TFeRoomConfig } from 'common'
 import { FeRoomConfigFile } from '../config'
 import { createFeRoomRollupConfig } from './rollup-conf'
-import { rollup, RollupError }  from 'rollup'
+import { rollup, watch, RollupError }  from 'rollup'
 import { buildPath } from '../utils'
 import { dirname, join } from 'path'
 import { mkdirSync, writeFileSync } from 'fs'
 import { logger } from '../logger'
 export * from './feroom-plugin'
 export * from './rollup-conf'
+
+export async function watchBundle(confPath?: string | TFeRoomConfig | FeRoomConfigFile) {
+    const config = confPath instanceof FeRoomConfigFile ? confPath : new FeRoomConfigFile(confPath)
+    const rollupConfig = await createFeRoomRollupConfig(config, true)
+    logger.step('Bundling up files...')
+    const watcher = watch({
+        ...rollupConfig,
+        watch: {
+            buildDelay: 500,
+            // chokidar,
+            clearScreen: true,
+            // skipWrite: true,
+            // exclude,
+            // include
+        },
+    })
+    watcher.on('event', (data) => {
+        // const { result } = (data as { result: RollupBuild })
+        // if (result) {
+        //     void result.close()
+        // }
+        if (data.code === 'ERROR') {
+            const re = data.error
+            const message = (re.code || '') + '\n' + __DYE_BOLD_OFF__ + __DYE_WHITE__ + (re.frame || '')
+            logger.error('rollup watch error')
+            console.error(data)
+            logger.error(message)
+            if (data.result) {
+                void data.result.close()
+            }
+            // throw panic(message)
+        }
+    })
+    return { watcher, outputOptions: rollupConfig.output }
+}
 
 export async function buildBundle(confPath?: string | TFeRoomConfig | FeRoomConfigFile, writeFiles = true) {
     const config = confPath instanceof FeRoomConfigFile ? confPath : new FeRoomConfigFile(confPath)

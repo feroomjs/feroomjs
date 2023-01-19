@@ -12,9 +12,10 @@ import { isConstructor } from '@prostojs/mate'
 interface TWrappedExt { instance: TFeRoomExtension, name: string }
 
 export class FeRoom extends Moost {
-
     protected _registry: FeRegistry
+
     protected _config: FeRoomConfig
+
     protected _ext: (() => Promise<TWrappedExt> | TWrappedExt)[] = []
 
     constructor(options?: TFeRoomServerOptions, registry?: FeRegistry) {
@@ -36,17 +37,17 @@ export class FeRoom extends Moost {
         }
     }
 
-    async ext(...args: (TClassConstructor<TFeRoomExtension> | TFeRoomExtension)[]) {
+    ext(...args: (TClassConstructor<TFeRoomExtension> | TFeRoomExtension)[]) {
         const infact = getMoostInfact()
         const thisMeta = feroomMate.read(this)
         const provide = { ...(thisMeta?.provide || {}), ...this.provide }
         for (const ext of args) {
             const meta = feroomMate.read(ext)
             if (!meta?.feroom_isExtension) {
-                throw panic(`FeRoom.ext() has received class with no @FeRoomExtension decorator. Please use @FeRoomExtension decorator.`)
+                throw panic('FeRoom.ext() has received class with no @FeRoomExtension decorator. Please use @FeRoomExtension decorator.')
             }
             if (!meta?.feroom_extensionName) {
-                throw panic(`FeRoom.ext() has received extensiom with no name. Make sure you pass a name to @FeRoomExtension decorator.`)
+                throw panic('FeRoom.ext() has received extensiom with no name. Make sure you pass a name to @FeRoomExtension decorator.')
             }
             if (meta?.controller) {
                 this.registerControllers(ext)
@@ -54,7 +55,7 @@ export class FeRoom extends Moost {
             if (isConstructor(ext)) {
                 this._ext.push(async () => {
                     infact.silent()
-                    const instance = await infact.get(ext as (new () => unknown), provide) as TFeRoomExtension
+                    const instance = await infact.get(ext as TClassConstructor<object>, {provide}) as TFeRoomExtension
                     infact.silent(false)
                     return { instance, name: meta.feroom_extensionName as string }
                 })

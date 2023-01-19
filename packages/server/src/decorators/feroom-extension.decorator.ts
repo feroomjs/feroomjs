@@ -8,7 +8,7 @@ const insureInjectable = feroomMate.decorate((meta) => {
 
 export function FeRoomExtension(name: string) {
     if (!name) {
-        throw panic(`Decorator @FeRoomExtension(name: string) requires "name" to be filled. Received empty name.`)
+        throw panic('Decorator @FeRoomExtension(name: string) requires "name" to be filled. Received empty name.')
     }
     return feroomMate.apply(
         insureInjectable,

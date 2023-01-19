@@ -12,14 +12,13 @@ const registry: {
 } = {}
 
 export class FeRegistry<CFG extends object = object> extends EventEmitter {
-
     normalizeModuleData(data: Partial<TModuleData<CFG>>): TModuleData<CFG> {
         const files = data.files as Record<string, string>
         if (!files) {
-            throw panic(`Failed to normallize module "${ data.id }": no files in module`)
+            throw panic(`Failed to normallize module "${ data.id as string }": no files in module`)
         }
         const pkg = JSON.parse(files['package.json'] || '{}') as Record<string, string>
-        const feConf = JSON.parse(files['dist/feroom.config.json'] as string || files['feroom.config.json'] as string || '{}') as TFeRoomConfig<CFG>
+        const feConf = JSON.parse(files['dist/feroom.config.json'] || files['feroom.config.json'] || '{}') as TFeRoomConfig<CFG>
         feConf.registerOptions = feConf.registerOptions || {}
         feConf.extensions = feConf.extensions || {} as CFG
         Object.assign(feConf.registerOptions, data.config?.registerOptions || {})
@@ -53,7 +52,7 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
         this.emit('register-module', normData)
         if (normData.config.registerOptions?.importNpmDependencies) {
             for (const [dep, conf] of Object.entries(normData.config.registerOptions.importNpmDependencies)) {
-                this.registerFromNpm({
+                void this.registerFromNpm({
                     ...conf,
                     name: dep,
                     activate: normData.activate,
@@ -82,7 +81,7 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
             id: npmData.id || pkg.name || npmData.name,
             version: pkg.version,
             files,
-            source: 'npm:' + registry
+            source: 'npm:' + registry,
         }
         return this.registerModule(module)
     }

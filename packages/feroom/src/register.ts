@@ -7,7 +7,7 @@ import { FeRoomRegister, logger } from '@feroomjs/tools'
 @Controller()
 export class CliRegister {
     @CliParam(['c', 'configPath'], 'Path to the FeRoom Config file.')
-    @Validate(v => typeof v !== 'undefined' && typeof v !== 'string' ? 'string value expected with path to FeRoom Config file.' : true)
+    @Validate(({ value: v }) => typeof v !== 'undefined' && typeof v !== 'string' ? 'string value expected with path to FeRoom Config file.' : true)
     configPath?: string
 
     @Required()

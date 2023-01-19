@@ -44,7 +44,16 @@ export function globPromise(path: string): Promise<string[]> {
     })
 }
 
-export const pkg = JSON.parse(readFileSync(buildPath('./package.json')).toString()) as { name: string, version: string, files: string[], module: string, main: string }
+export const pkg = JSON.parse(readFileSync(buildPath('./package.json')).toString()) as {
+    name: string,
+    version: string,
+    files: string[],
+    module: string,
+    main: string,
+    dependencies?: Record<string, string>,
+    peerDependencies?: Record<string, string>,
+    devDependencies?: Record<string, string>,
+}
 
 export function getLockVersion(dep: string) {
     return (<{ version: string}>JSON.parse(readFileSync(buildPath('node_modules', dep, 'package.json')).toString())).version

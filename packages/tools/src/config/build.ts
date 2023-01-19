@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { rollup, RollupError }  from 'rollup'
 import nodeResolve from '@rollup/plugin-node-resolve'
 import cjs from '@rollup/plugin-commonjs'
@@ -53,12 +54,12 @@ export async function readFeRoomConfigFile(files: string[]): Promise<TFeRoomConf
                     preferBuiltins: false,
                 }),
                 cjs(),
-            ]
+            ],
         })
         filePath = buildPath(`feroom.config-${ new Date().getTime() }.js`)
         const output = await bundle.generate({
             file: unbuildPath(filePath),
-            format: 'cjs'
+            format: 'cjs',
         })
         writeFileSync(filePath, output.output[0].code)
         builtFilePath = filePath

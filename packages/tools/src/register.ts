@@ -42,7 +42,7 @@ export class FeRoomRegister {
         const paths = await getFilesByPattern(conf.registerOptions?.include || pkg.files, conf.registerOptions?.exclude)
         for (const path of paths) {
             const relPath = unbuildPath(path)
-            if (replace && replace[relPath as keyof typeof replace]) {
+            if (replace && replace[relPath]) {
                 continue
             } else if (path.endsWith('.js') || path.endsWith('.map') || path.endsWith('.css') || path.endsWith('.json') || path.endsWith('.txt')
                 || path.endsWith('.mjs') || path.endsWith('.cjs') || path.endsWith('.md') || path.endsWith('.html')) {
@@ -69,7 +69,7 @@ export class FeRoomRegister {
             logger.info(`${ __DYE_GREEN__ }• package.json ${ __DYE_DIM__ }→ ${ this.opts.host }`)
         }
         if (!files[conf.registerOptions?.entry as string] && !files[(conf.registerOptions?.entry || '').replace(/^\.\//, '')]) {
-            logger.warn(`Entry "${ conf.registerOptions?.entry }" file is not included in files list`)
+            logger.warn(`Entry "${ conf.registerOptions?.entry as string }" file is not included in files list`)
         }
         return files
     }
@@ -82,10 +82,10 @@ export class FeRoomRegister {
                 'content-type': 'application/json',
                 'accept': 'text/plain',
             },
-            body: JSON.stringify(module)
+            body: JSON.stringify(module),
         })
         if (res.status > 299) {
-            const text = res.status + ' ' + (await res.text())
+            const text = String(res.status) + ' ' + (await res.text())
             logger.error(text)
             throw new Error(text)
         }

@@ -14,42 +14,42 @@ reg.registerModule({
     id: 'module',
     version: '1',
     files: {
-        'index.js': 'module v1 index.js content'
+        'index.js': 'module v1 index.js content',
     },
     activate: true,
     config: {
         registerOptions: {
             entry: 'index.js',
-        }
-    }
+        },
+    },
 })
 reg.registerModule({
     id: 'module',
     version: '2',
     files: {
-        'index.js': 'module v2 index.js content'
+        'index.js': 'module v2 index.js content',
     },
     activate: false,
     config: {
         registerOptions: {
             entry: 'index.js',
-        }
-    }
+        },
+    },
 })
 reg.registerModule({
     id: 'module2',
     version: '2',
     files: {
-        'index2.js': 'module2 index.js content'
+        'index2.js': 'module2 index.js content',
     },
     config: {
         registerOptions: {
             lockDependency: {
-                'module': '1'
+                'module': '1',
             },
             entry: 'index2.js',
-        }
-    }
+        },
+    },
 })
 
 const req = new IncomingMessage(new Socket)

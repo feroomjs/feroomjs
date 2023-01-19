@@ -1,5 +1,5 @@
 import { Cli, CliParam } from '@moostjs/event-cli'
-import { Controller, Injectable, Validate } from 'moost'
+import { Controller, Injectable } from 'moost'
 import { buildBundle, logger } from '@feroomjs/tools'
 import { panic } from 'common'
 
@@ -7,7 +7,7 @@ import { panic } from 'common'
 @Controller()
 export class CliBuild {
     @CliParam(['c', 'configPath'], 'Path to the FeRoom Config file.')
-    @Validate(v => typeof v !== 'undefined' && typeof v !== 'string' ? 'string value expected with path to FeRoom Config file.' : true)
+    // @Validate(({ value: v }) => typeof v !== 'undefined' && typeof v !== 'string' ? 'string value expected with path to FeRoom Config file.' : true)
     configPath?: string
 
     @Cli()

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Plugin, RollupOptions } from 'rollup'
 import { getLockVersion, pkg } from '../utils'
 import { getVirtualIndex } from './virtual-index'
@@ -8,20 +9,23 @@ import { panic } from 'common'
 import { FeRoomConfigFile } from '../config'
 import { logger } from '../logger'
 
-const defaultTs = {
+const tsCompilerOverride = { noImplicitAny: false, noUnusedLocals: true }
+const defaultTs = (dev = false) => ({
+    check: !dev,
+    clean: dev,
     tsconfigOverride: {
-        compilerOptions: { noImplicitAny: false },
-    }
-}
+        compilerOptions: dev ? { ...tsCompilerOverride, declaration: false } : tsCompilerOverride,
+    },
+})
 
-export async function createFeRoomRollupConfig(config: FeRoomConfigFile): Promise<RollupOptions> {
+export async function createFeRoomRollupConfig(config: FeRoomConfigFile, dev = false): Promise<RollupOptions> {
     const conf = await config.get()
     const buildOptions = conf.buildOptions || {}
     const plugins: Plugin[] = []
     if (buildOptions.input?.endsWith('.ts') || buildOptions.ts) {
         await appendIfNotExists(
             ['rpt2', 'rpt', 'typescritpt', 'rollup-plugin-typescript', 'rollup-plugin-typescript2'], 
-            async () => (await import('rollup-plugin-typescript2')).default(typeof buildOptions.ts === 'boolean' ? defaultTs : buildOptions.ts),
+            async () => (await import('rollup-plugin-typescript2')).default(typeof buildOptions.ts === 'boolean' ? defaultTs(dev) : buildOptions.ts),
             'Could not append rollup plugin rollup-plugin-typescript2. Please check if it\'s installed "npm i -sD rollup-plugin-typescript2"'
         )        
     }
@@ -72,12 +76,12 @@ export async function createFeRoomRollupConfig(config: FeRoomConfigFile): Promis
         plugins: [
             virtual({
                 './virtual-index.js': getVirtualIndex(conf),
-            }),
-            ...plugins,
-            ...(buildOptions.plugins || []),
+            }),   
             nodeResolve(buildOptions.nodeResolve || { browser: true }),
+            ...plugins,         
+            ...(buildOptions.plugins || []),
             feRoomConfPlugin(await config.render()),
-        ]
+        ],
     }
     
     async function appendIfNotExists(names: string[], cb: () => Promise<Plugin> | Plugin, errorText?: string) {
