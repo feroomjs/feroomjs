@@ -37,6 +37,9 @@
   "peerDependencies": {
     "rollup-plugin-vue": "^6.0.0",
     "rollup-plugin-scss": "^4.0.0",
-    "rollup-plugin-typescript2": "^0.34.1"
+    "rollup-plugin-typescript2": "^0.34.1",
+    "esbuild": "^0.17.3",
+    "esbuild-plugin-vue-next": "^0.1.4",
+    "esbuild-sass-plugin": "^2.4.5"
   }
 }

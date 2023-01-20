@@ -72,7 +72,7 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
         const registry = npmData.registry || 'https://registry.npmjs.org'
         const version = await getNpmPackageVersion(registry, npmData.name, npmData.version)
         if (!npmData.forceRegister && this.exists(npmData.name, version)) {
-            log(`Module ${__DYE_CYAN__}${ npmData.name } v${ version }${ __DYE_GREEN__ } already registerd. Nothing changed. Use "forceRegister" option to force re-register of the module.`)
+            log(`Module ${__DYE_CYAN__}${ npmData.name } v${ version }${ __DYE_GREEN__ } already registered. Nothing changed. Use "forceRegister" option to force re-register of the module.`)
             return 'Module alread exists'
         }
         const files = await getNpmPackageFiles(registry, npmData.name, version)

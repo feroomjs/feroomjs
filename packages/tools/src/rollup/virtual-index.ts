@@ -7,7 +7,7 @@ export function getVirtualIndex(conf: TFeRoomConfig) {
     const buildOptions = conf.buildOptions || {}
     let content = ''
     if (buildOptions.input) {
-        content += `export * from '${ buildOptions.input }';\n`
+        content += `export * from '${ buildOptions.input.replace(/\.ts$/, '') }';\n`
     }
     if (buildOptions.css) {
         const cssOpts = buildOptions.css as (string | { fileName: string })

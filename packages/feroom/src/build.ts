@@ -1,6 +1,6 @@
 import { Cli, CliParam } from '@moostjs/event-cli'
 import { Controller, Injectable } from 'moost'
-import { buildBundle, logger } from '@feroomjs/tools'
+import { esBuildBundle, logger } from '@feroomjs/tools'
 import { panic } from 'common'
 
 @Injectable('FOR_EVENT')
@@ -16,7 +16,7 @@ export class CliBuild {
 
         if (typeof this.configPath !== 'undefined' && typeof this.configPath !== 'string') throw panic('Key -c must have string value.')
 
-        await buildBundle(this.configPath)
+        await esBuildBundle(this.configPath)
         
         logger.info('\n✔ Build done')
 

@@ -40,7 +40,6 @@ export class FeRoom extends Moost {
     ext(...args: (TClassConstructor<TFeRoomExtension> | TFeRoomExtension)[]) {
         const infact = getMoostInfact()
         const thisMeta = feroomMate.read(this)
-        const provide = { ...(thisMeta?.provide || {}), ...this.provide }
         for (const ext of args) {
             const meta = feroomMate.read(ext)
             if (!meta?.feroom_isExtension) {
@@ -55,12 +54,12 @@ export class FeRoom extends Moost {
             if (isConstructor(ext)) {
                 this._ext.push(async () => {
                     infact.silent()
-                    const instance = await infact.get(ext as TClassConstructor<object>, {provide}) as TFeRoomExtension
+                    const instance = await infact.get(ext as TClassConstructor<object>, { provide: { ...(thisMeta?.provide || {}), ...this.provide }}) as TFeRoomExtension
                     infact.silent(false)
                     return { instance, name: meta.feroom_extensionName as string }
                 })
             } else {
-                infact.setProvideRegByInstance(ext, provide)
+                infact.setProvideRegByInstance(ext, { ...(thisMeta?.provide || {}), ...this.provide })
                 this._ext.push(() => ({ instance: ext, name: meta.feroom_extensionName as string }))
             }
             log(`Extension ${ __DYE_BOLD__ }${ meta?.feroom_extensionName }${ __DYE_BOLD_OFF__ + __DYE_DIM__ } has been installed.`)

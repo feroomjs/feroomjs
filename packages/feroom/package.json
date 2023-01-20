@@ -35,6 +35,7 @@
     "@wooksjs/event-cli": "^0.2.5",
     "@feroomjs/tools": "0.0.6",
     "@feroomjs/server": "0.0.6",
+    "ws": "",
     "moost": "^0.2.9"
   }
 }

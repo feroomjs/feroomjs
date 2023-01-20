@@ -10,7 +10,7 @@ import { FeModule } from './module'
 export class FeRoomServe {
     constructor(protected _registry: FeRegistry, protected wHttp: WooksHttp, protected config: FeRoomConfig) {
         this.updateModulePaths()
-        this._registry.on('register-module', (module) => this.registerHttpModulePath(module))
+        this._registry.on('register-module', (module: TModuleData) => this.registerHttpModulePath(module))
     }
 
     protected registered: Record<string, boolean> = {}
@@ -43,7 +43,23 @@ export class FeRoomServe {
             location.value = '/' + module.entryPath(version)
             return ''
         }
+
         const ext = (path.split('.').pop() || '') as keyof typeof extensions
+        // if ((!ext || ext === path || ext === 'vue' || ext === 'sass') && !module.files[path]) {
+        //     if (ext === 'vue') {
+        //         path = path.replace(/vue$/, 'js')
+        //         ext = 'js'
+        //     } else if (ext === 'sass') {
+        //         path = path.replace(/sass$/, 'css')
+        //         ext = 'css'
+        //     } else {
+        //         if (!module.files[path + '.js']) {
+        //             path = path + '/index'
+        //         }
+        //         path = path + '.js'
+        //         ext = 'js'
+        //     }
+        // }
         contentType.value = extensions[ext] || 'text/plain'
         const data = module.files[path]
         if (typeof data === 'string') {
@@ -67,6 +83,7 @@ export class FeRoomServe {
 
 const extensions = { 
     'js': 'application/javascript',
+    'vue': 'application/javascript',
     'mjs': 'application/javascript',
     'json': 'application/json',
     'map': 'application/json',
@@ -77,6 +94,7 @@ const extensions = {
     'woff': 'font/woff',
     'woff2': 'font/woff2',
     'css': 'text/css',
+    'sass': 'text/css',
     'csv': 'text/csv',
     'html': 'text/html',
     'htm': 'text/html',
