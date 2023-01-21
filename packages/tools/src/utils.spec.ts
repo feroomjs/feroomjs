@@ -1,4 +1,4 @@
-import { getFilesByPattern, unbuildPath } from "./utils"
+import { getFilesByPattern, unbuildPath } from './utils'
 
 describe('tools utils', () => {
     it('must process include/exclude patterns', async () => {

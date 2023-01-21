@@ -5,7 +5,6 @@ import { FeRoomConfigFile, logger, esBuildCtx, FeRoomRegister, unbuildPath } fro
 import { FeRegistry, FeRoom } from '@feroomjs/server'
 import { MoostHttp } from '@moostjs/event-http'
 import { WsExt } from './ws'
-import { createProvideRegistry } from '@prostojs/infact'
 
 @Injectable('FOR_EVENT')
 @Controller()
@@ -20,96 +19,72 @@ export class CliDev {
 
         if (typeof this.configPath !== 'undefined' && typeof this.configPath !== 'string') throw panic('Key -c must has string value.')
 
-        const config = new FeRoomConfigFile(this.configPath)
-        const configData = await config.get()
+        const config = new FeRoomConfigFile(this.configPath, true)
 
-        const devServer: Required<(typeof configData)['devServer']> = {
-            port: configData.devServer?.port || 3000,
-            feroom: {
-                ...(configData.devServer?.feroom || {}),
-            },
-            ext: configData.devServer?.ext || [],
-        }
+        await fireDevServer()
 
-        const reg = new FeRegistry()
-        const server = new FeRoom({}, reg)
-        const listeners: (() => void)[] = []
-        server.setProvideRegistry(createProvideRegistry(['feroom-dev-server-event', () => (cb: () => void) => { listeners.push(cb) }]))
+        async function fireDevServer() {
+            const configData = await config.get()
 
-        for (const ext of devServer.ext) {
-            void server.ext(ext)
-        }
-        void server.ext(WsExt)     
+            const devServer: Required<(typeof configData)['devServer']> = {
+                port: configData.devServer?.port || 3000,
+                shared: configData.devServer?.shared || '',
+                feroom: {
+                    ...(configData.devServer?.feroom || {}),
+                },
+                ext: configData.devServer?.ext || [],
+            }
 
-        logger.step('Building bundle...')
+            // const listeners: (() => void)[] = []
+            let target = ''
+            if (devServer.shared) {
+                logger.step('Connecting to shared dev server: ' + devServer.shared)
+                logger.warn('devServer.feroom and devServer.ext options will be ignored, because shared dev server option is picked.')
+                target = devServer.shared
+            } else {
+                const reg = new FeRegistry()
+                const server = new FeRoom({}, reg)
+                // server.setProvideRegistry(createProvideRegistry(['feroom-dev-server-event', () => (cb: () => void) => { listeners.push(cb) }]))
+        
+                for (const ext of devServer.ext) {
+                    void server.ext(ext)
+                }
+                void server.ext(WsExt)  
 
-        const ctx = await esBuildCtx(config, async (result) => {
-            logger.clear()
-            logger.dev('Registering dev module after re-build...')
+                logger.step('Starting dev server...')
+        
+                target = `http://localhost:${ devServer.port }`
+        
+                void server.adapter(new MoostHttp()).listen(devServer.port, () => logger.dev('FeRoom dev server is up: ' + target))
+                await server.init()                 
+            }
+   
+            logger.step('Building bundle...')
     
-            const outputFiles: Record<string, string | Buffer> = {};
-            
-            (result.outputFiles || []).forEach(f => outputFiles[unbuildPath(f.path)] = Buffer.from(f.contents)) // 
-
-            const fr = new FeRoomRegister({ host: target })
-            await fr.register({
-                activate: true,
-                conf: config,
-                files: outputFiles,
+            const ctx = await esBuildCtx(config, async (result) => {
+                logger.clear()
+                logger.dev('Registering dev module after re-build...')
+        
+                const outputFiles: Record<string, string | Buffer> = {};
+                
+                (result.outputFiles || []).forEach(f => outputFiles[unbuildPath(f.path)] = Buffer.from(f.contents)) // 
+    
+                const fr = new FeRoomRegister({ host: target })
+                await fr.register({
+                    activate: true,
+                    conf: config,
+                    files: outputFiles,
+                })
+                logger.dev('Dev module has been registered ✔')
+                // listeners.forEach(l => l())
             })
-            logger.dev('Dev module has been registered ✔')
-            listeners.forEach(l => l())
-        })
+    
+            await ctx.watch()   
 
-        await ctx.watch()
-
-        // const { watcher, outputOptions } = await watchBundle(config)
-
-        // watcher.on('event', async (data) => {
-        //     if (data.code === 'BUNDLE_END' && outputOptions && !Array.isArray(outputOptions)) {
-        //         const { output } = await data.result.generate(outputOptions)
-        //         // await data.result.write(outputOptions)
-        //         await data.result.close()
-        //         const dir = dirname(outputOptions.file || '')
-        //         const outputFiles: Record<string, string | Buffer> = {}
-        //         function toBuffer(file: string | Uint8Array) {
-        //             return typeof file === 'string' ? file : Buffer.from(file)
-        //         }
-        //         output.forEach(f => outputFiles[join(dir, f.fileName)] = toBuffer(f.type === 'asset' ? f.source : f.code))
-
-        //         // const files = await filesPromise
-        
-        //         logger.step('Registering dev module...')
-        
-        //         reg.registerModule({
-        //             id: pkg.name,
-        //             version: pkg.version + '-' + String(new Date().getTime()),
-        //             source: 'dev-server',
-        //             activate: true,
-        //             config: await config.render(),
-        //             files: outputFiles,
-        //         })
-
-        //         // const fr = new FeRoomRegister({ host: target })
-
-        //         // await fr.register({
-        //         //     activate: true,
-        //         //     conf: config,
-        //         //     files: outputFiles,
-        //         // })
-        //     }
-        // })
-
-        // watcher.on('change', (id, { event }) => { 
-        //     console.log('changed ' + id, event)
-        // })
-
-        logger.step('Starting dev server...')
-        
-        const target = `http://localhost:${ devServer.port }`
-
-        void server.adapter(new MoostHttp()).listen(devServer.port, () => logger.dev('FeRoom dev server is up: ' + target))
-        await server.init()   
+            config.onChange(async () => {
+                await ctx.rebuild()
+            })   
+        }
 
         return ''
     }

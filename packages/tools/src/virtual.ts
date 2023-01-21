@@ -1,7 +1,7 @@
 import { TFeRoomConfig, TVueRoute } from 'common'
 import { dirname, join } from 'path'
-import { getVueRoutesExports } from '../config/vue-routes'
-import { pkg } from '../utils'
+import { getVueRoutesExports } from './config/vue-routes'
+import { pkg } from './utils'
 
 export function getVirtualIndex(conf: TFeRoomConfig) {
     const buildOptions = conf.buildOptions || {}

@@ -65,6 +65,7 @@ export type TNpmModuleData<EXT extends object = object> = {
 
 export interface TFeRoomDevServerOptions {
     port?: number
+    shared?: string
     feroom?: TFeRoomServerOptions
     ext?: (TClassConstructor<TFeRoomExtension> | TFeRoomExtension)[]
 }

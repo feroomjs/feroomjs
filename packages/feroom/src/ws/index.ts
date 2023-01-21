@@ -1,9 +1,8 @@
-import { MoostHttp } from '@moostjs/event-http'
 import { Server } from 'http'
-import { Controller, Inject } from 'moost'
+import { Controller } from 'moost'
 import WebSocket from 'ws'
-import { FeRoomExtension } from '@feroomjs/server'
-import { TFeRoomExtension } from '..'
+import { FeRegistry, FeRoomExtension } from '@feroomjs/server'
+import { TFeRoomExtension, TModuleData } from '..'
 
 const protocol = 'feroom-dev'
 
@@ -12,8 +11,10 @@ const protocol = 'feroom-dev'
 export class WsExt implements TFeRoomExtension {
     clients: Set<WebSocket> = new Set()
 
-    constructor(private http: MoostHttp, @Inject('feroom-dev-server-event') private event: (reloadCb: () => void) => void) {
-        const server = this.http.getHttpApp().getServer() as Server
+    constructor(
+        server: Server,
+        reg: FeRegistry,
+    ) {
         const wss = new WebSocket.Server({ noServer: true })
         server.on('upgrade', (req, socket, head) => {
             if (req.headers['sec-websocket-protocol'] !== protocol) {
@@ -23,8 +24,8 @@ export class WsExt implements TFeRoomExtension {
                 wss.emit('connection', client, req)
             })
         })
-        this.event(() => {
-            this.broadcastMessage({ command: 'reload' })
+        reg.on('register-module', (module: TModuleData) => {
+            this.broadcastMessage({ command: 'reload', module: module.id, version: module.version })
         })
         wss.on('connection', (client) => {
             this.connectClient(client)
@@ -44,7 +45,7 @@ export class WsExt implements TFeRoomExtension {
         `
     }
 
-    broadcastMessage(data: { command: string }) {
+    broadcastMessage(data: { command: string, module: string, version: string }) {
         this.clients.forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {
                 client.send(JSON.stringify(data))

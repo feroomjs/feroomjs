@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-plus-operands */
 import { Controller, Inject } from 'moost'
 import { FeRoomConfig } from './config'
 import { FeRegistry } from './registry'
