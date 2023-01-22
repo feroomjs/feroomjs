@@ -92,7 +92,7 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
         const version = await getNpmPackageVersion(registry, npmData.name, npmData.version)
         if (!npmData.forceRegister && this.exists(npmData.name, version)) {
             log(`Module ${__DYE_CYAN__}${ npmData.name } v${ version }${ __DYE_GREEN__ } already registered. Nothing changed. Use "forceRegister" option to force re-register of the module.`)
-            return 'Module alread exists'
+            return 'Module already exists'
         }
         const files = await getNpmPackageFiles(registry, npmData.name, version)
         const pkg = JSON.parse(files['package.json'] as string || '{}') as Record<string, string>
@@ -101,6 +101,7 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
             version: pkg.version,
             files,
             source: 'npm:' + registry,
+            activate: npmData.activate,
         }
         return this.registerModule(module)
     }
