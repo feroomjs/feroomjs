@@ -1,6 +1,6 @@
 {
   "name": "feroomjs",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Micro Front End SPA",
   "main": "index.js",
   "type": "module",

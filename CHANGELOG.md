@@ -1,3 +1,14 @@
+## [0.0.7](https://github.com/feroomjs/feroomjs/compare/v0.0.6...v0.0.7) (2023-01-22)
+
+
+### Features
+
+* **config:** add default path ./feroom ([932d623](https://github.com/feroomjs/feroomjs/commit/932d623700e008d02ac8ce7f46e8a9544006c65c))
+* **esbuild:** add esbuild for dev and final build ([e60f966](https://github.com/feroomjs/feroomjs/commit/e60f966f21c743223741dd162e19f9432c15e7da))
+* **tools:** migrate to esbuild ([101ca76](https://github.com/feroomjs/feroomjs/commit/101ca76704e51e415726cc5abbc4ef087a7c0e84))
+
+
+
 ## [0.0.6](https://github.com/feroomjs/feroomjs/compare/v0.0.5...v0.0.6) (2023-01-16)
 
 

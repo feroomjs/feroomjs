@@ -1,6 +1,6 @@
 {
   "name": "@feroomjs/ext-shared-menu",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "@feroomjs/ext-shared-menu",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
@@ -26,9 +26,9 @@
   },
   "homepage": "https://github.com/feroomjs/feroomjs/tree/main/packages/ext-shared-menu#readme",
   "peerDependencies": {
-    "@feroomjs/server": "0.0.6",
-    "@moostjs/event-http": "^0.2.9",
-    "@wooksjs/event-http": "^0.2.5",
-    "moost": "^0.2.9"
+    "@feroomjs/server": "0.0.7",
+    "@moostjs/event-http": "^0.2.16",
+    "@wooksjs/event-http": "^0.2.9",
+    "moost": "^0.2.16"
   }
 }
