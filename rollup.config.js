@@ -13,7 +13,7 @@ const target = process.env.TARGET
 const dyeModifiers = ['dim', 'bold', 'underscore', 'inverse', 'italic', 'crossed', 'gray01', 'gray02', 'gray03']
 const dyeColors = ['red', 'green', 'cyan', 'blue', 'yellow', 'white', 'magenta', 'black']
 
-const external = ['url', 'crypto', 'stream', 'packages/*/src', 'esbuild-plugin-vue-next', 'esbuild-sass-plugin']
+const external = ['url', 'crypto', 'stream', 'packages/*/src', 'esbuild-plugin-vue-next', 'esbuild-sass-plugin', 'esbuild-plugin-d.ts']
 
 const replacePlugin = replace({
   values: {
