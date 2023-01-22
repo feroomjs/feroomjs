@@ -11,14 +11,33 @@ const registry: {
     }
 } = {}
 
+function safeString(file: string | { type: 'Buffer', data: number[] }) {
+    if (typeof file === 'string') return file
+    if (file.type === 'Buffer') return Buffer.from(file.data).toString()
+    throw new Error('unexpected file type ' + (file.type as string))
+}
+
 export class FeRegistry<CFG extends object = object> extends EventEmitter {
     normalizeModuleData(data: Partial<TModuleData<CFG>>): TModuleData<CFG> {
         const files = data.files as Record<string, string>
         if (!files) {
             throw panic(`Failed to normallize module "${ data.id as string }": no files in module`)
         }
-        const pkg = JSON.parse(files['package.json'] || '{}') as Record<string, string>
-        const feConf = JSON.parse(files['dist/feroom.config.json'] || files['feroom.config.json'] || '{}') as TFeRoomConfig<CFG>
+        let pkg
+        try {
+            pkg = JSON.parse(files['package.json'] || '{}') as Record<string, string>
+        } catch (e) {
+            panic('Could not parse package.json file')
+            console.error(e)
+            pkg = {}
+        }
+        let feConf
+        try {
+            feConf = JSON.parse(safeString(files['dist/feroom.config.json'] || files['feroom.config.json'] || '{}')) as TFeRoomConfig<CFG>
+        } catch (e) {
+            panic('Could not parse feroom.config.json file')
+            throw e
+        }
         feConf.registerOptions = feConf.registerOptions || {}
         feConf.extensions = feConf.extensions || {} as CFG
         Object.assign(feConf.registerOptions, data.config?.registerOptions || {})

@@ -56,9 +56,9 @@ export class FeRoomConfigFile {
             } else {
                 filePath = ''
             }
-            if (!filePath) {
-                throw new Error('Feroom config file was not found. ' + this.files.join(', '))
-            }
+        }
+        if (!filePath) {
+            throw new Error('Feroom config file was not found. ' + this.files.join(', '))
         }
         logger.step('Importing FeRoom config file from ' + filePath)
     
@@ -146,6 +146,28 @@ export class FeRoomConfigFile {
                 for (const dep of data.buildOptions.dependencies.lockVersion) {
                     const version = getLockVersion(dep)
                     data.registerOptions.lockDependency[dep] = version
+                    if (data.registerOptions?.importNpmDependencies && data.registerOptions?.importNpmDependencies[dep]) {
+                        const npmDep = data.registerOptions.importNpmDependencies[dep]
+                        if (npmDep.version && npmDep.version !== version) {
+                            logger.warn(`registerOptions.importNpmDependencies["${dep}"] has different version from what's installed in node_modules. Changing version to ${ version }.`)
+                        }
+                        npmDep.version = version
+                    }
+                }
+            }
+            if (data.buildOptions?.dependencies?.bundle && data.registerOptions?.importNpmDependencies) {
+                for (const dep of data.buildOptions.dependencies.bundle) {
+                    const npmDep = data.registerOptions.importNpmDependencies[dep]
+                    if (npmDep) {
+                        logger.warn(`When bundling "${ dep }" it must be wrong to pass importNpmDependencies["${dep}"] as there should not be such external dependency.`)
+                    }
+                }
+            }
+            if (data.buildOptions?.dependencies?.bundle && data.buildOptions?.dependencies?.lockVersion) {
+                for (const dep of data.buildOptions.dependencies.bundle) {
+                    if (data.buildOptions.dependencies.lockVersion.includes(dep)) {
+                        logger.warn(`Dependency "${ dep }" set for locking version and for bundling in. Only one of the options make sense.`)
+                    }
                 }
             }
             this.rendered = data

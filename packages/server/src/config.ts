@@ -43,5 +43,4 @@ export class FeRoomConfig {
         const deps = this.options.importNpmDependencies || {}
         return Object.entries(deps).map(([name, value]) => ({...value, name}))
     }
-
 }

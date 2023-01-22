@@ -1,4 +1,4 @@
-import { TFeRoomConfig } from 'common'
+import { isTextFile, TFeRoomConfig } from 'common'
 import { getFilesByPattern, pkg, unbuildPath } from './utils'
 import { readFileSync } from 'node:fs'
 import { FeRoomConfigFile } from './config'
@@ -20,7 +20,6 @@ export class FeRoomRegister {
         const conf = await (opts?.conf instanceof FeRoomConfigFile ? opts.conf : new FeRoomConfigFile(opts?.conf)).render()
         const id = conf.registerOptions?.id || pkg.name
         const files = await this.gatherFiles(conf, opts?.files)
-
         try {
             await this.postModule({
                 id,
@@ -44,8 +43,7 @@ export class FeRoomRegister {
             const relPath = unbuildPath(path)
             if (replace && replace[relPath]) {
                 continue
-            } else if (path.endsWith('.js') || path.endsWith('.map') || path.endsWith('.css') || path.endsWith('.json') || path.endsWith('.txt')
-                || path.endsWith('.mjs') || path.endsWith('.cjs') || path.endsWith('.md') || path.endsWith('.html')) {
+            } else if (isTextFile(path)) {
                 files[relPath] = readFileSync(path).toString()
             } else {
                 files[relPath] = readFileSync(path)

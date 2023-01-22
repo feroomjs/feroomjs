@@ -92,6 +92,7 @@ export interface TFeRoomServerOptions {
     }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type TClassConstructor<T = unknown> = new (...args : any[]) => T
 
 export * from './vue-route.types'

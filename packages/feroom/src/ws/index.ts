@@ -67,6 +67,7 @@ export class WsExt implements TFeRoomExtension {
     }
 
     registerListener(client: WebSocket) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         client.on('message', (data) => {
             //
         })

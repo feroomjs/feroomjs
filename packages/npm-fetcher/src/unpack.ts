@@ -2,6 +2,7 @@
 import { createGunzip } from 'node:zlib'
 import { extract } from 'tar-stream'
 import { pipeline } from 'node:stream'
+import { isTextFile } from 'common'
 
 export function unpackTgzToMemory(buffer: ReadableStream): Promise<Record<string, string | Buffer>> {
     return new Promise((resolve, reject) => {
@@ -10,22 +11,22 @@ export function unpackTgzToMemory(buffer: ReadableStream): Promise<Record<string
         ex.on('entry', function (header, stream, cb) {
             stream.on('data', function (chunk) {
                 const fileName = header.name.replace(/^package\//, '')
-                const isText = fileName.endsWith('.js') || fileName.endsWith('.map') || fileName.endsWith('.css') || fileName.endsWith('.json') 
-                    || fileName.endsWith('.txt') || fileName.endsWith('.mjs') || fileName.endsWith('.cjs') || fileName.endsWith('.md') || fileName.endsWith('.html')
+                const isText = isTextFile(fileName)
                 if (!files[fileName]) {
-                    files[fileName] = isText ? chunk.toString() : chunk
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                    files[fileName] = isText ? (chunk as Buffer).toString() : chunk
                 } else {
-                    if (isText) files[fileName] += chunk;
+                    if (isText) files[fileName] += chunk
                     if (!isText) files[fileName] = Buffer.concat([files[fileName], chunk])
                 }
-            });
+            })
     
             stream.on('end', function () {
-                cb();
-            });
+                cb()
+            })
     
             stream.resume()
-        });
+        })
         ex.on('finish', () => {
             resolve(files)
         })

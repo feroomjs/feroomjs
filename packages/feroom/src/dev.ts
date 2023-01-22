@@ -1,6 +1,6 @@
 import { Cli, CliParam } from '@moostjs/event-cli'
 import { Controller, Injectable, Validate } from 'moost'
-import { panic } from 'common'
+import { isTextFile, panic } from 'common'
 import { FeRoomConfigFile, logger, esBuildCtx, FeRoomRegister, unbuildPath } from '@feroomjs/tools'
 import { FeRegistry, FeRoom } from '@feroomjs/server'
 import { MoostHttp } from '@moostjs/event-http'
@@ -67,7 +67,7 @@ export class CliDev {
         
                 const outputFiles: Record<string, string | Buffer> = {};
                 
-                (result.outputFiles || []).forEach(f => outputFiles[unbuildPath(f.path)] = Buffer.from(f.contents)) // 
+                (result.outputFiles || []).forEach(f => outputFiles[unbuildPath(f.path)] = isTextFile(f.path) ? Buffer.from(f.contents).toString() : Buffer.from(f.contents)) // 
     
                 const fr = new FeRoomRegister({ host: target })
                 await fr.register({
