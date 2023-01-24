@@ -1,3 +1,12 @@
+## [0.0.8](https://github.com/feroomjs/feroomjs/compare/v0.0.7...v0.0.8) (2023-01-24)
+
+
+### Bug Fixes
+
+* **server:** pass activate flag for npm register ([3c080f4](https://github.com/feroomjs/feroomjs/commit/3c080f4ddd6306752ed2809e35e78f005753a6f6))
+
+
+
 ## [0.0.7](https://github.com/feroomjs/feroomjs/compare/v0.0.6...v0.0.7) (2023-01-22)
 
 
