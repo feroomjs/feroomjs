@@ -61,6 +61,7 @@ export type TNpmModuleData<EXT extends object = object> = {
     name?: string
     version?: string
     forceRegister?: boolean
+    activateIfNewer?: boolean
 } & Partial<TModuleData<EXT>>
 
 export interface TFeRoomDevServerOptions {

@@ -74,7 +74,7 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
                 void this.registerFromNpm({
                     ...conf,
                     name: dep,
-                    activate: normData.activate,
+                    activateIfNewer: normData.activate,
                 } as TNpmModuleData<CFG>)
             }
         }
@@ -90,18 +90,28 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
         }
         const registry = npmData.registry || 'https://registry.npmjs.org'
         const version = await getNpmPackageVersion(registry, npmData.name, npmData.version)
-        if (!npmData.forceRegister && this.exists(npmData.name, version)) {
+        const exists = this.exists(npmData.name, version)
+        const activeVersion = this.getActiveVersion(npmData.name, true)
+        if (!npmData.forceRegister && exists) {
             log(`Module ${__DYE_CYAN__}${ npmData.name } v${ version }${ __DYE_GREEN__ } already registered. Nothing changed. Use "forceRegister" option to force re-register of the module.`)
             return 'Module already exists'
         }
         const files = await getNpmPackageFiles(registry, npmData.name, version)
         const pkg = JSON.parse(files['package.json'] as string || '{}') as Record<string, string>
+        let shouldActivate = npmData.activate
+        if (!shouldActivate && npmData.activateIfNewer) {
+            if (!activeVersion) {
+                shouldActivate = true
+            } else {
+                shouldActivate = activeVersion < version
+            }
+        }
         const module: Partial<TModuleData<CFG>> = {
             id: npmData.id || pkg.name || npmData.name,
-            version: pkg.version,
+            version: version,
             files,
             source: 'npm:' + registry,
-            activate: npmData.activate,
+            activate: shouldActivate,
         }
         return this.registerModule(module)
     }
@@ -123,8 +133,9 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
         return false
     }
 
-    getActiveVersion(id: string) {
+    getActiveVersion(id: string, silent = false) {
         const reg = registry[id]
+        if (silent) return reg?.activeVersion || ''
         if (!reg) throw panic(`No module "${ id }" found`)
         return reg.activeVersion
     }

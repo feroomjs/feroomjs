@@ -1,9 +1,10 @@
 import { Cli, CliParam } from '@moostjs/event-cli'
 import { Controller, Injectable, Validate } from 'moost'
-import { isTextFile, panic } from 'common'
+import { isTextFile, panic, TFeRoomConfig } from 'common'
 import { FeRoomConfigFile, logger, esBuildCtx, FeRoomRegister, unbuildPath } from '@feroomjs/tools'
 import { FeRegistry, FeRoom } from '@feroomjs/server'
 import { MoostHttp } from '@moostjs/event-http'
+import * as esbuild from 'esbuild'
 import { WsExt } from './ws'
 
 @Injectable('FOR_EVENT')
@@ -24,7 +25,7 @@ export class CliDev {
         await fireDevServer()
 
         async function fireDevServer() {
-            const configData = await config.get()
+            let configData = await config.get()
 
             const devServer: Required<(typeof configData)['devServer']> = {
                 port: configData.devServer?.port || 3000,
@@ -61,29 +62,47 @@ export class CliDev {
    
             logger.step('Building bundle...')
     
-            const ctx = await esBuildCtx(config, async (result) => {
-                logger.clear()
-                logger.dev('Registering dev module after re-build...')
-        
-                const outputFiles: Record<string, string | Buffer> = {};
-                
-                (result.outputFiles || []).forEach(f => outputFiles[unbuildPath(f.path)] = isTextFile(f.path) ? Buffer.from(f.contents).toString() : Buffer.from(f.contents)) // 
-    
-                const fr = new FeRoomRegister({ host: target })
-                await fr.register({
-                    activate: true,
-                    conf: config,
-                    files: outputFiles,
-                })
-                logger.dev('Dev module has been registered ✔')
-                // listeners.forEach(l => l())
-            })
-    
-            await ctx.watch()   
+            let ctx: esbuild.BuildContext | undefined
 
-            config.onChange(async () => {
-                await ctx.rebuild()
-            })   
+            await triggerChange(configData)
+    
+            config.onChange(async (newConfig) => {
+                logger.clear()
+                logger.title('Config change detected.')                
+                await triggerChange(newConfig)
+            })
+
+            async function triggerChange(newConfig: TFeRoomConfig) {
+                if (!ctx) {
+                    logger.step('Creqting a new build context')
+                    ctx = await esBuildCtx(config, async (result) => {
+                        logger.clear()
+                        const outputFiles: Record<string, string | Buffer> = {};
+                        
+                        (result.outputFiles || []).forEach(f => outputFiles[unbuildPath(f.path)] = isTextFile(f.path) ? Buffer.from(f.contents).toString() : Buffer.from(f.contents)) // 
+            
+                        const fr = new FeRoomRegister({ host: target })
+                        await fr.register({
+                            activate: true,
+                            conf: config,
+                            files: outputFiles,
+                        })
+                        logger.dev('Waiting for changes...')
+                        // listeners.forEach(l => l())
+                    })
+                    await ctx.watch()
+                } else if (JSON.stringify(configData.buildOptions) !== JSON.stringify(newConfig.buildOptions)) {
+                    // re-build from scratch required
+                    logger.dev('buildOptions changed, full re-build required')
+                    configData = newConfig
+                    await ctx.cancel()
+                    await ctx.dispose()
+                    ctx = undefined
+                    await triggerChange(newConfig)
+                } else {
+                    await ctx.rebuild()
+                }
+            }
         }
 
         return ''

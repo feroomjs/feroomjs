@@ -19,7 +19,7 @@ export async function genEsbuildConfig(config: FeRoomConfigFile, onReBuild?: TES
     }
     plugins.push(esbuildFeRoomPlugin(config))
     if (onReBuild) {
-        plugins.push(esbuildWatchPlugin(onReBuild))
+        plugins.push(esbuildWatchPlugin(onReBuild, true))
     }
     const paths: Record<string, string> = {}
     if (buildOptions.dependencies?.lockVersion) {
