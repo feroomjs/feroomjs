@@ -1,3 +1,12 @@
+## [0.0.9](https://github.com/feroomjs/feroomjs/compare/v0.0.8...v0.0.9) (2023-01-25)
+
+
+### Features
+
+* **devServer:** restart build when build options changed ([5bcc103](https://github.com/feroomjs/feroomjs/commit/5bcc1037798ca6a3b9f2802a9c852ef39e0ef8c7))
+
+
+
 ## [0.0.8](https://github.com/feroomjs/feroomjs/compare/v0.0.7...v0.0.8) (2023-01-24)
 
 

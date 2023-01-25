@@ -1,6 +1,6 @@
 {
   "name": "@feroomjs/ext-vue-routes",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "@feroomjs/ext-vue-routes",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
@@ -26,10 +26,10 @@
   },
   "homepage": "https://github.com/feroomjs/feroomjs/tree/main/packages/ext-vue-routes#readme",
   "peerDependencies": {
-    "@feroomjs/server": "0.0.8",
-    "@moostjs/event-http": "^0.2.16",
+    "@feroomjs/server": "0.0.9",
+    "@moostjs/event-http": "^0.2.17",
     "@wooksjs/event-http": "^0.2.9",
-    "moost": "^0.2.16",
+    "moost": "^0.2.17",
     "vue-router": "^4.1.6"
   }
 }
