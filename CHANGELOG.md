@@ -1,3 +1,7 @@
+## [0.0.10](https://github.com/feroomjs/feroomjs/compare/v0.0.9...v0.0.10) (2023-02-06)
+
+
+
 ## [0.0.9](https://github.com/feroomjs/feroomjs/compare/v0.0.8...v0.0.9) (2023-01-25)
 
 
