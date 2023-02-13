@@ -26,7 +26,6 @@ export class CliBuild {
         
         const config = new FeRoomConfigReader(this.configPath, true)
         const configHandler = await config.getHandler()
-        const configData = configHandler.get()
         const buildHelpers = configHandler.getBuildHelpers()
 
         for (const key of Object.keys(buildHelpers.paths)) {
@@ -44,8 +43,7 @@ export class CliBuild {
             plugins: [
                 vue(),
                 feroomForVitePlugin({
-                    configData,
-                    renderedConf: configHandler.render(),
+                    configHandler,
                     paths: buildHelpers.paths,
                 }),
             ],

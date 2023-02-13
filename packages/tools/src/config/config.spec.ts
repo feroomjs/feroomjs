@@ -10,7 +10,6 @@ jest.mock('../utils', () => ({
 import { existsSync, readFileSync } from 'fs'
 import { FeRoomConfigReader } from '.'
 import { getLockVersion } from '../utils'
-import { getVirtualIndex } from '../virtual'
 
 const mGetLockVersion = getLockVersion as unknown as jest.Mock<typeof getLockVersion>
 const mExistsSync = existsSync as unknown as jest.Mock<typeof existsSync>
@@ -99,13 +98,14 @@ describe('FeRoomConfigFile', () => {
         expect(await new FeRoomConfigReader().getData()).toEqual({ mocked: true })
     })
     it('must parse feroom.config.js file', async () => {
-        expect((await new FeRoomConfigReader(initialConfig).getHandler()).render()).toEqual(renderedConfig)
+        expect((await new FeRoomConfigReader(initialConfig).getHandler()).renderConfig()).toEqual(renderedConfig)
     })
 })
 
 describe('virtual', () => {
-    it('must render virtual index', () => {
-        expect(getVirtualIndex(initialConfig)).toMatchInlineSnapshot(`
+    it('must render virtual index', async () => {
+        const handler = (await new FeRoomConfigReader(initialConfig).getHandler())
+        expect(handler.renderVirtualIndex()).toMatchInlineSnapshot(`
 "export * from 'my-index.js';
 __loadCss(window.__feroom.modulesPrefixPath + '@my-module/m0/my-styles.css');
 export { default as router_page_$0 } from './src/pages/Index.vue';

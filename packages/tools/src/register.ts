@@ -18,7 +18,7 @@ export class FeRoomRegister {
 
     async register(opts?: {conf?: FeRoomConfigReader | TFeRoomConfig | string, activate?: boolean, files?: Record<string, string | Buffer>}) {
         const reader = (opts?.conf instanceof FeRoomConfigReader ? opts.conf : new FeRoomConfigReader(opts?.conf))
-        const conf = (await reader.getHandler()).render()
+        const conf = (await reader.getHandler()).renderConfig()
         const id = conf.registerOptions?.id || pkg.name
         const files = await this.gatherFiles(conf, opts?.files)
         try {

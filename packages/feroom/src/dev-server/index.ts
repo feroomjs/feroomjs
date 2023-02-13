@@ -15,7 +15,7 @@ const DEFAULT_PORT = 3157
 export async function createDevServer(feConf: FeRoomConfigReader) {
     const connectApp = connect()
     let running = false
-    let configHandler = await feConf.getHandler()
+    let configHandler = await feConf.getHandler(true)
 
     const wooksApp = new WooksConnect(connectApp)
     const { feroom, reRegister } = await runFeRoomServer(configHandler, wooksApp)
@@ -52,7 +52,7 @@ export async function createDevServer(feConf: FeRoomConfigReader) {
                 vue(),
                 feroomForVitePlugin({
                     devMode: { feroom },
-                    configData,
+                    configHandler,
                 }),
                 Inspect(),
             ],
@@ -106,7 +106,7 @@ async function runFeRoomServer(configHandler: FeRoomConfigHandler, wooksApp: Woo
     await server.init()
 
     function reRegister(configHandler: FeRoomConfigHandler) {
-        const renderedConfig = JSON.stringify(configHandler.render(true))
+        const renderedConfig = JSON.stringify(configHandler.renderConfig())
         return reg.registerModule({
             activate: true,
             files: { 'package.json': JSON.stringify(pkg), 'feroom.config.json': renderedConfig },

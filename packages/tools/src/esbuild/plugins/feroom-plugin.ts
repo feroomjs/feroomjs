@@ -1,5 +1,4 @@
 import { Plugin } from 'esbuild'
-import { getVirtualIndex } from '../../virtual'
 import { writeFileSync } from 'fs'
 import { resolve, dirname } from 'path'
 import { buildPath } from '../../utils'
@@ -14,7 +13,7 @@ export const esbuildFeRoomPlugin: (conf: FeRoomConfigReader) => Plugin = (conf) 
             }
         })
         build.onLoad({ filter: /feroom-virtual-index\.ts$/ }, async () => ({
-            contents: getVirtualIndex(await conf.getData()),
+            contents: (await conf.getHandler()).renderVirtualIndex(),
             loader: 'ts',
         }))
         build.onResolve({ filter: /^@feroom-ext\// }, () => {
@@ -22,7 +21,7 @@ export const esbuildFeRoomPlugin: (conf: FeRoomConfigReader) => Plugin = (conf) 
         })
         build.onEnd(async (result) => {
             const path = build.initialOptions.outfile ? dirname(build.initialOptions.outfile) : build.initialOptions.outdir || ''
-            const renderedConfig = JSON.stringify({...(await conf.getHandler()).render(), devServer: undefined }, null, '  ')
+            const renderedConfig = JSON.stringify({...(await conf.getHandler()).renderConfig(), devServer: undefined }, null, '  ')
             if (build.initialOptions.write) {
                 writeFileSync(buildPath(path, 'feroom.config.json'), renderedConfig)
             }

@@ -1,15 +1,14 @@
 
 import { Plugin } from 'vite'
 import { FeRoom, FeRoomIndex } from '@feroomjs/server'
-import { TFeRoomConfig, virtualIndexName } from 'common'
+import { virtualIndexName } from 'common'
 import { getMoostInfact } from 'moost'
-import { getVirtualIndex } from '../virtual'
 import { pkg } from '../utils'
 import { join } from 'path'
+import { FeRoomConfigHandler } from '../config'
 
 export interface TVitePluginOpts {
-    configData: TFeRoomConfig
-    renderedConf?: TFeRoomConfig
+    configHandler: FeRoomConfigHandler
     devMode?: {
         feroom: FeRoom
     },
@@ -20,6 +19,7 @@ export function feroomForVitePlugin(opts: TVitePluginOpts): Plugin {
     const virtualIndexName2 = '/feroom-virtual-index.js'
     const cwd = process.cwd()
     const virtualIndexName3 = join(cwd, virtualIndexName)
+    const configHandler = opts.configHandler
     return {
         name: 'feroom:resolve-external-id',
         async resolveId(id) {
@@ -33,7 +33,7 @@ export function feroomForVitePlugin(opts: TVitePluginOpts): Plugin {
                 if (id.startsWith('@feroom-ext')) return { id, external: true }
                 if (opts.paths && Object.entries(opts.paths).map(p => p[1]).includes(id))  return { id, external: true }
                 const isDep = Object.keys(pkg.dependencies || {}).includes(id)
-                const toBundle = opts.configData.buildOptions?.dependencies?.bundle?.includes(id)
+                const toBundle = configHandler.get().buildOptions?.dependencies?.bundle?.includes(id)
                 if (isDep && !toBundle) return { id, external: true }
                 if (id === virtualIndexName || id === virtualIndexName2 || id === virtualIndexName3) {
                     return id
@@ -42,15 +42,15 @@ export function feroomForVitePlugin(opts: TVitePluginOpts): Plugin {
         },
         load(id) {
             if (id === virtualIndexName || id === virtualIndexName2 || id === virtualIndexName3) {
-                return getVirtualIndex(opts.configData, !!opts.devMode)
+                return configHandler.renderVirtualIndex()
             }
         },
         buildEnd() {
-            if (!opts.devMode && opts.renderedConf) {
+            if (!opts.devMode) {
                 this.emitFile({
                     type: 'asset',
                     fileName: 'feroom.config.json',
-                    source: JSON.stringify(opts.renderedConf),
+                    source: JSON.stringify(configHandler.renderConfig()),
                 })
             }
         },

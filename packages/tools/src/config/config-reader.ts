@@ -40,8 +40,8 @@ export class FeRoomConfigReader {
         return this.data
     }
 
-    async getHandler() {
-        return new FeRoomConfigHandler(await this.getData())
+    async getHandler(devMode = false) {
+        return new FeRoomConfigHandler(await this.getData(), devMode)
     }
 
     onChange(cb: (cfg: TFeRoomConfig) => void | Promise<void>) {
