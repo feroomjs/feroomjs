@@ -28,6 +28,9 @@ export class FeModule<EXT extends object = object> {
     }
 
     buildPath(path: string, version?: string): string {
+        if (this.data.source === 'vite') {
+            return join('/', path).replace(/^\/\/+/, '/')
+        }
         return join(this.config.modulesPrefixPath, this.data.id + `@${ version || this.data.version }`, path)
     }
 

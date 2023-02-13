@@ -41,15 +41,19 @@ export class FeRoomIndex {
         return Object.keys(obj).map(key => `window[${ JSON.stringify(key) }] = ${JSON.stringify(obj[key as keyof typeof obj])};\n`).join('')
     }
 
-    async getImportmap(modules: FeModule[]) {
+    async getImportmapJson(modules: FeModule[]) {
         const map: Record<string, string> = {}
         modules.forEach(module => Object.assign(map, module.getImportMap(this._registry)));
         (await this.getExtInstances()).map(e => e.instance.injectImportMap && Object.assign(map, e.instance.injectImportMap()))
 
-        return JSON.stringify({
+        return {
             ...map,
             ...this.config.importMap,
-        }, null, '  ')
+        }
+    }
+
+    async getImportmap(modules: FeModule[]) {
+        return JSON.stringify(await this.getImportmapJson(modules), null, '  ')
     }
 
     getCss(modules: FeModule[]) {
@@ -111,6 +115,11 @@ export class FeRoomIndex {
         const modules = this.getModules()
         return `<html>
 <head>
+<script type="importmap">
+{
+    "imports": ${ await this.getImportmap(modules) }
+}
+</script>
 ${ await this.getHead(modules) }
 <script>
 // globals
@@ -126,12 +135,6 @@ window.__loadCss = function (path) {
     link.href = './' + path;
     link.media = 'all';
     head.appendChild(link);
-}
-</script>
-
-<script type="importmap">
-{
-    "imports": ${ await this.getImportmap(modules) }
 }
 </script>
 

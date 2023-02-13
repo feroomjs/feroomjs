@@ -6,6 +6,7 @@ import { buildPath, getLockVersion, pkg, unbuildPath } from '../utils'
 import { getVueRenderedRoutes } from './vue-routes'
 import * as esbuild from 'esbuild'
 import { esbuildWatchPlugin } from '../esbuild/plugins/watch-cb-plugin'
+import { dirname } from 'path'
 
 export class FeRoomConfigFile {
     protected files: string[] = [
@@ -129,7 +130,73 @@ export class FeRoomConfigFile {
         this.listeners.forEach(cb => void cb(newConfig))
     }
 
-    async render(): Promise<TFeRoomConfig> {
+    async getBuildHelpers() {
+        const configData = await this.get()
+        const buildOptions = configData.buildOptions || {}
+        
+        // list of deps to bundle in
+        const bundle = buildOptions?.dependencies?.bundle ? [buildOptions?.dependencies?.bundle].flat(1) : []   
+
+        // list of deps to lock version { 'depName': 'depName@version' }
+        const paths: Record<string, string> = {}
+        const versionedExternals: string[] = []
+        if (buildOptions.dependencies?.lockVersion) {
+            for (const dep of buildOptions.dependencies.lockVersion) {
+                const version = getLockVersion(dep)
+                paths[dep] = `${ dep }@${ version }`
+                versionedExternals.push(`${ dep }@${ version }`)
+            }
+        }
+
+        // list of deps to lock version
+        const lockVersions = Object.keys(paths)
+
+        const target = configData.buildOptions?.output || './dist/index.mjs'
+        const outDir = dirname(target)
+        const fileName = target.replace(outDir + '/', '').replace(/\.\w+$/, '')
+        const ext = (/\.\w+$/.exec(target) || [''])[0]
+
+        const external = [
+            // extrnalising dependencies
+            ...Object.keys(pkg.dependencies || {}).filter(dep => !bundle.includes(dep)),
+            ...Object.keys(pkg.peerDependencies || {}).filter(dep => !bundle.includes(dep)),
+
+            // externalising from buildOptions.dependencies.lockVersion
+            ...Object.entries(paths).map(p => p[1]),
+            ...versionedExternals,
+        ]
+
+        return {
+            // list of deps to bundle in
+            bundle,
+
+            // list of deps to lock version { 'depName': 'depName@version' }
+            paths,
+
+            // dist path (file)
+            target,
+
+            // dist dir
+            outDir,
+
+            // dist file name
+            fileName,
+
+            // file extension 
+            ext,
+
+            // list of deps to lock version
+            lockVersions,
+
+            // external deps
+            external,
+
+            // external deps without locked versions (need to alias with version and exclude afterwards)
+            externalNoLock: external.filter(d => !lockVersions.includes(d)),
+        }
+    }
+
+    async render(viteDev = false): Promise<TFeRoomConfig> {
         if (!this.rendered) {
             const data = JSON.parse(JSON.stringify(await this.get())) as TFeRoomConfig
             data.registerOptions = data.registerOptions || {}
@@ -139,7 +206,7 @@ export class FeRoomConfigFile {
                 data.registerOptions.entry = pkg?.module || pkg?.main
             }
             if (data.extensions?.vueRoutes) {
-                data.extensions.vueRoutes = getVueRenderedRoutes(data.extensions.vueRoutes, id)
+                data.extensions.vueRoutes = getVueRenderedRoutes(data.extensions.vueRoutes, id, viteDev)
             }
             if (data.buildOptions?.dependencies?.lockVersion) {
                 data.registerOptions.lockDependency = {}
@@ -170,7 +237,14 @@ export class FeRoomConfigFile {
                     }
                 }
             }
-            this.rendered = data
+            this.rendered = {
+                registerOptions: {
+                    ...(data.registerOptions || {}),
+                },
+                extensions: {
+                    ...(data.extensions || {}),
+                },
+            }
         }
         return this.rendered
     }   
