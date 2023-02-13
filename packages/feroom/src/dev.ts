@@ -1,7 +1,7 @@
 import { Cli, CliParam } from '@moostjs/event-cli'
 import { Controller, Injectable, Validate } from 'moost'
 import { panic } from 'common'
-import { FeRoomConfigFile, logger } from '@feroomjs/tools'
+import { FeRoomConfigReader, logger } from '@feroomjs/tools'
 // import { FeRegistry, FeRoom } from '@feroomjs/server'
 // import { MoostHttp } from '@moostjs/event-http'
 // import * as esbuild from 'esbuild'
@@ -21,7 +21,7 @@ export class CliDev {
 
         if (typeof this.configPath !== 'undefined' && typeof this.configPath !== 'string') throw panic('Key -c must has string value.')
 
-        const config = new FeRoomConfigFile(this.configPath, true)
+        const config = new FeRoomConfigReader(this.configPath, true)
 
         const { restart } = await createDevServer(config)
 

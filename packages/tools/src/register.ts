@@ -1,7 +1,7 @@
 import { isTextFile, TFeRoomConfig } from 'common'
 import { getFilesByPattern, pkg, unbuildPath } from './utils'
 import { readFileSync } from 'node:fs'
-import { FeRoomConfigFile } from './config'
+import { FeRoomConfigReader } from './config'
 import { logger } from './logger'
 
 export class FeRoomRegister {
@@ -16,8 +16,9 @@ export class FeRoomRegister {
         return host + '/' + path
     }
 
-    async register(opts?: {conf?: FeRoomConfigFile | TFeRoomConfig | string, activate?: boolean, files?: Record<string, string | Buffer>}) {
-        const conf = await (opts?.conf instanceof FeRoomConfigFile ? opts.conf : new FeRoomConfigFile(opts?.conf)).render()
+    async register(opts?: {conf?: FeRoomConfigReader | TFeRoomConfig | string, activate?: boolean, files?: Record<string, string | Buffer>}) {
+        const reader = (opts?.conf instanceof FeRoomConfigReader ? opts.conf : new FeRoomConfigReader(opts?.conf))
+        const conf = (await reader.getHandler()).render()
         const id = conf.registerOptions?.id || pkg.name
         const files = await this.gatherFiles(conf, opts?.files)
         try {

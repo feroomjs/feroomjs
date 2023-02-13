@@ -4,7 +4,7 @@ import { Controller, Injectable } from 'moost'
 // import { panic } from 'common'
 import { build } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { FeRoomConfigFile, feroomForVitePlugin, logger, pkg } from '@feroomjs/tools'
+import { FeRoomConfigReader, feroomForVitePlugin, logger } from '@feroomjs/tools'
 import { virtualIndexName } from 'common'
 
 @Injectable('FOR_EVENT')
@@ -24,9 +24,10 @@ export class CliBuild {
         
         // logger.info('\n✔ Build done')
         
-        const config = new FeRoomConfigFile(this.configPath, true)
-        const configData = await config.get()
-        const buildHelpers = await config.getBuildHelpers()
+        const config = new FeRoomConfigReader(this.configPath, true)
+        const configHandler = await config.getHandler()
+        const configData = configHandler.get()
+        const buildHelpers = configHandler.getBuildHelpers()
 
         for (const key of Object.keys(buildHelpers.paths)) {
             logger.step(`Locking version of "${ buildHelpers.paths[key] }"`)
@@ -44,7 +45,7 @@ export class CliBuild {
                 vue(),
                 feroomForVitePlugin({
                     configData,
-                    renderedConf: await config.render(),
+                    renderedConf: configHandler.render(),
                     paths: buildHelpers.paths,
                 }),
             ],
@@ -55,16 +56,28 @@ export class CliBuild {
                 outDir: buildHelpers.outDir,
                 lib: {
                     entry: virtualIndexName,
-                    name: pkg.name,
-                    fileName: buildHelpers.fileName,
+                    // name: pkg.name,
+                    // fileName: buildHelpers.fileName,
                     formats: ['es'],
                 },
                 rollupOptions: {
+                    input: {
+                        index: virtualIndexName,
+                        'router_page_$0': './src/pages/Index.vue',
+                    },
                     external: [
                         ...buildHelpers.externalNoLock,
 
                         // ext dynamic imports
                         /^@feroom-ext\//,
+                    ],
+                    output: [
+                        {
+                            entryFileNames: (opts) => opts.name + '.js',
+                            format: 'es',
+                            exports: 'named',
+                            dir: buildHelpers.outDir,
+                        },
                     ],
                 },
             },

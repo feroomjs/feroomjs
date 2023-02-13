@@ -3,9 +3,9 @@ import { getVirtualIndex } from '../../virtual'
 import { writeFileSync } from 'fs'
 import { resolve, dirname } from 'path'
 import { buildPath } from '../../utils'
-import { FeRoomConfigFile } from '../../config'
+import { FeRoomConfigReader } from '../../config'
 
-export const esbuildFeRoomPlugin: (conf: FeRoomConfigFile) => Plugin = (conf) => ({
+export const esbuildFeRoomPlugin: (conf: FeRoomConfigReader) => Plugin = (conf) => ({
     name: 'feroom',
     setup(build) {
         build.onResolve({ filter: /feroom-virtual-index\.ts$/ }, (args) => {
@@ -14,7 +14,7 @@ export const esbuildFeRoomPlugin: (conf: FeRoomConfigFile) => Plugin = (conf) =>
             }
         })
         build.onLoad({ filter: /feroom-virtual-index\.ts$/ }, async () => ({
-            contents: getVirtualIndex(await conf.get()),
+            contents: getVirtualIndex(await conf.getData()),
             loader: 'ts',
         }))
         build.onResolve({ filter: /^@feroom-ext\// }, () => {
@@ -22,7 +22,7 @@ export const esbuildFeRoomPlugin: (conf: FeRoomConfigFile) => Plugin = (conf) =>
         })
         build.onEnd(async (result) => {
             const path = build.initialOptions.outfile ? dirname(build.initialOptions.outfile) : build.initialOptions.outdir || ''
-            const renderedConfig = JSON.stringify({...(await conf.render()), devServer: undefined }, null, '  ')
+            const renderedConfig = JSON.stringify({...(await conf.getHandler()).render(), devServer: undefined }, null, '  ')
             if (build.initialOptions.write) {
                 writeFileSync(buildPath(path, 'feroom.config.json'), renderedConfig)
             }

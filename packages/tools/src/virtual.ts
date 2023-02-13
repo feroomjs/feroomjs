@@ -1,6 +1,6 @@
-import { TFeRoomConfig, TVueRoute } from 'common'
+import { TFeRoomConfig } from 'common'
 import { dirname, join } from 'path'
-import { getVueRoutesExports } from './config/vue-routes'
+// import { getVueRoutesExports } from './config/vue-routes'
 import { pkg } from './utils'
 
 export function getVirtualIndex(conf: TFeRoomConfig, viteDev = false) {
@@ -24,6 +24,6 @@ export function getVirtualIndex(conf: TFeRoomConfig, viteDev = false) {
             content += `__loadCss(window.__feroom.modulesPrefixPath + '${ conf.registerOptions?.id || pkg.name }/${ cssPath }');\n`
         }
     }
-    content += getVueRoutesExports(conf.extensions?.vueRoutes as TVueRoute[] || [], viteDev)
+    // content += getVueRoutesExports(conf.extensions?.vueRoutes as TVueRoute[] || [], viteDev)
     return content
 }

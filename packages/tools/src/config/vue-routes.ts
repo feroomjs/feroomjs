@@ -16,7 +16,7 @@ export function getVueRoutesMap(vueRoutes: TVueRoute[]) {
     function iterateChildren(root: TVueRoute[]) {
         for (const entry of root) {
             if (entry.component) {
-                components[entry.component] = components[entry.component] || `router_page_$${ i++ }`
+                components[entry.component] = components[entry.component] || `router_page__${ i++ }`
             }
             if (entry.children) {
                 iterateChildren(entry.children)
@@ -33,7 +33,8 @@ export function getVueRenderedRoutes(vueRoutes: TVueRoute[], moduleId: string, v
     function iterateChildren(root: TVueRoute[]) {
         for (const entry of root) {
             if (entry.component && !entry.component.startsWith('async () => ')) {
-                entry.component = `async () => (await import('${ viteDev ? '/feroom-virtual-index.js' : moduleId }')).${ map[entry.component] }`
+                // entry.component = `async () => (await import('${ viteDev ? '/feroom-virtual-index.js' : moduleId }')).${ map[entry.component] }`
+                entry.component = `async () => (await import('/' + window.__feroom.modulesPrefixPath + '${ moduleId }/dist/${ map[entry.component] }.js'))`
             }
             if (entry.children) {
                 iterateChildren(entry.children)

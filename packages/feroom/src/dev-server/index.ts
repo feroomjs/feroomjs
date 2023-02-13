@@ -1,7 +1,7 @@
 import { WooksConnect } from '@wooksjs/connect-adapter'
 import { createServer, ViteDevServer } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { FeRoomConfigFile, pkg } from '@feroomjs/tools'
+import { FeRoomConfigReader, FeRoomConfigHandler, pkg } from '@feroomjs/tools'
 import connect from 'connect'
 import { FeRegistry, FeRoom } from '@feroomjs/server'
 import { WooksHttp } from '@wooksjs/event-http'
@@ -12,23 +12,24 @@ import { feroomForVitePlugin } from '@feroomjs/tools'
 
 const DEFAULT_PORT = 3157
 
-export async function createDevServer(feConf: FeRoomConfigFile) {
+export async function createDevServer(feConf: FeRoomConfigReader) {
     const connectApp = connect()
     let running = false
+    let configHandler = await feConf.getHandler()
 
     const wooksApp = new WooksConnect(connectApp)
-    const { feroom, reRegister } = await runFeRoomServer(feConf, wooksApp)
+    const { feroom, reRegister } = await runFeRoomServer(configHandler, wooksApp)
 
     let server: ViteDevServer
 
-    async function restart(newConfig: FeRoomConfigFile) {
+    async function restart(newConfig: FeRoomConfigReader) {
         if (running) {
             await wooksApp.close()
             await server.close()
             connectApp.stack.splice(1, connectApp.stack.length)
         }
-        const configData = await feConf.get()
-        const buildHelpers = await feConf.getBuildHelpers()
+        const configData = configHandler.get()
+        const buildHelpers = configHandler.getBuildHelpers()
         const port = configData.devServer?.port || DEFAULT_PORT
 
         const alias = {
@@ -71,7 +72,8 @@ export async function createDevServer(feConf: FeRoomConfigFile) {
         connectApp.use(server.middlewares)
         await wooksApp.listen(port)
 
-        await reRegister(newConfig)
+        configHandler = await newConfig.getHandler()
+        reRegister(configHandler)
         running = true
     }
 
@@ -84,8 +86,8 @@ export async function createDevServer(feConf: FeRoomConfigFile) {
     }
 }
 
-async function runFeRoomServer(config: FeRoomConfigFile, wooksApp: WooksHttp) {
-    const configData = await config.get()
+async function runFeRoomServer(configHandler: FeRoomConfigHandler, wooksApp: WooksHttp) {
+    const configData = configHandler.get()
 
     const ext = configData.devServer?.ext || []
 
@@ -94,7 +96,7 @@ async function runFeRoomServer(config: FeRoomConfigFile, wooksApp: WooksHttp) {
         head: '<script type="module" src="/@vite/client"></script>',
     }, reg)
 
-    await reRegister(config)
+    reRegister(configHandler)
 
     for (const extItem of ext) {
         void server.ext(extItem)
@@ -103,8 +105,8 @@ async function runFeRoomServer(config: FeRoomConfigFile, wooksApp: WooksHttp) {
     void server.adapter(new MoostHttp(wooksApp))
     await server.init()
 
-    async function reRegister(config: FeRoomConfigFile) {
-        const renderedConfig = JSON.stringify(await config.render(true))
+    function reRegister(configHandler: FeRoomConfigHandler) {
+        const renderedConfig = JSON.stringify(configHandler.render(true))
         return reg.registerModule({
             activate: true,
             files: { 'package.json': JSON.stringify(pkg), 'feroom.config.json': renderedConfig },

@@ -1,12 +1,12 @@
 import { BuildOptions, Plugin } from 'esbuild'
-import { FeRoomConfigFile } from '../config'
+import { FeRoomConfigReader } from '../config'
 import { TESReBuildCallback } from './types'
 import { esbuildFeRoomPlugin, esbuildWatchPlugin } from './plugins'
 import { getLockVersion, pkg } from '../utils'
 import { logger } from '../logger'
 
-export async function genEsbuildConfig(config: FeRoomConfigFile, onReBuild?: TESReBuildCallback): Promise<BuildOptions> {
-    const conf = await config.get()
+export async function genEsbuildConfig(config: FeRoomConfigReader, onReBuild?: TESReBuildCallback): Promise<BuildOptions> {
+    const conf = await config.getData()
     const buildOptions = conf.buildOptions || {}
     const plugins: Plugin[] = []
     if (conf.buildOptions?.vue) {

@@ -8,7 +8,7 @@ jest.mock('../utils', () => ({
     getLockVersion: jest.fn(),
 }))
 import { existsSync, readFileSync } from 'fs'
-import { FeRoomConfigFile } from '.'
+import { FeRoomConfigReader } from '.'
 import { getLockVersion } from '../utils'
 import { getVirtualIndex } from '../virtual'
 
@@ -96,10 +96,10 @@ const renderedConfig = {
 describe('FeRoomConfigFile', () => {
     it('must parse feroom.config.json file', async () => {
         mockFile('feroom.config.json', '{"mocked":true}')
-        expect(await new FeRoomConfigFile().get()).toEqual({ mocked: true })
+        expect(await new FeRoomConfigReader().getData()).toEqual({ mocked: true })
     })
     it('must parse feroom.config.js file', async () => {
-        expect(await new FeRoomConfigFile(initialConfig).render()).toEqual(renderedConfig)
+        expect((await new FeRoomConfigReader(initialConfig).getHandler()).render()).toEqual(renderedConfig)
     })
 })
 
