@@ -1,4 +1,4 @@
-import { TFeRoomConfig } from 'common'
+import { modulesPrefixPath, TFeRoomConfig } from 'common'
 import { dirname, join } from 'path'
 import { getLockVersion, pkg } from '../utils'
 import * as exts from './config-ext'
@@ -14,6 +14,7 @@ export class FeRoomConfigHandler {
         target: string
         outDir: string
         fileName: string
+        entries: Record<string, string>
         ext: string
         lockVersions: string[]
         external: string[]
@@ -61,6 +62,13 @@ export class FeRoomConfigHandler {
                 ...versionedExternals,
             ]
 
+            const entries: Record<string, string> = {}
+
+            for (const ext of this.exts.filter(ext => typeof ext.appendEntries === 'function')) {
+                const newEntries = (ext as Required<TFeConfigExt>).appendEntries(this.data)
+                Object.assign(entries, newEntries)
+            }
+
             this.buildHelpers = {
                 // list of deps to bundle in
                 bundle,
@@ -76,6 +84,9 @@ export class FeRoomConfigHandler {
     
                 // dist file name
                 fileName,
+
+                // entries
+                entries,
     
                 // file extension 
                 ext,
@@ -92,6 +103,10 @@ export class FeRoomConfigHandler {
         }
 
         return this.buildHelpers
+    }
+
+    outPath(path: string) {
+        return join(this.getBuildHelpers().outDir, path)
     }
 
     renderConfig(): TFeRoomConfig {
@@ -133,7 +148,7 @@ export class FeRoomConfigHandler {
             }
             if (cssPath) {
                 cssPath = join(dirname(buildOptions.output || ''), cssPath)
-                content += `__loadCss(window.__feroom.modulesPrefixPath + '${ this.data.registerOptions?.id || pkg.name }/${ cssPath }');\n`
+                content += `__loadCss('${ modulesPrefixPath }${ this.data.registerOptions?.id || pkg.name }/${ cssPath }');\n`
             }
         }
         // content += getVueRoutesExports(conf.extensions?.vueRoutes as TVueRoute[] || [], this.devMode)
@@ -158,4 +173,5 @@ export interface TFeConfigExt {
     transformVirtualIndex?: (code: string, c: FeRoomConfigHandler) => string
     prependVirtualIndex?: (c: FeRoomConfigHandler) => string
     transformConfig?: (config: TFeRoomConfig, c: FeRoomConfigHandler) => TFeRoomConfig
+    appendEntries?: (config: TFeRoomConfig) => Record<string, string>
 }

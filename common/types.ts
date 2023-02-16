@@ -30,6 +30,7 @@ export interface TFeRoomRegisterOptions {
     importNpmDependencies?: {
         [name: string]: TNpmModuleData
     }
+    exports?: Record<'.' | `./${ string }` | string, string | { import?: string, default?: string }>
 }
 
 export interface TFeRoomRollupOptions {
@@ -79,7 +80,7 @@ export interface TFeRoomExtension {
 }
 
 export interface TFeRoomServerOptions {
-    modulesPrefixPath?: string
+    devMode?: boolean
     globals?: object
     title?: string
     preloadCss?: (string | [string, string])[] 

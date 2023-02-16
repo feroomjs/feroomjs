@@ -37,6 +37,8 @@ export async function createDevServer(feConf: FeRoomConfigReader) {
             // ...obj,
         }
 
+        console.log('buildHelpers.entries', buildHelpers.entries)
+
         server = await createServer({
             configFile: false,
             root: process.cwd(),
@@ -57,8 +59,7 @@ export async function createDevServer(feConf: FeRoomConfigReader) {
                 Inspect(),
             ],
             optimizeDeps: {
-    
-                entries: [virtualIndexName],
+                entries: [virtualIndexName, ...Object.values(buildHelpers.entries)],
                 esbuildOptions: {
                     alias,
                 },
@@ -72,7 +73,7 @@ export async function createDevServer(feConf: FeRoomConfigReader) {
         connectApp.use(server.middlewares)
         await wooksApp.listen(port)
 
-        configHandler = await newConfig.getHandler()
+        configHandler = await newConfig.getHandler(true)
         reRegister(configHandler)
         running = true
     }
@@ -106,6 +107,7 @@ async function runFeRoomServer(configHandler: FeRoomConfigHandler, wooksApp: Woo
     await server.init()
 
     function reRegister(configHandler: FeRoomConfigHandler) {
+        console.log({ configHandler })
         const renderedConfig = JSON.stringify(configHandler.renderConfig())
         return reg.registerModule({
             activate: true,

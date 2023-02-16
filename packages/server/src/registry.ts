@@ -23,7 +23,7 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
         if (!files) {
             throw panic(`Failed to normallize module "${ data.id as string }": no files in module`)
         }
-        let pkg
+        let pkg: { name?: string, version?: string, module?: string, exports?: Record<string, string> }
         try {
             pkg = JSON.parse(files['package.json'] || '{}') as Record<string, string>
         } catch (e) {
@@ -39,13 +39,14 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
             throw e
         }
         feConf.registerOptions = feConf.registerOptions || {}
+        feConf.registerOptions.exports = { ...(pkg.exports || {}), ...(feConf.registerOptions.exports || {}) }
         feConf.extensions = feConf.extensions || {} as CFG
         Object.assign(feConf.registerOptions, data.config?.registerOptions || {})
         Object.assign(feConf.extensions, data.config?.extensions || {})
         const module: TModuleData<CFG> = {
-            id: data.id || feConf.registerOptions?.id || pkg.name,
-            version: data.version || pkg.version,
-            entry: data.entry || feConf.registerOptions?.entry || pkg.module,
+            id: data.id || feConf.registerOptions?.id || pkg.name as string,
+            version: data.version || pkg.version as string,
+            entry: data.entry || feConf.registerOptions?.entry || pkg.module as string,
             files,
             source: data.source || '',
             activate: !!data.activate,

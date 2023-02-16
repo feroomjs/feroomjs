@@ -61,7 +61,7 @@ export class CliBuild {
                 rollupOptions: {
                     input: {
                         index: virtualIndexName,
-                        'router_page_$0': './src/pages/Index.vue',
+                        ...buildHelpers.entries,
                     },
                     external: [
                         ...buildHelpers.externalNoLock,
@@ -71,7 +71,7 @@ export class CliBuild {
                     ],
                     output: [
                         {
-                            entryFileNames: (opts) => opts.name + '.js',
+                            entryFileNames: (opts) => opts.name.replace(/\.js$/, '') + '.js',
                             format: 'es',
                             exports: 'named',
                             dir: buildHelpers.outDir,

@@ -3,8 +3,8 @@ import { TFeRoomServerOptions, TNpmModuleData } from 'common'
 export class FeRoomConfig {
     constructor(protected options: TFeRoomServerOptions) {}
 
-    get modulesPrefixPath() {
-        return this.options.modulesPrefixPath || 'feroom-module/'
+    get devMode() {
+        return this.options.devMode
     }
 
     get globals() {

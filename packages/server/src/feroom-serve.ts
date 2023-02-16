@@ -2,7 +2,7 @@ import { HttpError, useSetHeader, useStatus, WooksHttp } from '@wooksjs/event-ht
 import { Controller } from 'moost'
 import { useRouteParams } from 'wooks'
 import { FeRegistry } from './registry'
-import { log, TModuleData } from 'common'
+import { log, modulesPrefixPath, TModuleData } from 'common'
 import { FeRoomConfig } from './config'
 import { FeModule } from './module'
 
@@ -24,11 +24,11 @@ export class FeRoomServe {
                 return this.serveModule(data.id, useRouteParams().get('version') as string, useRouteParams().get('*') as string)
             }
             this.registered[data.id] = true
-            this.wHttp.get(this.config.modulesPrefixPath + data.id, serve)
-            this.wHttp.get(this.config.modulesPrefixPath + data.id + '/*', serveFile)
-            this.wHttp.get(this.config.modulesPrefixPath + data.id + '@:version', serve)
-            this.wHttp.get(this.config.modulesPrefixPath + data.id + '@:version' + '/*', serveFile)
-            log(`• ${__DYE_CYAN__}(GET)${__DYE_GREEN__}/${ this.config.modulesPrefixPath + data.id } → FeRoomServe[${ data.id }]`)
+            this.wHttp.get(modulesPrefixPath + data.id, serve)
+            this.wHttp.get(modulesPrefixPath + data.id + '/*', serveFile)
+            this.wHttp.get(modulesPrefixPath + data.id + '@:version', serve)
+            this.wHttp.get(modulesPrefixPath + data.id + '@:version' + '/*', serveFile)
+            log(`• ${__DYE_CYAN__}(GET)${__DYE_GREEN__}/${ modulesPrefixPath + data.id } → FeRoomServe[${ data.id }]`)
         }
         return data
     }
