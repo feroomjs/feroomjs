@@ -20,3 +20,7 @@
 ## Common
 
 - re-design appending css to modules (use virtual dep `@feroom-ext/preload-css`?)
+
+## Persistance
+
+- implement persistancy adapter on (documentDB? mongoDB? dynamoDB? S3?)
