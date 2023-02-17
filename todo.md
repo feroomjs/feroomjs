@@ -24,3 +24,8 @@
 ## Persistance
 
 - implement persistancy adapter on (documentDB? mongoDB? dynamoDB? S3?)
+
+## CLI
+
+- add create feroom server option (from template)
+- add create feroom MFE option (from template)
