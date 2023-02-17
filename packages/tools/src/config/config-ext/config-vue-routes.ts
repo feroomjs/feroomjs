@@ -9,9 +9,12 @@ export const configVueRoutesExt: TFeConfigExt = {
             data.registerOptions = data.registerOptions || {}
             data.registerOptions.exports = data.registerOptions.exports || {}
             for (const entry of getAllRoutes(data.extensions.vueRoutes)) {
+                // "./src/pages/Index.vue" → "./pages_Index" as an export name
                 const exportName = './' + getPageName(entry.component, true)
                 const pagePath = config.devMode
+                    // "./src/pages/Index.vue" → "./src/pages/Index.vue" for vite dev
                     ? entry.component
+                    // "./src/pages/Index.vue" → "<outDir>/pages_Index.js" for prod
                     : config.outPath(getPageName(entry.component))
                 data.registerOptions.exports[exportName] = pagePath
             }
@@ -34,6 +37,7 @@ export const configVueRoutesExt: TFeConfigExt = {
 }
 
 function getPageName(path: string, skipExt = false) {
+    // "./src/pages/Index.vue" → "pages_Index.js"
     return path
         .replace(/\.vue$/, '')
         .replace(/^.\//, '')
@@ -60,6 +64,7 @@ function getAllRoutes(vueRoutes: TVueRoute[]) {
 function getVueRenderedRoutes(vueRoutes: TVueRoute[], moduleId: string) {
     const _routes = JSON.parse(JSON.stringify(vueRoutes)) as TVueRoute[]
     const entries = getAllRoutes(_routes)
+    // "./src/pages/Index.vue" → "async () => (await import('<moduleId>/pages_Index'))"
     for (const entry of entries) {
         if (entry.component && !entry.component.startsWith('async () => ')) {
             entry.component = `async () => (await import('${ moduleId }/${ getPageName(entry.component, true) }'))`
