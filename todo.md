@@ -11,6 +11,7 @@
 ## devServer
 
 - option to pre-load server configuration from prod (test) server
+- option to describe proxies
 
 ## Server
 
