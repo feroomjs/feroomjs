@@ -18,6 +18,7 @@ export async function getNpmPackageFiles(registryUrl: string, packageName: strin
         version = tags.latest
     }
     const k = pKey(packageName, version)
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     if (!cache[k]) {
         const res = await fetchTgz(registryUrl, packageName, version)
         cache[k] = unpackTgzToMemory(res.body as ReadableStream)

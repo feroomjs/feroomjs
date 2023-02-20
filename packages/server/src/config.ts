@@ -3,6 +3,10 @@ import { TFeRoomServerOptions, TNpmModuleData } from 'common'
 export class FeRoomConfig {
     constructor(protected options: TFeRoomServerOptions) {}
 
+    get defaultNpmRegistry() {
+        return this.options.defaultNpmRegistry || 'https://registry.npmjs.org'
+    }
+
     get modulesPrefixPath() {
         return this.options.modulesPrefixPath || 'feroom/module/'
     }

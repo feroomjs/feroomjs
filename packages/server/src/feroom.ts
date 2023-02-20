@@ -35,7 +35,7 @@ export class FeRoom extends Moost {
     async init() {
         await super.init()
         for (const dep of this._config.npmDeps) {
-            await this._registry.registerFromNpm(dep)
+            await this._registry.registerFromNpm(dep, this._config.defaultNpmRegistry)
         }
     }
 

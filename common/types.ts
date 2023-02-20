@@ -84,6 +84,7 @@ export interface TFeRoomExtension {
 
 export interface TFeRoomServerOptions {
     modulesPrefixPath?: string
+    defaultNpmRegistry?: string
     devMode?: boolean
     globals?: object
     title?: string

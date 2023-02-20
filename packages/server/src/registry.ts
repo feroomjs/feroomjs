@@ -61,7 +61,7 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
         return module
     }
 
-    registerModule(data: Partial<TModuleData<CFG>>) {
+    registerModule(data: Partial<TModuleData<CFG>>, defaultNpmRegistry = 'https://registry.npmjs.org') {
         const normData = this.normalizeModuleData(data)
         const module = registry[normData.id] = registry[normData.id] || { activeVersion: normData.version, versions: {}}
         if (normData.activate) {
@@ -71,14 +71,32 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
         log(`Module has been registered ${__DYE_CYAN__}${ normData.id } v${ normData.version }. Active version: ${ module.activeVersion }`)
         this.emit('register-module', normData)
         const regOpts = normData.config.register || {}
+        const depsToRegister: Record<string, string | TNpmModuleData> = {}
+        if (regOpts.dependencies?.autoImport) {
+            const pkg = JSON.parse(normData.files['package.json'] as string || '{}') as Record<string, string>
+            if (pkg && pkg.dependencies) {
+                Object.assign(depsToRegister, pkg.dependencies)
+            }
+        }
         if (regOpts.dependencies?.import) {
             for (const [dep, conf] of Object.entries(regOpts.dependencies.import)) {
+                depsToRegister[dep] = conf
+            }
+        }
+        for (const [dep, conf] of Object.entries(depsToRegister)) {
+            if (typeof conf === 'string') {
+                void this.registerFromNpm({
+                    name: dep,
+                    version: conf,
+                    activateIfNewer: normData.activate,
+                }, defaultNpmRegistry)
+            } else {
                 void this.registerFromNpm({
                     ...conf,
                     name: dep,
                     activateIfNewer: normData.activate,
-                } as TNpmModuleData<CFG>)
-            }
+                } as TNpmModuleData<CFG>, defaultNpmRegistry) 
+            }           
         }
         return {
             ...normData,
@@ -86,36 +104,38 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
         }
     }
 
-    async registerFromNpm(npmData: TNpmModuleData<CFG>) {
+    async registerFromNpm(npmData: TNpmModuleData<CFG>, defaultNpmRegistry = 'https://registry.npmjs.org') {
         if (!npmData.name) {
             throw panic('Can not register npm module: option "name" is not provided.')
         }
-        const registry = npmData.registry || 'https://registry.npmjs.org'
+        const registry = npmData.registry || defaultNpmRegistry
         const version = await getNpmPackageVersion(registry, npmData.name, npmData.version)
-        const exists = this.exists(npmData.name, version)
+        const notBelow = version.startsWith('^')
+        const exactVersion = notBelow ? version.slice(1) : version
+        const exists = this.exists(npmData.name, exactVersion)
         const activeVersion = this.getActiveVersion(npmData.name, true)
-        if (!npmData.forceRegister && exists) {
+        if (npmData.forceRegister && (exists || (notBelow && activeVersion >= exactVersion))) {
             log(`Module ${__DYE_CYAN__}${ npmData.name } v${ version }${ __DYE_GREEN__ } already registered. Nothing changed. Use "forceRegister" option to force re-register of the module.`)
             return 'Module already exists'
         }
-        const files = await getNpmPackageFiles(registry, npmData.name, version)
+        const files = await getNpmPackageFiles(registry, npmData.name, exactVersion)
         const pkg = JSON.parse(files['package.json'] as string || '{}') as Record<string, string>
         let shouldActivate = npmData.activate
         if (!shouldActivate && npmData.activateIfNewer) {
             if (!activeVersion) {
                 shouldActivate = true
             } else {
-                shouldActivate = activeVersion < version
+                shouldActivate = activeVersion < exactVersion
             }
         }
         const module: Partial<TModuleData<CFG>> = {
             id: npmData.id || pkg.name || npmData.name,
-            version: version,
+            version: exactVersion,
             files,
             source: 'npm:' + registry,
             activate: shouldActivate,
         }
-        return this.registerModule(module)
+        return this.registerModule(module, defaultNpmRegistry)
     }
 
     readModule(id: string, version?: string): TModuleData<CFG> {

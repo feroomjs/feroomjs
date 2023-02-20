@@ -35,7 +35,6 @@
     "@wooksjs/event-cli": "^0.2.12",
     "@wooksjs/connect-adapter": "",
     "vite": "",
-    "vite-plugin-inspect": "",
     "connect": "",
     "@vitejs/plugin-vue": "",
     "@feroomjs/tools": "0.0.10",

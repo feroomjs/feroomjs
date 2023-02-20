@@ -7,7 +7,6 @@ import { FeRegistry, FeRoom } from '@feroomjs/server'
 import { WooksHttp } from '@wooksjs/event-http'
 import { MoostHttp } from '@moostjs/event-http'
 import { virtualIndexName } from 'common'
-import Inspect from 'vite-plugin-inspect'
 import { feroomForVitePlugin } from '@feroomjs/tools'
 
 const DEFAULT_PORT = 3157
@@ -55,7 +54,6 @@ export async function createDevServer(feConf: FeRoomConfigReader) {
                     devMode: { feroom },
                     configHandler,
                 }),
-                Inspect(),
             ],
             optimizeDeps: {
                 entries: [virtualIndexName, ...Object.values(buildHelpers.entries)],

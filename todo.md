@@ -2,11 +2,11 @@
 
 ## Register
 
-- `autoImportDeps` - flag to enable import "dependencies" of registered module
+- ✔ `register.dependencies.autoImport` - flag to enable import "dependencies" of registered module (ignores nested deps)
 
 ## Build
 
-- add types declarations emits
+- ❌ add types declarations emits **(use npx tsc explicitly)**
 
 ## devServer
 

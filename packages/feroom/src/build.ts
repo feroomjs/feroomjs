@@ -1,7 +1,5 @@
 import { Cli, CliParam } from '@moostjs/event-cli'
 import { Controller, Injectable } from 'moost'
-// import { esBuildBundle, logger } from '@feroomjs/tools'
-// import { panic } from 'common'
 import { build } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { FeRoomConfigReader, feroomForVitePlugin, logger } from '@feroomjs/tools'
@@ -41,7 +39,7 @@ export class CliBuild {
             root: process.cwd(),
             base: '/foo/',
             plugins: [
-                vue(),
+                ...(configHandler.get().build?.vue ? [vue()] : []),
                 feroomForVitePlugin({
                     configHandler,
                     paths: buildHelpers.paths,
@@ -56,9 +54,7 @@ export class CliBuild {
                 outDir: buildHelpers.outDir,
                 lib: {
                     entry: virtualIndexName,
-                    // name: pkg.name,
-                    // fileName: buildHelpers.fileName,
-                    formats: ['es'],
+                    // formats: ['es'], // see build.rollupOptions.output
                 },
                 rollupOptions: {
                     input: {
