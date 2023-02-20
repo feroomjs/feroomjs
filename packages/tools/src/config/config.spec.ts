@@ -7,7 +7,6 @@ jest.mock('../utils', () => ({
     ...jest.requireActual('../utils'),
     getLockVersion: jest.fn(),
 }))
-import { modulesPrefixPath } from 'common'
 import { existsSync, readFileSync } from 'fs'
 import { FeRoomConfigReader } from '.'
 import { getLockVersion } from '../utils'
@@ -108,7 +107,6 @@ describe('virtual', () => {
         const handler = (await new FeRoomConfigReader(initialConfig).getHandler())
         expect(handler.renderVirtualIndex()).toMatchInlineSnapshot(`
 "export * from 'my-index.js';
-__loadCss('${ modulesPrefixPath }@my-module/m0/my-styles.css');
 export { default as router_page_$0 } from './src/pages/Index.vue';
 export { default as router_page_$1 } from './src/pages/Details.vue';
 "

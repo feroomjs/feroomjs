@@ -37,8 +37,6 @@ export async function createDevServer(feConf: FeRoomConfigReader) {
             // ...obj,
         }
 
-        console.log('buildHelpers.entries', buildHelpers.entries)
-
         server = await createServer({
             configFile: false,
             root: process.cwd(),
@@ -50,6 +48,7 @@ export async function createDevServer(feConf: FeRoomConfigReader) {
             resolve: {
                 alias,
             },
+            mode: 'development',
             plugins: [
                 vue(),
                 feroomForVitePlugin({
@@ -107,14 +106,13 @@ async function runFeRoomServer(configHandler: FeRoomConfigHandler, wooksApp: Woo
     await server.init()
 
     function reRegister(configHandler: FeRoomConfigHandler) {
-        console.log({ configHandler })
         const renderedConfig = JSON.stringify(configHandler.renderConfig())
         return reg.registerModule({
             activate: true,
             files: { 'package.json': JSON.stringify(pkg), 'feroom.config.json': renderedConfig },
             entry: virtualIndexName, // configData.buildOptions?.input,
             source: 'vite',
-            id: configData.registerOptions?.id,
+            id: configData.register?.id,
         })
     }
 

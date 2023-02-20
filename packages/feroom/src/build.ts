@@ -47,6 +47,8 @@ export class CliBuild {
                     paths: buildHelpers.paths,
                 }),
             ],
+            mode: 'production',
+            define: buildHelpers.define,
             resolve: {
                 alias: buildHelpers.paths,
             },

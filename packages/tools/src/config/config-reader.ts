@@ -4,7 +4,7 @@ import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs'
 import { logger } from '../logger'
 import { buildPath, unbuildPath } from '../utils'
 import * as esbuild from 'esbuild'
-import { esbuildWatchPlugin } from '../esbuild/plugins/watch-cb-plugin'
+import { esbuildWatchPlugin } from './watch-cb-plugin'
 import { FeRoomConfigHandler } from './config-handler'
 
 export class FeRoomConfigReader {
@@ -55,12 +55,14 @@ export class FeRoomConfigReader {
 
         for (const file of this.files) {
             filePath = buildPath(file)
+            console.log(file)
             if (existsSync(filePath)) {
                 break
             } else {
                 filePath = ''
             }
         }
+        console.log('end looking for file')
         if (!filePath) {
             throw new Error('Feroom config file was not found. ' + this.files.join(', '))
         }

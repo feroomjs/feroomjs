@@ -42,18 +42,18 @@ export class VueRoutesExt implements TFeRoomExtension {
             switch (name) {
                 case 'path':
                 case 'name':
-                    s += this.renderProp(name, value, indent) + ',\n'
-                    break;
+                    s += this.renderProp(name, value as string, indent) + ',\n'
+                    break
                 case 'children':
                     if (value && Array.isArray(value)) {
                         s += `${ indent }  "children": [\n`
                         for (const child of value) {
-                            s += this.renderRoute(child, indent + '  ') + ',\n'
+                            s += this.renderRoute(child as TVueRoute, indent + '  ') + ',\n'
                         }
                         s += `${ indent }  ],\n`
                     }
-                    break;
-                default: s += this.renderFunc(name, value, indent) + ',\n'
+                    break
+                default: s += this.renderFunc(name, value as string, indent) + ',\n'
             }
         }
         return s + `${ indent }}`
@@ -70,6 +70,6 @@ export class VueRoutesExt implements TFeRoomExtension {
             content += this.renderRoute(route) + ',\n'
         }
 
-        return `export const vueRoutes = [${ content }]\nexport default vueRoutes`
+        return `import * as feUtils from \'@feroom-ext/feroom-utils\';\nexport const vueRoutes = [${ content }]\nexport default vueRoutes`
     }
 }

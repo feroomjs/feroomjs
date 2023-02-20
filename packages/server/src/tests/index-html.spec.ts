@@ -30,11 +30,13 @@ reg.registerModule({
     version: '1',
     files: {},
     config: {
-        registerOptions: {
+        register: {
             entry: 'index.js',
-            preloadScripts: 'm1.js',
-            preloadCss: ['m1-1.css', 'm1-2.css'],
-            appendHead: '<meta module v1 />',
+            indexHtml: {
+                preloadScripts: 'm1.js',
+                preloadCss: ['m1-1.css', 'm1-2.css'],
+                appendHead: '<meta module v1 />',
+            },
         },
     },
 })
@@ -43,11 +45,13 @@ reg.registerModule({
     version: '1',
     files: {},
     config: {
-        registerOptions: {
+        register: {
             entry: 'index2.js',
-            preloadScripts: ['m2-1.js', 'm2-2.js'],
-            preloadCss: 'm2.css',
-            preloadEntry: 'body:last',
+            indexHtml: {
+                preloadScripts: ['m2-1.js', 'm2-2.js'],
+                preloadCss: 'm2.css',
+                preloadEntry: 'body:last',
+            },
         },
     },
 })
@@ -57,11 +61,13 @@ reg.registerModule({
     files: {},
     activate: true,
     config: {
-        registerOptions: {
+        register: {
             entry: 'index2.js',
-            preloadScripts: ['m2-1.js', 'm2-2.js'],
-            preloadCss: 'm2.css',
-            preloadEntry: 'body:last',
+            indexHtml: {
+                preloadScripts: ['m2-1.js', 'm2-2.js'],
+                preloadCss: 'm2.css',
+                preloadEntry: 'body:last',
+            },
         },
     },
 })
@@ -70,16 +76,20 @@ reg.registerModule({
     version: '1',
     files: {},
     config: {
-        registerOptions: {
-            lockDependency: {
-                'module2': '1',
-            },
-            globals: {
-                __MODULE__: 'value',
-            },
+        register: {
             entry: 'root-app.js',
-            appendBody: '<div id="#module-root" />',
-            preloadEntry: true,
+            dependencies: {
+                lock: {
+                    'module2': '1',
+                },
+            },
+            indexHtml: {
+                globals: {
+                    __MODULE__: 'value',
+                },
+                appendBody: '<div id="#module-root" />',
+                preloadEntry: true,
+            },
         },
     },
 })
@@ -122,7 +132,6 @@ describe('index-html', () => {
 window["__MODULE__"] = "value";
 window["_VAR_"] = "var-value";
 window["process"] = {"env":{"NODE_ENV":"dev"}};
-window["__feroom"] = {"modulesPrefixPath":"feroom-module/"};
 "
 `)
     })

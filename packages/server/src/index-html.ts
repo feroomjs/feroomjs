@@ -91,7 +91,7 @@ export class FeRoomIndex {
 
     getPreloadModule(modules: FeModule[]) {
         const items: FeModule[] = []
-        modules.forEach(m => (this.config.preloadModule.includes(m.id) || [true, 'head'].includes(m.getRegisterOptions().preloadEntry as boolean)) && items.push(m))
+        modules.forEach(m => (this.config.preloadModule.includes(m.id) || [true, 'head'].includes(m.getIndexHtmlOptions().preloadEntry as boolean)) && items.push(m))
         return items
             .map(m => m.renderPreloadModule())
             .join('\n')
@@ -99,15 +99,15 @@ export class FeRoomIndex {
 
     async getHead(modules: FeModule[]) {
         let content = `<title>${ this.config.title }</title>\n` + (this.config.head || '') + '\n'
-        modules.forEach(m => m.getRegisterOptions().appendHead ? content += m.renderComment('Append Head') + m.getRegisterOptions().appendHead + '\n' : null)
+        modules.forEach(m => m.getIndexHtmlOptions().appendHead ? content += m.renderComment('Append Head') + m.getIndexHtmlOptions().appendHead + '\n' : null)
         return content + await this.getExtHead()
     }
 
     async getBody(modules: FeModule[]) {
         let content = (this.config.body || '') + '\n'
-        modules.forEach(m => m.getRegisterOptions().preloadEntry === 'body:first' && (content += m.renderPreloadModule() + '\n'))
-        modules.forEach(m => m.getRegisterOptions().appendBody ? content += m.renderComment('Append Body') + m.getRegisterOptions().appendBody + '\n' : null)
-        modules.forEach(m => m.getRegisterOptions().preloadEntry === 'body:last' && (content += m.renderPreloadModule() + '\n'))
+        modules.forEach(m => m.getIndexHtmlOptions().preloadEntry === 'body:first' && (content += m.renderPreloadModule() + '\n'))
+        modules.forEach(m => m.getIndexHtmlOptions().appendBody ? content += m.renderComment('Append Body') + m.getIndexHtmlOptions().appendBody + '\n' : null)
+        modules.forEach(m => m.getIndexHtmlOptions().preloadEntry === 'body:last' && (content += m.renderPreloadModule() + '\n'))
         return content + await this.getExtBody()
     }
 

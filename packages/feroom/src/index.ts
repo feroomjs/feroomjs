@@ -2,8 +2,6 @@ import { FeRoomCli } from './cli'
 import { MoostCli } from '@moostjs/event-cli'
 import { getMoostInfact } from 'moost'
 
-export { TFeRoomConfig } from 'common'
-
 export const cli = () => {
     supressNodeWarnings()
     getMoostInfact().silent()
@@ -31,3 +29,5 @@ function supressNodeWarnings() {
 }
 
 export * from 'common/types'
+
+export * from './intelli-helpers'

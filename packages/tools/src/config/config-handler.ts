@@ -1,34 +1,39 @@
-import { modulesPrefixPath, TFeRoomConfig } from 'common'
+import { TFeRoomConfig } from 'common'
 import { dirname, join } from 'path'
 import { getLockVersion, pkg } from '../utils'
 import * as exts from './config-ext'
+
+interface TBuildHelpers {
+    bundle: string[]
+    moduleId: string
+    define: Record<string, unknown>
+    paths: Record<string, string>
+    preloadCss: string
+    target: string
+    outDir: string
+    fileName: string
+    entries: Record<string, string>
+    ext: string
+    lockVersions: string[]
+    external: string[]
+    externalNoLock: string[]
+}
 
 export class FeRoomConfigHandler {
     constructor(private data: TFeRoomConfig, public readonly devMode = false) {}
 
     protected rendered?: TFeRoomConfig
 
-    protected buildHelpers: {
-        bundle: string[]
-        paths: Record<string, string>
-        target: string
-        outDir: string
-        fileName: string
-        entries: Record<string, string>
-        ext: string
-        lockVersions: string[]
-        external: string[]
-        externalNoLock: string[]
-    } | undefined
+    protected buildHelpers?: TBuildHelpers
 
     get(): TFeRoomConfig {
         return this.data
     }
 
-    getBuildHelpers() {
+    getBuildHelpers(): TBuildHelpers {
         if (!this.buildHelpers) {
             const configData = this.data
-            const buildOptions = configData.buildOptions || {}
+            const buildOptions = configData.build || {}
             
             // list of deps to bundle in
             const bundle = buildOptions?.dependencies?.bundle ? [buildOptions?.dependencies?.bundle].flat(1) : []   
@@ -47,7 +52,7 @@ export class FeRoomConfigHandler {
             // list of deps to lock version
             const lockVersions = Object.keys(paths)
     
-            const target = configData.buildOptions?.output || './dist/index.mjs'
+            const target = configData.build?.output || './dist/index.mjs'
             const outDir = dirname(target)
             const fileName = target.replace(outDir + '/', '').replace(/\.\w+$/, '')
             const ext = (/\.\w+$/.exec(target) || [''])[0]
@@ -69,12 +74,34 @@ export class FeRoomConfigHandler {
                 Object.assign(entries, newEntries)
             }
 
+            const moduleId = this.data.register?.id || pkg?.name
+
+            let preloadCss = ''
+            if (!this.devMode && this.data.build?.preloadCss) {
+                preloadCss = join(outDir, 'style.css')
+            }
+
             this.buildHelpers = {
                 // list of deps to bundle in
                 bundle,
+
+                // module indentificator
+                moduleId,
+                
+                // Define global variable replacements.
+                // Entries will be defined on `window` during dev and replaced during build
+                define: {
+                    __MODULE_ID__: moduleId,
+                    __MODULE_VERSION__: pkg?.version,
+                    __DEV__: String(!!this.devMode),
+                    __PROD__: String(!this.devMode),
+                },
     
                 // list of deps to lock version { 'depName': 'depName@version' }
                 paths,
+
+                // auto-preload css when loading js
+                preloadCss,
     
                 // dist path (file)
                 target,
@@ -116,8 +143,8 @@ export class FeRoomConfigHandler {
                 data = (ext as Required<TFeConfigExt>).transformConfig(data, this)
             }
             this.rendered = {
-                registerOptions: {
-                    ...(data.registerOptions || {}),
+                register: {
+                    ...(data.register || {}),
                 },
                 extensions: {
                     ...(data.extensions || {}),
@@ -128,30 +155,30 @@ export class FeRoomConfigHandler {
     }
 
     renderVirtualIndex() {
-        const buildOptions = this.data.buildOptions || {}
+        const build = this.data.build || {}
+        const { preloadCss } = this.getBuildHelpers()
         let content = ''
         for (const ext of this.exts.filter(ext => typeof ext.prependVirtualIndex === 'function')) {
             content += (ext as Required<TFeConfigExt>).prependVirtualIndex(this)
         }
-        if (buildOptions.input) {
+        if (preloadCss) {
+            const indexCss = [this.data.register?.indexHtml?.preloadCss || []].flat()
+            if (!indexCss || !indexCss.map(p => p.replace(/[^a-zA-Z0-9]/g, '')).includes(preloadCss.replace(/[^a-zA-Z0-9]/g, ''))) {
+                content += 'import * as feUtils from \'@feroom-ext/feroom-utils\';\n'
+                content += `feUtils.preloadCss(${ 
+                    JSON.stringify(this.data.register?.id || pkg.name)
+                }, ${
+                    JSON.stringify(preloadCss)
+                }, ${
+                    JSON.stringify(pkg.version)
+                });\n`
+            }
+        }
+        if (build.input) {
             content += `export * from '${ this.devMode
-                ? buildOptions.input.replace(/^\./, '')
-                : buildOptions.input.replace(/\.ts$/, '') }';\n`
+                ? build.input.replace(/^\./, '')
+                : build.input.replace(/\.ts$/, '') }';\n`
         }
-        if (!this.devMode && buildOptions.css) {
-            const cssOpts = buildOptions.css as (string | { fileName: string })
-            let cssPath
-            if (typeof cssOpts === 'string') {
-                cssPath = cssOpts
-            } else if (cssOpts.fileName) {
-                cssPath = cssOpts.fileName
-            }
-            if (cssPath) {
-                cssPath = join(dirname(buildOptions.output || ''), cssPath)
-                content += `__loadCss('${ modulesPrefixPath }${ this.data.registerOptions?.id || pkg.name }/${ cssPath }');\n`
-            }
-        }
-        // content += getVueRoutesExports(conf.extensions?.vueRoutes as TVueRoute[] || [], this.devMode)
         for (const ext of this.exts.filter(ext => typeof ext.appendVirtualIndex === 'function')) {
             content += (ext as Required<TFeConfigExt>).appendVirtualIndex(this)
         }

@@ -38,15 +38,15 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
             panic('Could not parse feroom.config.json file')
             throw e
         }
-        feConf.registerOptions = feConf.registerOptions || {}
-        feConf.registerOptions.exports = { ...(pkg.exports || {}), ...(feConf.registerOptions.exports || {}) }
+        feConf.register = feConf.register || {}
+        feConf.register.exports = { ...(pkg.exports || {}), ...(feConf.register.exports || {}) }
         feConf.extensions = feConf.extensions || {} as CFG
-        Object.assign(feConf.registerOptions, data.config?.registerOptions || {})
+        Object.assign(feConf.register, data.config?.register || {})
         Object.assign(feConf.extensions, data.config?.extensions || {})
         const module: TModuleData<CFG> = {
-            id: data.id || feConf.registerOptions?.id || pkg.name as string,
+            id: data.id || feConf.register?.id || pkg.name as string,
             version: data.version || pkg.version as string,
-            entry: data.entry || feConf.registerOptions?.entry || pkg.module as string,
+            entry: data.entry || feConf.register?.entry || pkg.module as string,
             files,
             source: data.source || '',
             activate: !!data.activate,
@@ -70,8 +70,9 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
         module.versions[normData.version] = normData
         log(`Module has been registered ${__DYE_CYAN__}${ normData.id } v${ normData.version }. Active version: ${ module.activeVersion }`)
         this.emit('register-module', normData)
-        if (normData.config.registerOptions?.importNpmDependencies) {
-            for (const [dep, conf] of Object.entries(normData.config.registerOptions.importNpmDependencies)) {
+        const regOpts = normData.config.register || {}
+        if (regOpts.dependencies?.import) {
+            for (const [dep, conf] of Object.entries(regOpts.dependencies.import)) {
                 void this.registerFromNpm({
                     ...conf,
                     name: dep,

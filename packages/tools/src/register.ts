@@ -19,7 +19,7 @@ export class FeRoomRegister {
     async register(opts?: {conf?: FeRoomConfigReader | TFeRoomConfig | string, activate?: boolean, files?: Record<string, string | Buffer>}) {
         const reader = (opts?.conf instanceof FeRoomConfigReader ? opts.conf : new FeRoomConfigReader(opts?.conf))
         const conf = (await reader.getHandler()).renderConfig()
-        const id = conf.registerOptions?.id || pkg.name
+        const id = conf.register?.id || pkg.name
         const files = await this.gatherFiles(conf, opts?.files)
         try {
             await this.postModule({
@@ -39,7 +39,7 @@ export class FeRoomRegister {
     async gatherFiles(conf: TFeRoomConfig, replace?: Record<string, string | Buffer>) {
         logger.step('Lookup files...')
         const files: Record<string, string | Buffer> = {}
-        const paths = await getFilesByPattern(conf.registerOptions?.include || pkg.files, conf.registerOptions?.exclude)
+        const paths = await getFilesByPattern(conf.register?.include || pkg.files, conf.register?.exclude)
         for (const path of paths) {
             const relPath = unbuildPath(path)
             if (replace && replace[relPath]) {
@@ -62,13 +62,13 @@ export class FeRoomRegister {
         if (!files['feroom.config.json']) {
             logger.info(`${ __DYE_GREEN__ }• feroom.config.json ${ __DYE_DIM__ }→ ${ this.opts.host }`)
         }
-        files['feroom.config.json'] = JSON.stringify({ registerOptions: conf.registerOptions, extensions: conf.extensions })
+        files['feroom.config.json'] = JSON.stringify({ registerOptions: conf.register, extensions: conf.extensions })
         if (!files['package.json']) {
             files['package.json'] = JSON.stringify(pkg)
             logger.info(`${ __DYE_GREEN__ }• package.json ${ __DYE_DIM__ }→ ${ this.opts.host }`)
         }
-        if (!files[conf.registerOptions?.entry as string] && !files[(conf.registerOptions?.entry || '').replace(/^\.\//, '')]) {
-            logger.warn(`Entry "${ conf.registerOptions?.entry as string }" file is not included in files list`)
+        if (!files[conf.register?.entry as string] && !files[(conf.register?.entry || '').replace(/^\.\//, '')]) {
+            logger.warn(`Entry "${ conf.register?.entry as string }" file is not included in files list`)
         }
         return files
     }

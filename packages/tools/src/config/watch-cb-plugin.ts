@@ -1,8 +1,7 @@
-import { Plugin } from 'esbuild'
-import { logger } from '../../logger'
-import { TESReBuildCallback } from '../types'
+import * as esbuild from 'esbuild'
+import { logger } from '../logger'
 
-export const esbuildWatchPlugin: (onReBuild: TESReBuildCallback, log?: boolean) => Plugin = (onReBuild, log) => {
+export const esbuildWatchPlugin: (onReBuild: TESReBuildCallback, log?: boolean) => esbuild.Plugin = (onReBuild, log) => {
     let firstRun = true
     return {
         name: 'feroom-watch-cb',
@@ -19,3 +18,5 @@ export const esbuildWatchPlugin: (onReBuild: TESReBuildCallback, log?: boolean) 
         },
     }
 }
+
+export type TESReBuildCallback = (result: esbuild.BuildResult<esbuild.BuildOptions>) => void | Promise<void>

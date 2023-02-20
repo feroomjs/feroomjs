@@ -4,10 +4,10 @@ import { pkg } from '../../utils'
 
 export const configVueRoutesExt: TFeConfigExt = {
     transformConfig(data, config) {
-        const id = data.registerOptions?.id || pkg?.name
+        const id = data.register?.id || pkg?.name
         if (data.extensions?.vueRoutes) {
-            data.registerOptions = data.registerOptions || {}
-            data.registerOptions.exports = data.registerOptions.exports || {}
+            data.register = data.register || {}
+            data.register.exports = data.register.exports || {}
             for (const entry of getAllRoutes(data.extensions.vueRoutes)) {
                 // "./src/pages/Index.vue" → "./pages_Index" as an export name
                 const exportName = './' + getPageName(entry.component, true)
@@ -16,11 +16,11 @@ export const configVueRoutesExt: TFeConfigExt = {
                     ? entry.component
                     // "./src/pages/Index.vue" → "<outDir>/pages_Index.js" for prod
                     : config.outPath(getPageName(entry.component))
-                data.registerOptions.exports[exportName] = pagePath
+                data.register.exports[exportName] = pagePath
             }
-            data.extensions.vueRoutes = getVueRenderedRoutes(data.extensions.vueRoutes, id)
+            const { preloadCss } = config.getBuildHelpers()
+            data.extensions.vueRoutes = getVueRenderedRoutes(data.extensions.vueRoutes, id, pkg.version, preloadCss)
         }
-        console.log('data.registerOptions', data.registerOptions)
         return data
     },
     appendEntries(data) {
@@ -61,13 +61,22 @@ function getAllRoutes(vueRoutes: TVueRoute[]) {
     return routes as (TVueRoute & { component: string })[]
 }
 
-function getVueRenderedRoutes(vueRoutes: TVueRoute[], moduleId: string) {
+function getVueRenderedRoutes(vueRoutes: TVueRoute[], moduleId: string, version: string, preloadCss: string) {
     const _routes = JSON.parse(JSON.stringify(vueRoutes)) as TVueRoute[]
     const entries = getAllRoutes(_routes)
     // "./src/pages/Index.vue" → "async () => (await import('<moduleId>/pages_Index'))"
     for (const entry of entries) {
         if (entry.component && !entry.component.startsWith('async () => ')) {
-            entry.component = `async () => (await import('${ moduleId }/${ getPageName(entry.component, true) }'))`
+            const css = preloadCss
+                ? `feUtils.preloadCss(${ 
+                    JSON.stringify(moduleId)
+                }, ${
+                    JSON.stringify(preloadCss)
+                }, ${
+                    JSON.stringify(version)
+                }); `
+                : ''
+            entry.component = `async () => { ${css}return (await import('${ moduleId }/${ getPageName(entry.component, true) }')) }`
         }
     }
     return _routes

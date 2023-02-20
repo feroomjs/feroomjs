@@ -2,7 +2,7 @@ import { HttpError, useSetHeader, useStatus, WooksHttp } from '@wooksjs/event-ht
 import { Controller } from 'moost'
 import { useRouteParams } from 'wooks'
 import { FeRegistry } from './registry'
-import { log, modulesPrefixPath, TModuleData } from 'common'
+import { log, TModuleData } from 'common'
 import { FeRoomConfig } from './config'
 import { FeModule } from './module'
 
@@ -24,6 +24,7 @@ export class FeRoomServe {
                 return this.serveModule(data.id, useRouteParams().get('version') as string, useRouteParams().get('*') as string)
             }
             this.registered[data.id] = true
+            const modulesPrefixPath = this.config.modulesPrefixPath
             this.wHttp.get(modulesPrefixPath + data.id, serve)
             this.wHttp.get(modulesPrefixPath + data.id + '/*', serveFile)
             this.wHttp.get(modulesPrefixPath + data.id + '@:version', serve)
@@ -45,21 +46,6 @@ export class FeRoomServe {
         }
 
         const ext = (path.split('.').pop() || '') as keyof typeof extensions
-        // if ((!ext || ext === path || ext === 'vue' || ext === 'sass') && !module.files[path]) {
-        //     if (ext === 'vue') {
-        //         path = path.replace(/vue$/, 'js')
-        //         ext = 'js'
-        //     } else if (ext === 'sass') {
-        //         path = path.replace(/sass$/, 'css')
-        //         ext = 'css'
-        //     } else {
-        //         if (!module.files[path + '.js']) {
-        //             path = path + '/index'
-        //         }
-        //         path = path + '.js'
-        //         ext = 'js'
-        //     }
-        // }
         contentType.value = extensions[ext] || 'text/plain'
         const data = module.files[path]
         if (typeof data === 'string') {

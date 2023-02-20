@@ -18,7 +18,7 @@ reg.registerModule({
     },
     activate: true,
     config: {
-        registerOptions: {
+        register: {
             entry: 'index.js',
         },
     },
@@ -31,7 +31,7 @@ reg.registerModule({
     },
     activate: false,
     config: {
-        registerOptions: {
+        register: {
             entry: 'index.js',
         },
     },
@@ -43,11 +43,13 @@ reg.registerModule({
         'index2.js': 'module2 index.js content',
     },
     config: {
-        registerOptions: {
-            lockDependency: {
-                'module': '1',
-            },
+        register: {
             entry: 'index2.js',
+            dependencies: {
+                lock: {
+                    'module': '1',
+                },
+            },
         },
     },
 })

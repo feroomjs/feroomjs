@@ -6,8 +6,8 @@ export type TFeRoomExtensionsOptionsAll = TSharedMenuCfg & TVueRoutesCfg
 
 export interface TFeRoomConfig<EXT extends object = TFeRoomExtensionsOptionsAll> {
     devServer?: TFeRoomDevServerOptions
-    registerOptions?: TFeRoomRegisterOptions
-    buildOptions?: TFeRoomRollupOptions
+    register?: TFeRoomRegisterOptions
+    build?: TFeRoomBuildOptions
     extensions?: EXT
 }
 
@@ -18,27 +18,30 @@ export interface TFeRoomRegisterOptions {
     description?: string
     include?: string[]
     exclude?: string[]
-    preloadEntry?: boolean | 'head' | 'body:first' | 'body:last'
-    preloadScripts?: string | string[]
-    preloadCss?: string | string[]
-    appendHead?: string
-    appendBody?: string
-    globals?: object
-    lockDependency?: {
-        [name: string]: string
+    indexHtml?: {
+        preloadEntry?: boolean | 'head' | 'body:first' | 'body:last'
+        preloadScripts?: string | string[]
+        preloadCss?: string | string[]
+        appendHead?: string
+        appendBody?: string
+        globals?: object
     }
-    importNpmDependencies?: {
-        [name: string]: TNpmModuleData
+    dependencies?: {
+        autoImport?: boolean
+        lock?: {
+            [name: string]: string
+        }
+        import?: {
+            [name: string]: TNpmModuleData
+        }
     }
     exports?: Record<'.' | `./${ string }` | string, string | { import?: string, default?: string }>
 }
 
-export interface TFeRoomRollupOptions {
+export interface TFeRoomBuildOptions {
     input?: string
-    ts?: boolean | object
     vue?: boolean | object
-    css?: string | object
-    nodeResolve?: object
+    preloadCss?: boolean
     dependencies?: {
         bundle?: string[]
         lockVersion?: string[]
@@ -80,6 +83,7 @@ export interface TFeRoomExtension {
 }
 
 export interface TFeRoomServerOptions {
+    modulesPrefixPath?: string
     devMode?: boolean
     globals?: object
     title?: string

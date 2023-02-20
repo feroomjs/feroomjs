@@ -1,4 +1,4 @@
-import { modulesPrefixPath, TFeRoomRegisterOptions, TModuleData } from 'common'
+import { TFeRoomRegisterOptions, TModuleData } from 'common'
 import { FeRoomConfig } from './config'
 import { join } from 'path'
 import { renderCssTag, renderModuleScriptTag } from './utils'
@@ -16,11 +16,19 @@ export class FeModule<EXT extends object = object> {
     }
 
     getGlobals() {
-        return this.getRegisterOptions().globals || {}
+        return this.getIndexHtmlOptions().globals || {}
+    }
+
+    getIndexHtmlOptions() {
+        return this.getRegisterOptions().indexHtml || {}
+    }
+
+    getDepsOptions() {
+        return this.getRegisterOptions().dependencies || {}
     }
 
     getRegisterOptions(): TFeRoomRegisterOptions {
-        return this.data.config.registerOptions || {}
+        return this.data.config.register || {}
     }
 
     getExtensions(): EXT | undefined {
@@ -31,7 +39,7 @@ export class FeModule<EXT extends object = object> {
         if (this.data.source === 'vite') {
             return join('/', path).replace(/^\/+/, '')
         }
-        return join(modulesPrefixPath, this.data.id + `@${ version || this.data.version }`, path)
+        return join(this.config.modulesPrefixPath, this.data.id + `@${ version || this.data.version }`, path)
     }
 
     entryPath(version?: string): string {
@@ -43,7 +51,7 @@ export class FeModule<EXT extends object = object> {
     }
 
     renderPreloadCss(): string {
-        const items = [this.getRegisterOptions().preloadCss || []].flat(1)
+        const items = [this.getIndexHtmlOptions().preloadCss || []].flat(1)
         let content = ''
         if (items.length) {
             content += this.renderComment('Preload Css')
@@ -52,7 +60,7 @@ export class FeModule<EXT extends object = object> {
     }
 
     renderPreloadScript(): string {
-        const items = [this.getRegisterOptions().preloadScripts || []].flat(1)
+        const items = [this.getIndexHtmlOptions().preloadScripts || []].flat(1)
         let content = ''
         if (items.length) {
             content += this.renderComment('Preload Script')
@@ -70,7 +78,7 @@ export class FeModule<EXT extends object = object> {
 
     getEntries() {
         const entries: Record<string, string> = {}
-        for (const [key, value] of Object.entries(this.data.config.registerOptions?.exports || {})) {
+        for (const [key, value] of Object.entries(this.data.config.register?.exports || {})) {
             if (key === '.') continue
             const _key = key.replace(/^\./, '').replace(/^\/+/, '')
             if (typeof value === 'string') {
@@ -96,8 +104,9 @@ export class FeModule<EXT extends object = object> {
 
     getImportMap(reg: FeRegistry): Record<string, string> {
         const map = this.getOwnImportMap()
-        if (this.data.config.registerOptions?.lockDependency) {
-            for (const [dep, ver] of Object.entries(this.data.config.registerOptions.lockDependency)) {
+        const lockOptions = this.getDepsOptions().lock
+        if (lockOptions) {
+            for (const [dep, ver] of Object.entries(lockOptions)) {
                 // const active = reg.getActiveVersion(dep)
                 const m = reg.readModule(dep, ver)
                 Object.assign(map, (new FeModule(m, this.config).getOwnImportMap(ver)))

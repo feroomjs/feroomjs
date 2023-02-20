@@ -20,7 +20,7 @@
 
 ## Common
 
-- re-design appending css to modules (use virtual dep `@feroom-ext/preload-css`?)
+- ✔ re-design appending css to modules (use virtual dep `@feroom-ext/feroom-utils`?)
 
 ## Persistance
 

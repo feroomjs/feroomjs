@@ -8,6 +8,7 @@ import { FeRoomApi } from './feroom-api'
 import { log, panic, TClassConstructor, TFeRoomExtension, TFeRoomServerOptions } from 'common'
 import { feroomMate } from './decorators'
 import { isConstructor } from '@prostojs/mate'
+import { FeRoomUtils } from './feroom-utils'
 
 interface TWrappedExt { instance: TFeRoomExtension, name: string }
 
@@ -28,6 +29,7 @@ export class FeRoom extends Moost {
             ['FEROOM_EXT_ARRAY', () => this._ext],
         ))
         this.registerControllers(FeRoomServe, FeRoomIndex, FeRoomApi)
+        this.ext(FeRoomUtils)
     }
 
     async init() {
