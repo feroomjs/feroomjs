@@ -15,6 +15,14 @@ export class FeModule<EXT extends object = object> {
         return this.data.files
     }
 
+    get etags() {
+        return this.data.etags
+    }
+
+    get isNpm() {
+        return this.data.source.startsWith('npm:')
+    }
+
     getGlobals() {
         return this.getIndexHtmlOptions().globals || {}
     }

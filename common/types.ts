@@ -54,6 +54,7 @@ export interface TModuleData<EXT extends object = object> {
     id: string
     version: string
     files: Record<string, string | {type: 'Buffer', data: number[]} | Buffer>
+    etags: Record<string, string>
     entry: string
     source: string
     config: TFeRoomConfig<EXT>

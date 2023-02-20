@@ -1,4 +1,4 @@
-import { HttpError, useSetHeader, useStatus, WooksHttp } from '@wooksjs/event-http'
+import { HttpError, useHeaders, useSetCacheControl, useSetHeader, useStatus, WooksHttp } from '@wooksjs/event-http'
 import { Controller } from 'moost'
 import { useRouteParams } from 'wooks'
 import { FeRegistry } from './registry'
@@ -36,8 +36,11 @@ export class FeRoomServe {
 
     serveModule(id: string, version?: string, path?: string) {
         const status = useStatus()
+        const { setCacheControl } = useSetCacheControl()
+        const etag = useSetHeader('etag')
         const location = useSetHeader('location')
         const contentType = useSetHeader('content-type')
+        const ifNoneMatch = useHeaders()['if-none-match']
         const module = new FeModule(this._registry.readModule(id, version), this.config)
         if (!path) {
             status.value = 307
@@ -45,17 +48,28 @@ export class FeRoomServe {
             return ''
         }
 
-        const ext = (path.split('.').pop() || '') as keyof typeof extensions
-        contentType.value = extensions[ext] || 'text/plain'
-        const data = module.files[path]
-        if (typeof data === 'string') {
-            return data
-        } else if (data instanceof Buffer) {
-            return data
-        } else if (typeof data === 'object' && data.type === 'Buffer') {
-            return Buffer.from(data.data)
+        const fileEtag = module.etags[path]
+        if (ifNoneMatch !== fileEtag) {
+            etag.value = fileEtag
+            const ext = (path.split('.').pop() || '') as keyof typeof extensions
+            contentType.value = extensions[ext] || 'text/plain'
+            const data = module.files[path]
+            if (!data) return new HttpError(404)
+            if (module.isNpm) {
+                setCacheControl({
+                    public: true,
+                    maxAge: '1Y',
+                })
+            }               
+            if (typeof data === 'string') {             
+                return data
+            } else if (data instanceof Buffer) {
+                return data
+            } else if (typeof data === 'object' && data.type === 'Buffer') {
+                return Buffer.from(data.data)
+            }
         }
-        return new HttpError(404)
+        status.value = 304
     }
 
     updateModulePaths() {

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
+import { createHash } from 'crypto'
 import { Controller, Inject } from 'moost'
 import { FeRoomConfig } from './config'
 import { FeRegistry } from './registry'
@@ -6,12 +7,33 @@ import { FeModule } from './module'
 import { Get, SetHeader } from '@moostjs/event-http'
 import { renderCssTag, renderModuleScriptTag } from './utils'
 import { TFeRoomExtension } from 'common'
+import { useHeaders, useSetHeader, useStatus } from '@wooksjs/event-http'
 
 interface TWrappedExt { instance: TFeRoomExtension, name: string }
 
 @Controller()
 export class FeRoomIndex {
-    constructor(protected _registry: FeRegistry, protected config: FeRoomConfig, @Inject('FEROOM_EXT_ARRAY') protected ext: (() => Promise<TWrappedExt> | TWrappedExt)[]) {}
+    constructor(
+        protected _registry: FeRegistry,
+        protected config: FeRoomConfig,
+        @Inject('FEROOM_EXT_ARRAY') protected ext: (() => Promise<TWrappedExt> | TWrappedExt)[],
+    ) {
+        const handleUpdate = async () => {
+            try {
+                await this.render()
+            } catch (e) {
+                console.error('Error during index.html render:')
+                console.error(e)
+                console.error((e as Error).stack)
+            }
+        }
+        _registry.on('update', handleUpdate as () => void)
+        void handleUpdate()
+    }
+
+    protected _indexHtml: string = ''
+    
+    protected _etag: string = new Date().getTime().toString()
 
     async getExtInstances(): Promise<{ instance: TFeRoomExtension, name: string }[]> {
         const instances = []
@@ -114,9 +136,19 @@ export class FeRoomIndex {
     @Get('')
     @Get('index.html')
     @SetHeader('content-type', 'text/html')
-    async index() {
+    index() {
+        const ifNoneMatch = useHeaders()['if-none-match']
+        if (this._etag !== ifNoneMatch) {
+            const etag = useSetHeader('etag')
+            etag.value = this._etag
+            return this._indexHtml
+        }
+        useStatus().value = 304
+    }
+
+    async render() {
         const modules = this.getModules()
-        return `<html>
+        this._indexHtml = `<html>
 <head>
 <script type="importmap">
 {
@@ -150,5 +182,6 @@ ${ this.getCss(modules) }
 ${ await this.getBody(modules) }
 </body>
 </html>`
+        this._etag = createHash('sha1').update(this._indexHtml).digest('base64')
     }
 }

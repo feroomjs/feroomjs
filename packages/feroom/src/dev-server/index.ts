@@ -71,7 +71,7 @@ export async function createDevServer(feConf: FeRoomConfigReader) {
         await wooksApp.listen(port)
 
         configHandler = await newConfig.getHandler(true)
-        reRegister(configHandler)
+        await reRegister(configHandler)
         running = true
     }
 
@@ -94,7 +94,7 @@ async function runFeRoomServer(configHandler: FeRoomConfigHandler, wooksApp: Woo
         head: '<script type="module" src="/@vite/client"></script>',
     }, reg)
 
-    reRegister(configHandler)
+    await reRegister(configHandler)
 
     for (const extItem of ext) {
         void server.ext(extItem)

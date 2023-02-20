@@ -1,3 +1,4 @@
+import { createHash } from 'crypto'
 import { getNpmPackageFiles, getNpmPackageVersion } from '@feroomjs/npm-fetcher'
 import { log, panic, TFeRoomConfig, TModuleData, TNpmModuleData } from 'common'
 import EventEmitter from 'events'
@@ -18,6 +19,8 @@ function safeString(file: string | { type: 'Buffer', data: number[] }) {
 }
 
 export class FeRegistry<CFG extends object = object> extends EventEmitter {
+    protected busy = false
+
     normalizeModuleData(data: Partial<TModuleData<CFG>>): TModuleData<CFG> {
         const files = data.files as Record<string, string>
         if (!files) {
@@ -43,11 +46,17 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
         feConf.extensions = feConf.extensions || {} as CFG
         Object.assign(feConf.register, data.config?.register || {})
         Object.assign(feConf.extensions, data.config?.extensions || {})
+        const etags: Record<string, string> = {}
+        for (const [path, data] of Object.entries(files as TModuleData['files'])) {
+            const buffer = typeof data === 'string' ? data : data instanceof Buffer ? data : Buffer.from(data.data)
+            etags[path] = createHash('sha1').update(buffer).digest('base64')
+        }
         const module: TModuleData<CFG> = {
             id: data.id || feConf.register?.id || pkg.name as string,
             version: data.version || pkg.version as string,
             entry: data.entry || feConf.register?.entry || pkg.module as string,
             files,
+            etags,
             source: data.source || '',
             activate: !!data.activate,
             config: feConf,
@@ -61,46 +70,57 @@ export class FeRegistry<CFG extends object = object> extends EventEmitter {
         return module
     }
 
-    registerModule(data: Partial<TModuleData<CFG>>, defaultNpmRegistry = 'https://registry.npmjs.org') {
-        const normData = this.normalizeModuleData(data)
-        const module = registry[normData.id] = registry[normData.id] || { activeVersion: normData.version, versions: {}}
-        if (normData.activate) {
-            module.activeVersion = normData.version
-        }
-        module.versions[normData.version] = normData
-        log(`Module has been registered ${__DYE_CYAN__}${ normData.id } v${ normData.version }. Active version: ${ module.activeVersion }`)
-        this.emit('register-module', normData)
-        const regOpts = normData.config.register || {}
-        const depsToRegister: Record<string, string | TNpmModuleData> = {}
-        if (regOpts.dependencies?.autoImport) {
-            const pkg = JSON.parse(normData.files['package.json'] as string || '{}') as Record<string, string>
-            if (pkg && pkg.dependencies) {
-                Object.assign(depsToRegister, pkg.dependencies)
+    async registerModule(data: Partial<TModuleData<CFG>>, defaultNpmRegistry = 'https://registry.npmjs.org') {
+        const wasNotBusy = !this.busy
+        this.busy = true
+        try {
+            const normData = this.normalizeModuleData(data)
+            const module = registry[normData.id] = registry[normData.id] || { activeVersion: normData.version, versions: {}}
+            if (normData.activate) {
+                module.activeVersion = normData.version
             }
-        }
-        if (regOpts.dependencies?.import) {
-            for (const [dep, conf] of Object.entries(regOpts.dependencies.import)) {
-                depsToRegister[dep] = conf
+            module.versions[normData.version] = normData
+            log(`Module has been registered ${__DYE_CYAN__}${ normData.id } v${ normData.version }. Active version: ${ module.activeVersion }`)
+            this.emit('register-module', normData)
+            const regOpts = normData.config.register || {}
+            const depsToRegister: Record<string, string | TNpmModuleData> = {}
+            if (regOpts.dependencies?.autoImport) {
+                const pkg = JSON.parse(normData.files['package.json'] as string || '{}') as Record<string, string>
+                if (pkg && pkg.dependencies) {
+                    Object.assign(depsToRegister, pkg.dependencies)
+                }
             }
-        }
-        for (const [dep, conf] of Object.entries(depsToRegister)) {
-            if (typeof conf === 'string') {
-                void this.registerFromNpm({
-                    name: dep,
-                    version: conf,
-                    activateIfNewer: normData.activate,
-                }, defaultNpmRegistry)
-            } else {
-                void this.registerFromNpm({
-                    ...conf,
-                    name: dep,
-                    activateIfNewer: normData.activate,
-                } as TNpmModuleData<CFG>, defaultNpmRegistry) 
-            }           
-        }
-        return {
-            ...normData,
-            files: Object.keys(normData.files),
+            if (regOpts.dependencies?.import) {
+                for (const [dep, conf] of Object.entries(regOpts.dependencies.import)) {
+                    depsToRegister[dep] = conf
+                }
+            }
+            for (const [dep, conf] of Object.entries(depsToRegister)) {
+                if (typeof conf === 'string') {
+                    await this.registerFromNpm({
+                        name: dep,
+                        version: conf,
+                        activateIfNewer: normData.activate,
+                    }, defaultNpmRegistry)
+                } else {
+                    await this.registerFromNpm({
+                        ...conf,
+                        name: dep,
+                        activateIfNewer: normData.activate,
+                    } as TNpmModuleData<CFG>, defaultNpmRegistry) 
+                }           
+            }
+            if (wasNotBusy) {
+                this.busy = false
+                this.emit('update')
+            }
+            return {
+                ...normData,
+                files: Object.keys(normData.files),
+            }
+        } catch (e) {
+            if (wasNotBusy) this.busy = false
+            throw e
         }
     }
 

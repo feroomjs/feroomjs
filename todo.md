@@ -15,8 +15,8 @@
 
 ## Server
 
-- pre-compute `index.html` state on each module update
-- add `e-tag` to served modules files (sha?)
+- ✔ pre-compute `index.html` state on each module update
+- ✔ add `e-tag` to served modules files (sha1 and cache-control for modules from NPM)
 
 ## Common
 
